@@ -1,0 +1,66 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  test:
+    name: Node ${{ matrix.node }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [14]
+        os: [ubuntu-latest]
+#        TODO: in a private repository, windows-latest is charged 2x times and macos-latest is charged 10x times
+#        node: [12, 14, 15]
+#        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v2
+
+      - name: Set Node.js version
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+
+      - uses: actions/cache@v2
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Version
+        run: |
+          node --version
+          yarn --version
+
+      - name: Install Dependencies
+        run: yarn install
+
+      - name: Lint
+        run: yarn run lint
+
+      - name: Build
+        run: yarn workspace run build
+
+#      - name: Coverage Test
+#        run: yarn run coverage # coverage: "yarn workspace {workspace} run coverage && yarn workspace {workspace} run coverage && ..."
+#
+#      - name: Upload coverage to Codecov
+#        uses: codecov/codecov-action@v1
+#        with:
+#          files: ./packages/coverage/coverage-final.json # ./{workspace}/coverage/coverage-final.json,./{workspace}/coverage/coverage-final.json,...

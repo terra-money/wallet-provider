@@ -1,0 +1,34 @@
+# config
+.envrc
+.env
+
+# tools
+/.idea
+
+# node
+node_modules/
+
+# macos
+.DS_Store
+
+# generated files
+*.tgz
+lerna-debug.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# yarn berry
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+
+# output
+coverage/
+out/
+dev/
+build/
+test/storage/
+.eslintcache
+.chrome/
+tsconfig.tsbuildinfo

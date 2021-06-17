@@ -1,0 +1,14 @@
+{
+  "author": "Ian <ian@terra.money>",
+  "license": "Apache-2.0",
+  "repository": "github:terra-money/wallet-provider",
+  "bugs": "https://github.com/terra-money/wallet-provider/issues",
+  "homepage": "https://github.com/terra-money/wallet-provider/tree/master/packages/src/{name}",
+  "engines": {
+    "node": ">=12"
+  },
+  "publishConfig": {
+    "cache": "~/.npm",
+    "access": "public"
+  }
+}

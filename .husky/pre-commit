@@ -1,0 +1,11 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+yarn run markdown-source-import README.md "packages/src/**/*.md" --git-add
+
+cp README.md packages/src/@terra-money/wallet-provider/README.md
+git add packages/src/@terra-money/wallet-provider/README.md
+
+yarn run lint-staged
+
+yarn workspace packages run precommit
