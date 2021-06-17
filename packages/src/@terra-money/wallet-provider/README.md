@@ -4,7 +4,7 @@ Library to make React dApps easier using Terra Station Extension or Terra Statio
 
 # Basic Usage
 
-If you have used `react-router-dom`'s `<BrowserRouter>`, \`\<useLocation()>, you can easily understand it.
+If you have used `react-router-dom`'s `<BrowserRouter>`, `<useLocation()>`, you can easily understand it.
 
 ```jsx
 import {
@@ -272,3 +272,8 @@ function Component() {
 ```
 
 </details>
+
+# Projects for reference
+
+- [Anchor Web App](https://github.com/Anchor-Protocol/anchor-web-app/blob/master/base/src/base/AppProviders.tsx#L154)
+- [Mirror Web App](https://github.com/Mirror-Protocol/terra-web-app/blob/master/src/layouts/WalletConnectProvider.tsx#L12)
