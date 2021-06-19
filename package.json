@@ -1,9 +1,8 @@
 {
   "private": true,
-  "version": "2021.05.08",
-  "author": "Name <id@mail.com>",
+  "author": "Ian <ian@terra.money>",
   "license": "MIT",
-  "repository": "https://github.com/githubid/repository",
+  "repository": "https://github.com/terra-money/wallet-provider",
   "workspaces": [
     "packages"
   ],
