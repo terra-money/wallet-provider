@@ -34,6 +34,10 @@ build({
     if ('styled-components' in dependencies) {
       dependencies['styled-components'] = '^5.0.0';
     }
+    
+    if ('@terra-money/terra.js' in dependencies) {
+      dependencies['@terra-money/terra.js'] = '^1.8.0';
+    }
 
     //switch (packageName) {
     //  case '@terra-dev/is-mobile':
