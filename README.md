@@ -2,6 +2,19 @@
 
 Library to make React dApps easier using Terra Station Extension or Terra Station Mobile.
 
+# Quick Start
+
+Use templates to get your projects started quickly
+
+```sh
+npx copy-github-directory https://github.com/terra-money/wallet-provider/tree/main/templates/create-react-app your-app-name
+cd your-app-name
+yarn install
+yarn start
+```
+
+[Wallet Provider + Create-React-App Template](templates/create-react-app)
+
 # Basic Usage
 
 If you have used `react-router-dom`'s `<BrowserRouter>`, `<useLocation()>`, you can easily understand it.
