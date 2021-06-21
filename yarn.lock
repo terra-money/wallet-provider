@@ -2819,7 +2819,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@terra-money/wallet-provider@^1.0.0-alpha.1, @terra-money/wallet-provider@workspace:packages/out/packages/terra-money__wallet-provider":
+"@terra-money/wallet-provider@^1.0.0-alpha.2, @terra-money/wallet-provider@workspace:packages/out/packages/terra-money__wallet-provider":
   version: 0.0.0-use.local
   resolution: "@terra-money/wallet-provider@workspace:packages/out/packages/terra-money__wallet-provider"
   dependencies:
@@ -2827,7 +2827,6 @@ __metadata:
     "@terra-dev/chrome-extension": ^1.0.0-alpha.1
     "@terra-dev/readonly-wallet": ^1.0.0-alpha.1
     "@terra-dev/readonly-wallet-modal": ^1.0.0-alpha.1
-    "@terra-dev/use-interval": ^0.15.0
     "@terra-dev/wallet-types": ^1.0.0-alpha.1
     "@terra-dev/walletconnect": ^1.0.0-alpha.1
     "@terra-dev/web-extension": ^0.4.0
@@ -2836,7 +2835,6 @@ __metadata:
     rxjs: ^7.1.0
   peerDependencies:
     react: ^17.0.0
-    react-router-dom: ^5.0.0
   peerDependenciesMeta:
     react-router-dom:
       optional: true
@@ -17280,7 +17278,7 @@ resolve@^2.0.0-next.3:
   resolution: "wallet-provider-create-react-app-template@workspace:templates/create-react-app"
   dependencies:
     "@terra-money/terra.js": ^1.8.4
-    "@terra-money/wallet-provider": ^1.0.0-alpha.1
+    "@terra-money/wallet-provider": ^1.0.0-alpha.2
     "@testing-library/jest-dom": ^5.14.1
     "@types/jest": ^26.0.23
     "@types/react": ^17.0.9
@@ -17289,6 +17287,7 @@ resolve@^2.0.0-next.3:
     lint-staged: ^11.0.0
     react: ^17.0.2
     react-dom: ^17.0.2
+    react-router-dom: ^5.2.0
     react-scripts: 4.0.3
     typescript: ^4.3.2
   languageName: unknown
