@@ -13,7 +13,7 @@ yarn install
 yarn start
 ```
 
-[Wallet Provider + Create-React-App Template](templates/create-react-app)
+[Wallet Provider + Create-React-App Template](https://github.com/terra-money/wallet-provider/tree/main/templates/create-react-app)
 
 # Basic Usage
 

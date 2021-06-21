@@ -1,4 +1,4 @@
-# `@terra-dev/walletconnect`
+# `@terra-dev/chrome-extension`
 
 This package is one of the components
 of [`@terra-money/wallet-provider`](https://www.npmjs.com/package/@terra-money/wallet-provider). If there is no
