@@ -4,7 +4,9 @@
   "license": "MIT",
   "repository": "https://github.com/terra-money/wallet-provider",
   "workspaces": [
-    "packages"
+    "packages",
+    "packages/out/packages/*",
+    "templates/*"
   ],
   "scripts": {
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx}\"",
