@@ -35,7 +35,6 @@
     ]
   },
   "dependencies": {
-    "@terra-dev/use-interval": "^0.15.0",
     "@terra-dev/web-extension": "^0.4.0",
     "@terra-money/terra.js": "^1.8.0",
     "@walletconnect/core": "^1.4.1",
