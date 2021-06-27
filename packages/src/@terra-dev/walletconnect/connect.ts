@@ -135,8 +135,8 @@ export function connect(
   const cachedSession = localStorage.getItem('walletconnect');
 
   if (typeof cachedSession === 'string' && useCachedSession) {
-    const session = JSON.parse(cachedSession);
-    const clientId = session.clientId;
+    const cachedSessionObject = JSON.parse(cachedSession);
+    const clientId = cachedSessionObject.clientId;
     const draftConnector = new Connector({
       connectorOpts: {
         ...connectorOpts,

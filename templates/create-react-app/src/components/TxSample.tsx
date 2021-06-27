@@ -1,4 +1,4 @@
-import { MsgSend } from '@terra-money/terra.js';
+import { MsgSend, StdFee } from '@terra-money/terra.js';
 import {
   CreateTxFailed,
   Timeout,
@@ -39,9 +39,9 @@ export function TxSample() {
           }),
         ],
       })
-      .then((txResult: TxResult) => {
-        console.log(txResult);
-        setTxResult(txResult);
+      .then((nextTxResult: TxResult) => {
+        console.log(nextTxResult);
+        setTxResult(nextTxResult);
       })
       .catch((error: unknown) => {
         if (error instanceof UserDenied) {

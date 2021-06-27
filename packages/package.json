@@ -14,6 +14,11 @@
       "cross-env CI=true react-scripts test --colors --findRelatedTests"
     ]
   },
+  "eslintConfig": {
+    "extends": [
+      "../.eslintrc.js"
+    ]
+  },
   "jest": {
     "collectCoverageFrom": [
       "src/**/*.ts?(x)",
@@ -65,7 +70,6 @@
     "@types/styled-components": "^5.1.9",
     "@types/webpack-env": "^1.16.0",
     "cross-env": "^7.0.3",
-    "jest": "^26.6.3",
     "lint-staged": "^11.0.0",
     "puppeteer": "^10.0.0",
     "react-scripts": "4.0.3",

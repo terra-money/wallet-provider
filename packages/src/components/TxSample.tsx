@@ -39,9 +39,9 @@ export function TxSample() {
           }),
         ],
       })
-      .then((txResult: TxResult) => {
-        console.log(txResult);
-        setTxResult(txResult);
+      .then((nextTxResult: TxResult) => {
+        console.log(nextTxResult);
+        setTxResult(nextTxResult);
       })
       .catch((error: unknown) => {
         if (error instanceof UserDenied) {

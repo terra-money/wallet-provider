@@ -1,5 +1,8 @@
 module.exports = {
-  extends: ['react-app', 'react-app/jest', 'prettier'],
+  extends: ['@ssen'],
+  env: {
+    'jest/globals': true,
+  },
   //rules: {
   //  'react-hooks/exhaustive-deps': [
   //    'warn',
