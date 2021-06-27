@@ -251,9 +251,19 @@ export function connect(
     };
 
     if (isMobile()) {
-      window.location.href = `terrastation://wallet_connect_confirm?id=${id}&handshakeTopic=${
-        connector.handshakeTopic
-      }&params=${JSON.stringify([serializedTxOptions])}`;
+      const payload = btoa(
+        JSON.stringify({
+          id,
+          handshakeTopic: connector.handshakeTopic,
+          params: serializedTxOptions,
+        }),
+      );
+
+      // FIXME changed walletconnect confirm schema
+      window.location.href = `terrastation://walletconnect_confirm/?payload=${payload}`;
+      //window.location.href = `terrastation://wallet_connect_confirm?id=${id}&handshakeTopic=${
+      //  connector.handshakeTopic
+      //}&params=${JSON.stringify([serializedTxOptions])}`;
     }
 
     return connector

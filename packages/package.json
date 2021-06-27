@@ -4,7 +4,7 @@
   "scripts": {
     "build": "TS_NODE_PROJECT=tsconfig.script.json node -r ts-node/register -r tsconfig-paths/register scripts/build.ts",
     "publish": "rocket-punch publish",
-    "start": "react-scripts start",
+    "start": "HTTPS=true SSL_CRT_FILE=$LOCALHOST_HTTPS_CERT SSL_KEY_FILE=$LOCALHOST_HTTPS_KEY PORT=9221 react-scripts start",
     "test": "react-scripts test --colors",
     "coverage": "react-scripts test --coverage",
     "precommit": "lint-staged"

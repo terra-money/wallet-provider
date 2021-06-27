@@ -1,4 +1,4 @@
-import { MsgSend } from '@terra-money/terra.js';
+import { MsgSend, StdFee } from '@terra-money/terra.js';
 import {
   CreateTxFailed,
   Timeout,
