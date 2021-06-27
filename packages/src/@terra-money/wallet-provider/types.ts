@@ -26,7 +26,7 @@ export interface WalletInfo {
   design?: string;
 }
 
-export type WalletData =
+export type WalletStates =
   | {
       status: WalletStatus.INITIALIZING;
       network: NetworkInfo;

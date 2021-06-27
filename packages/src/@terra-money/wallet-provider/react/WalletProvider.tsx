@@ -1,7 +1,6 @@
-import { NetworkInfo } from '@terra-dev/wallet-types';
 import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { WalletController, WalletControllerOptions } from '../controller';
-import { ConnectType, WalletInfo, WalletStatus } from '../types';
+import { ConnectType, WalletInfo, WalletStates, WalletStatus } from '../types';
 import { Wallet, WalletContext } from './useWallet';
 
 export interface WalletProviderProps extends WalletControllerOptions {
@@ -37,9 +36,13 @@ export function WalletProvider({
   const [availableInstallTypes, setAvailableInstallTypes] = useState<
     ConnectType[]
   >(() => []);
-  const [status, setStatus] = useState<WalletStatus>(WalletStatus.INITIALIZING);
-  const [network, setNetwork] = useState<NetworkInfo>(defaultNetwork);
-  const [wallets, setWallets] = useState<WalletInfo[]>(EMPTY_ARRAY);
+  const [states, setStates] = useState<WalletStates>(() => ({
+    status: WalletStatus.INITIALIZING,
+    network: defaultNetwork,
+  }));
+  //const [status, setStatus] = useState<WalletStatus>(WalletStatus.INITIALIZING);
+  //const [network, setNetwork] = useState<NetworkInfo>(defaultNetwork);
+  //const [wallets, setWallets] = useState<WalletInfo[]>(EMPTY_ARRAY);
 
   useEffect(() => {
     const availableConnectTypesSubscription = controller
@@ -58,15 +61,17 @@ export function WalletProvider({
         },
       });
 
-    const dataSubscription = controller.data().subscribe({
+    const statesSubscription = controller.states().subscribe({
       next: (value) => {
-        setStatus(value.status);
-        setNetwork(value.network);
-        setWallets(
-          value.status === WalletStatus.WALLET_CONNECTED
-            ? value.wallets
-            : EMPTY_ARRAY,
-        );
+        setStates(value);
+        //console.log('WalletProvider.tsx..next()', JSON.stringify(value, null, 2));
+        //setStatus(value.status);
+        //setNetwork(value.network);
+        //setWallets(
+        //  value.status === WalletStatus.WALLET_CONNECTED
+        //    ? value.wallets
+        //    : EMPTY_ARRAY,
+        //);
       },
     });
 
@@ -91,7 +96,7 @@ export function WalletProvider({
     return () => {
       availableConnectTypesSubscription.unsubscribe();
       availableInstallTypesSubscription.unsubscribe();
-      dataSubscription.unsubscribe();
+      statesSubscription.unsubscribe();
       //statusSubscription.unsubscribe();
       //networkSubscription.unsubscribe();
       //walletsSubscription.unsubscribe();
@@ -102,9 +107,12 @@ export function WalletProvider({
     return {
       availableConnectTypes,
       availableInstallTypes,
-      status,
-      network,
-      wallets,
+      status: states.status,
+      network: states.network,
+      wallets:
+        states.status === WalletStatus.WALLET_CONNECTED
+          ? states.wallets
+          : EMPTY_ARRAY,
       install: controller.install,
       connect: controller.connect,
       connectReadonly: controller.connectReadonly,
@@ -121,9 +129,7 @@ export function WalletProvider({
     controller.install,
     controller.post,
     controller.recheckStatus,
-    network,
-    status,
-    wallets,
+    states,
   ]);
 
   return (
