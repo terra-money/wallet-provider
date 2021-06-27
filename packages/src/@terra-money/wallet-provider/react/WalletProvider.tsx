@@ -8,6 +8,8 @@ export interface WalletProviderProps extends WalletControllerOptions {
   children: ReactNode;
 }
 
+const EMPTY_ARRAY: WalletInfo[] = [];
+
 export function WalletProvider({
   children,
   defaultNetwork,
@@ -37,7 +39,7 @@ export function WalletProvider({
   >(() => []);
   const [status, setStatus] = useState<WalletStatus>(WalletStatus.INITIALIZING);
   const [network, setNetwork] = useState<NetworkInfo>(defaultNetwork);
-  const [wallets, setWallets] = useState<WalletInfo[]>(() => []);
+  const [wallets, setWallets] = useState<WalletInfo[]>(EMPTY_ARRAY);
 
   useEffect(() => {
     const availableConnectTypesSubscription = controller
@@ -56,30 +58,43 @@ export function WalletProvider({
         },
       });
 
-    const statusSubscription = controller.status().subscribe({
+    const dataSubscription = controller.data().subscribe({
       next: (value) => {
-        setStatus(value);
+        setStatus(value.status);
+        setNetwork(value.network);
+        setWallets(
+          value.status === WalletStatus.WALLET_CONNECTED
+            ? value.wallets
+            : EMPTY_ARRAY,
+        );
       },
     });
 
-    const networkSubscription = controller.network().subscribe({
-      next: (value) => {
-        setNetwork(value);
-      },
-    });
-
-    const walletsSubscription = controller.wallets().subscribe({
-      next: (value) => {
-        setWallets(value);
-      },
-    });
+    //const statusSubscription = controller.status().subscribe({
+    //  next: (value) => {
+    //    setStatus(value);
+    //  },
+    //});
+    //
+    //const networkSubscription = controller.network().subscribe({
+    //  next: (value) => {
+    //    setNetwork(value);
+    //  },
+    //});
+    //
+    //const walletsSubscription = controller.wallets().subscribe({
+    //  next: (value) => {
+    //    setWallets(value);
+    //  },
+    //});
 
     return () => {
       availableConnectTypesSubscription.unsubscribe();
       availableInstallTypesSubscription.unsubscribe();
-      statusSubscription.unsubscribe();
-      networkSubscription.unsubscribe();
-      walletsSubscription.unsubscribe();
+      dataSubscription.unsubscribe();
+      //statusSubscription.unsubscribe();
+      //networkSubscription.unsubscribe();
+      //walletsSubscription.unsubscribe();
     };
   }, [controller]);
 

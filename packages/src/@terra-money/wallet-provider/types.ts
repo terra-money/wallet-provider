@@ -1,3 +1,5 @@
+import { NetworkInfo } from '@terra-dev/wallet-types';
+
 export enum WalletStatus {
   INITIALIZING = 'INITIALIZING',
   WALLET_NOT_CONNECTED = 'WALLET_NOT_CONNECTED',
@@ -23,3 +25,18 @@ export interface WalletInfo {
   terraAddress: string;
   design?: string;
 }
+
+export type WalletData =
+  | {
+      status: WalletStatus.INITIALIZING;
+      network: NetworkInfo;
+    }
+  | {
+      status: WalletStatus.WALLET_NOT_CONNECTED;
+      network: NetworkInfo;
+    }
+  | {
+      status: WalletStatus.WALLET_CONNECTED;
+      network: NetworkInfo;
+      wallets: WalletInfo[];
+    };
