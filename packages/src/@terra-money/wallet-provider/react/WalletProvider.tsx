@@ -40,9 +40,6 @@ export function WalletProvider({
     status: WalletStatus.INITIALIZING,
     network: defaultNetwork,
   }));
-  //const [status, setStatus] = useState<WalletStatus>(WalletStatus.INITIALIZING);
-  //const [network, setNetwork] = useState<NetworkInfo>(defaultNetwork);
-  //const [wallets, setWallets] = useState<WalletInfo[]>(EMPTY_ARRAY);
 
   useEffect(() => {
     const availableConnectTypesSubscription = controller
@@ -64,42 +61,13 @@ export function WalletProvider({
     const statesSubscription = controller.states().subscribe({
       next: (value) => {
         setStates(value);
-        //console.log('WalletProvider.tsx..next()', JSON.stringify(value, null, 2));
-        //setStatus(value.status);
-        //setNetwork(value.network);
-        //setWallets(
-        //  value.status === WalletStatus.WALLET_CONNECTED
-        //    ? value.wallets
-        //    : EMPTY_ARRAY,
-        //);
       },
     });
-
-    //const statusSubscription = controller.status().subscribe({
-    //  next: (value) => {
-    //    setStatus(value);
-    //  },
-    //});
-    //
-    //const networkSubscription = controller.network().subscribe({
-    //  next: (value) => {
-    //    setNetwork(value);
-    //  },
-    //});
-    //
-    //const walletsSubscription = controller.wallets().subscribe({
-    //  next: (value) => {
-    //    setWallets(value);
-    //  },
-    //});
 
     return () => {
       availableConnectTypesSubscription.unsubscribe();
       availableInstallTypesSubscription.unsubscribe();
       statesSubscription.unsubscribe();
-      //statusSubscription.unsubscribe();
-      //networkSubscription.unsubscribe();
-      //walletsSubscription.unsubscribe();
     };
   }, [controller]);
 
