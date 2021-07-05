@@ -6,6 +6,8 @@ Library to make React dApps easier using Terra Station Extension or Terra Statio
 
 Use templates to get your projects started quickly
 
+### Craete React App
+
 ```sh
 npx copy-github-directory https://github.com/terra-money/wallet-provider/tree/main/templates/create-react-app your-app-name
 cd your-app-name
@@ -14,6 +16,17 @@ yarn start
 ```
 
 [Wallet Provider + Create-React-App Template](https://github.com/terra-money/wallet-provider/tree/main/templates/create-react-app)
+
+### Next.js
+
+```sh
+npx copy-github-directory https://github.com/terra-money/wallet-provider/tree/main/templates/next your-app-name
+cd your-app-name
+yarn install
+yarn run dev
+```
+
+[Wallet Provider + Next.js Template](https://github.com/terra-money/wallet-provider/tree/main/templates/next)
 
 # Basic Usage
 
