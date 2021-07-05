@@ -24,7 +24,7 @@ export function TxSample() {
     }
 
     if (!connectedWallet.network.chainID.startsWith('tequila')) {
-      console.error(`Please only execute this example on Testnet`);
+      alert(`Please only execute this example on Testnet`);
       return;
     }
 

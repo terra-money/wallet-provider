@@ -6,7 +6,8 @@ import { extensionFixer, FixedExtension } from './extensionFixer';
 import { clearStore, getStoredAddress, storeAddress } from './storage';
 import { ChromeExtensionStatus } from './types';
 
-const desktopChrome: boolean = isDesktopChrome() === true;
+const desktopChrome: boolean =
+  typeof window !== 'undefined' && isDesktopChrome() === true;
 
 export interface ChromeExtensionControllerOptions {
   defaultNetwork: NetworkInfo;
