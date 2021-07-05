@@ -202,9 +202,11 @@ class SocketTransport implements ITransportLib {
     });
 
     if (this._socket && this._socket.readyState === 1) {
-      const events = this._events.filter((event) => event.event === 'message');
+      const events = this._events.filter(
+        (itemEvent) => itemEvent.event === 'message',
+      );
       if (events && events.length) {
-        events.forEach((event) => event.callback(socketMessage));
+        events.forEach((itemEvent) => itemEvent.callback(socketMessage));
       }
     }
   }

@@ -1,3 +1,4 @@
+import { isDesktopChrome } from '@terra-dev/browser-check';
 import {
   ChromeExtensionController,
   ChromeExtensionCreateTxFailed,
@@ -5,7 +6,6 @@ import {
   ChromeExtensionTxFailed,
   ChromeExtensionUnspecifiedError,
 } from '@terra-dev/chrome-extension';
-import { isDesktopChrome } from '@terra-dev/browser-check';
 import {
   connect as reConnect,
   connectIfSessionExists as reConnectIfSessionExists,
@@ -47,13 +47,13 @@ import {
 import { AccAddress, CreateTxOptions } from '@terra-money/terra.js';
 import deepEqual from 'fast-deep-equal';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import {
   CHROME_EXTENSION_INSTALL_URL,
   WEB_EXTENSION_CONNECTED_KEY,
 } from './env';
 import { TxResult } from './tx';
-import { ConnectType, WalletInfo, WalletStatus } from './types';
+import { ConnectType, WalletInfo, WalletStates, WalletStatus } from './types';
 import { checkAvailableExtension } from './utils/checkAvailableExtension';
 
 export interface WalletControllerOptions
@@ -115,16 +115,27 @@ export class WalletController {
 
   private _availableConnectTypes: BehaviorSubject<ConnectType[]>;
   private _availableInstallTypes: BehaviorSubject<ConnectType[]>;
-  private _status: BehaviorSubject<WalletStatus>;
-  private _network: BehaviorSubject<NetworkInfo>;
-  private _wallets: BehaviorSubject<WalletInfo[]>;
+  private _states: BehaviorSubject<WalletStates>;
 
   private disableReadonlyWallet: (() => void) | null = null;
   private disableChromeExtension: (() => void) | null = null;
   private disableWebExtension: (() => void) | null = null;
   private disableWalletConnect: (() => void) | null = null;
 
+  private readonly _notConnected: WalletStates;
+  private readonly _initializing: WalletStates;
+
   constructor(readonly options: WalletControllerOptions) {
+    this._notConnected = {
+      status: WalletStatus.WALLET_NOT_CONNECTED,
+      network: options.defaultNetwork,
+    };
+
+    this._initializing = {
+      status: WalletStatus.INITIALIZING,
+      network: options.defaultNetwork,
+    };
+
     this._availableConnectTypes = new BehaviorSubject<ConnectType[]>([
       ConnectType.READONLY,
       ConnectType.WALLETCONNECT,
@@ -132,11 +143,7 @@ export class WalletController {
 
     this._availableInstallTypes = new BehaviorSubject<ConnectType[]>([]);
 
-    this._status = new BehaviorSubject<WalletStatus>(WalletStatus.INITIALIZING);
-
-    this._network = new BehaviorSubject<NetworkInfo>(options.defaultNetwork);
-
-    this._wallets = new BehaviorSubject<WalletInfo[]>([]);
+    this._states = new BehaviorSubject<WalletStates>(this._initializing);
 
     let numSessionCheck: number = 0;
 
@@ -177,7 +184,7 @@ export class WalletController {
             } else if (numSessionCheck === 0) {
               numSessionCheck += 1;
             } else {
-              this._status.next(WalletStatus.WALLET_NOT_CONNECTED);
+              this.updateStates(this._notConnected);
               localStorage.removeItem(WEB_EXTENSION_CONNECTED_KEY);
             }
           });
@@ -217,7 +224,7 @@ export class WalletController {
             } else if (numSessionCheck === 0) {
               numSessionCheck += 1;
             } else {
-              this._status.next(WalletStatus.WALLET_NOT_CONNECTED);
+              this.updateStates(this._notConnected);
             }
           });
       } else {
@@ -228,7 +235,7 @@ export class WalletController {
         if (numSessionCheck === 0) {
           numSessionCheck += 1;
         } else {
-          this._status.next(WalletStatus.WALLET_NOT_CONNECTED);
+          this.updateStates(this._notConnected);
         }
       }
     });
@@ -253,7 +260,7 @@ export class WalletController {
     } else if (numSessionCheck === 0) {
       numSessionCheck += 1;
     } else {
-      this._status.next(WalletStatus.WALLET_NOT_CONNECTED);
+      this.updateStates(this._notConnected);
     }
   }
 
@@ -267,19 +274,32 @@ export class WalletController {
     return this._availableInstallTypes.asObservable();
   };
 
-  /** @see Wallet#status */
+  /**
+   * @see Wallet#status
+   * @see Wallet#network
+   * @see Wallet#wallets
+   */
+  states = (): Observable<WalletStates> => {
+    return this._states.asObservable();
+  };
+
+  /** @deprecated please use `states()` */
   status = (): Observable<WalletStatus> => {
-    return this._status.asObservable();
+    return this._states.pipe(map((data) => data.status));
   };
 
-  /** @see Wallet#network */
+  /** @deprecated please use `states()` */
   network = (): Observable<NetworkInfo> => {
-    return this._network.asObservable();
+    return this._states.pipe(map((data) => data.network));
   };
 
-  /** @see Wallet#wallets */
+  /** @deprecated please use `states()` */
   wallets = (): Observable<WalletInfo[]> => {
-    return this._wallets.asObservable();
+    return this._states.pipe(
+      map((data) =>
+        data.status === WalletStatus.WALLET_CONNECTED ? data.wallets : [],
+      ),
+    );
   };
 
   /** @see Wallet#recheckStatus */
@@ -367,9 +387,7 @@ export class WalletController {
     this.disableWalletConnect = null;
 
     localStorage.removeItem(WEB_EXTENSION_CONNECTED_KEY);
-    this._status.next(WalletStatus.WALLET_NOT_CONNECTED);
-    this._network.next(this.options.defaultNetwork);
-    this._wallets.next([]);
+    this.updateStates(this._notConnected);
   };
 
   /** @see Wallet#post */
@@ -542,14 +560,18 @@ export class WalletController {
   // internal
   // connect type changing
   // ================================================================
-  private updateWallets = (nextWallets: WalletInfo[]) => {
-    const prevWallets = this._wallets.getValue();
+  private updateStates = (next: WalletStates) => {
+    const prev = this._states.getValue();
 
     if (
-      nextWallets.length !== prevWallets.length ||
-      !deepEqual(prevWallets, nextWallets)
+      next.status === WalletStatus.WALLET_CONNECTED &&
+      next.wallets.length === 0
     ) {
-      this._wallets.next(nextWallets);
+      console.trace('???');
+    }
+
+    if (prev.status !== next.status || !deepEqual(prev, next)) {
+      this._states.next(next);
     }
   };
 
@@ -572,15 +594,17 @@ export class WalletController {
 
     this.readonlyWallet = readonlyWallet;
 
-    this._status.next(WalletStatus.WALLET_CONNECTED);
-    this._network.next(readonlyWallet.network);
-    this.updateWallets([
-      {
-        connectType: ConnectType.READONLY,
-        terraAddress: readonlyWallet.terraAddress,
-        design: 'readonly',
-      },
-    ]);
+    this.updateStates({
+      status: WalletStatus.WALLET_CONNECTED,
+      network: readonlyWallet.network,
+      wallets: [
+        {
+          connectType: ConnectType.READONLY,
+          terraAddress: readonlyWallet.terraAddress,
+          design: 'readonly',
+        },
+      ],
+    });
 
     this.disableReadonlyWallet = () => {
       readonlyWallet.disconnect();
@@ -606,10 +630,7 @@ export class WalletController {
         return;
       }
 
-      this._network.next(states.network);
-
       if (status.type === WebExtensionStatusType.READY) {
-        this._status.next(WalletStatus.WALLET_CONNECTED);
         if (states.wallets.length > 0) {
           const focusedWallet = states.focusedWalletAddress
             ? states.wallets.find(
@@ -617,18 +638,22 @@ export class WalletController {
                   itemWallet.terraAddress === states.focusedWalletAddress,
               ) ?? states.wallets[0]
             : states.wallets[0];
-          this.updateWallets([
-            {
-              connectType: ConnectType.WEBEXTENSION,
-              terraAddress: focusedWallet.terraAddress,
-              design: focusedWallet.design,
-            },
-          ]);
+
+          this.updateStates({
+            status: WalletStatus.WALLET_CONNECTED,
+            network: states.network,
+            wallets: [
+              {
+                connectType: ConnectType.WEBEXTENSION,
+                terraAddress: focusedWallet.terraAddress,
+                design: focusedWallet.design,
+              },
+            ],
+          });
         }
       } else if (status.type === WebExtensionStatusType.NO_AVAILABLE) {
         localStorage.removeItem(WEB_EXTENSION_CONNECTED_KEY);
-        this._status.next(WalletStatus.WALLET_NOT_CONNECTED);
-        this.updateWallets([]);
+        this.updateStates(this._notConnected);
 
         if (!status.isApproved && this.disableWebExtension) {
           this.disableWebExtension();
@@ -669,24 +694,24 @@ export class WalletController {
       this.chromeExtension.terraAddress(),
     ]).subscribe({
       next: ([status, networkInfo, terraAddress]) => {
-        this._network.next(networkInfo);
-
         if (
           status === ChromeExtensionStatus.WALLET_CONNECTED &&
           typeof terraAddress === 'string' &&
           AccAddress.validate(terraAddress)
         ) {
-          this._status.next(WalletStatus.WALLET_CONNECTED);
-          this.updateWallets([
-            {
-              connectType: ConnectType.CHROME_EXTENSION,
-              terraAddress,
-              design: 'extension',
-            },
-          ]);
+          this.updateStates({
+            status: WalletStatus.WALLET_CONNECTED,
+            network: networkInfo,
+            wallets: [
+              {
+                connectType: ConnectType.CHROME_EXTENSION,
+                terraAddress,
+                design: 'extension',
+              },
+            ],
+          });
         } else {
-          this._status.next(WalletStatus.WALLET_NOT_CONNECTED);
-          this.updateWallets([]);
+          this.updateStates(this._notConnected);
         }
       },
     });
@@ -720,23 +745,22 @@ export class WalletController {
         next: (status) => {
           switch (status.status) {
             case WalletConnectSessionStatus.CONNECTED:
-              this._status.next(WalletStatus.WALLET_CONNECTED);
-              this._network.next(
-                this.options.walletConnectChainIds[status.chainId] ??
+              this.updateStates({
+                status: WalletStatus.WALLET_CONNECTED,
+                network:
+                  this.options.walletConnectChainIds[status.chainId] ??
                   this.options.defaultNetwork,
-              );
-              this.updateWallets([
-                {
-                  connectType: ConnectType.WALLETCONNECT,
-                  terraAddress: status.terraAddress,
-                  design: 'walletconnect',
-                },
-              ]);
+                wallets: [
+                  {
+                    connectType: ConnectType.WALLETCONNECT,
+                    terraAddress: status.terraAddress,
+                    design: 'walletconnect',
+                  },
+                ],
+              });
               break;
             default:
-              this._status.next(WalletStatus.WALLET_NOT_CONNECTED);
-              this._network.next(this.options.defaultNetwork);
-              this.updateWallets([]);
+              this.updateStates(this._notConnected);
               break;
           }
         },

@@ -4,7 +4,7 @@
   "scripts": {
     "build": "TS_NODE_PROJECT=tsconfig.script.json node -r ts-node/register -r tsconfig-paths/register scripts/build.ts",
     "publish": "rocket-punch publish",
-    "start": "react-scripts start",
+    "start": "HTTPS=true SSL_CRT_FILE=$LOCALHOST_HTTPS_CERT SSL_KEY_FILE=$LOCALHOST_HTTPS_KEY PORT=9221 react-scripts start",
     "test": "react-scripts test --colors",
     "coverage": "react-scripts test --coverage",
     "precommit": "lint-staged"
@@ -12,6 +12,11 @@
   "lint-staged": {
     "src/{**/*,*}/*.{ts,tsx}": [
       "cross-env CI=true react-scripts test --colors --findRelatedTests"
+    ]
+  },
+  "eslintConfig": {
+    "extends": [
+      "../.eslintrc.js"
     ]
   },
   "jest": {
@@ -65,7 +70,6 @@
     "@types/styled-components": "^5.1.9",
     "@types/webpack-env": "^1.16.0",
     "cross-env": "^7.0.3",
-    "jest": "^26.6.3",
     "lint-staged": "^11.0.0",
     "puppeteer": "^10.0.0",
     "react-scripts": "4.0.3",
