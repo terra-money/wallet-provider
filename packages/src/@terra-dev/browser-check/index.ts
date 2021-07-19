@@ -1,4 +1,4 @@
-import { getParser } from 'bowser';
+import bowser from 'bowser';
 import MobileDetect from 'mobile-detect';
 
 export function isMathWallet(userAgent: string) {
@@ -18,7 +18,7 @@ export const isDesktopChrome = () => {
     return true;
   }
 
-  const browser = getParser(userAgent);
+  const browser = bowser.getParser(userAgent);
   const mobileDetect = new MobileDetect(navigator.userAgent);
 
   return (
