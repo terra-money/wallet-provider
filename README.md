@@ -30,7 +30,7 @@ yarn run dev
 
 # Basic Usage
 
-If you have used `react-router-dom`'s `<BrowserRouter>`, `<useLocation()>`, you can easily understand it.
+If you have used `react-router-dom`'s `<BrowserRouter>`, `useLocation()`, you can easily understand it.
 
 ```jsx
 import {
@@ -171,7 +171,7 @@ ReactDOM.render(
 
 <details>
 
-<summary><code>&lt;useWallet()&gt;</code></summary>
+<summary><code>useWallet()</code></summary>
 
 This is a React Hook that can receive all the information. (Other hooks are functions for the convenience of Wrapping
 this `useWallet()`)
@@ -271,7 +271,7 @@ const {
 
 <details>
 
-<summary><code>&lt;useConnectedWallet()&gt;</code></summary>
+<summary><code>useConnectedWallet()</code></summary>
 
 ```jsx
 import { useConnectedWallet } from '@terra-money/wallet-provider'
