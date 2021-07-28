@@ -16,6 +16,7 @@ import { readonlyWalletModal } from '@terra-dev/readonly-wallet-modal';
 import {
   CreateTxFailed,
   NetworkInfo,
+  SignResult,
   Timeout,
   TxFailed,
   TxUnspecifiedError,
@@ -30,7 +31,6 @@ import {
   WalletConnectSessionStatus,
   WalletConnectTimeout,
   WalletConnectTxFailed,
-  WalletConnectTxResult,
   WalletConnectTxUnspecifiedError,
   WalletConnectUserDenied,
 } from '@terra-dev/walletconnect';
@@ -404,30 +404,27 @@ export class WalletController {
         throw new Error(`chromeExtension instance not created!`);
       }
 
-      return (
-        this.chromeExtension
-          // TODO make WalletConnectTxResult to common type
-          .post<CreateTxOptions, { result: WalletConnectTxResult }>(tx)
-          .then(({ payload }) => {
-            return {
-              ...tx,
-              result: payload.result,
-              success: true,
-            } as TxResult;
-          })
-          .catch((error) => {
-            if (error instanceof ChromeExtensionCreateTxFailed) {
-              throw new CreateTxFailed(tx, error.message);
-            } else if (error instanceof ChromeExtensionTxFailed) {
-              throw new TxFailed(tx, error.txhash, error.message, null);
-            } else if (error instanceof ChromeExtensionUnspecifiedError) {
-              throw new TxUnspecifiedError(tx, error.message);
-            }
-            // UserDeniedError
-            // All unspecified errors...
-            throw error;
-          })
-      );
+      return this.chromeExtension
+        .post<CreateTxOptions, TxResult>(tx)
+        .then(({ payload }) => {
+          return {
+            ...tx,
+            result: payload.result,
+            success: true,
+          };
+        })
+        .catch((error) => {
+          if (error instanceof ChromeExtensionCreateTxFailed) {
+            throw new CreateTxFailed(tx, error.message);
+          } else if (error instanceof ChromeExtensionTxFailed) {
+            throw new TxFailed(tx, error.txhash, error.message, null);
+          } else if (error instanceof ChromeExtensionUnspecifiedError) {
+            throw new TxUnspecifiedError(tx, error.message);
+          }
+          // UserDenied - chrome extension will sent original UserDenied error type
+          // All unspecified errors...
+          throw error;
+        });
     }
     // ---------------------------------------------
     // web extension - new extension
@@ -554,6 +551,44 @@ export class WalletController {
     } else {
       throw new Error(`There are no connections that can be posting tx!`);
     }
+  };
+
+  /** @see Wallet#sign */
+  sign = async (
+    tx: CreateTxOptions,
+    // TODO not work at this time. for the future extension
+    txTarget: { network?: NetworkInfo; terraAddress?: string } = {},
+  ): Promise<SignResult> => {
+    if (this.disableChromeExtension) {
+      if (!this.chromeExtension) {
+        throw new Error(`chromeExtension instance not created!`);
+      }
+
+      return this.chromeExtension
+        .sign<CreateTxOptions, SignResult>(tx)
+        .then(({ payload }) => {
+          return {
+            ...tx,
+            result: payload.result,
+            success: true,
+          };
+        })
+        .catch((error) => {
+          if (error instanceof ChromeExtensionCreateTxFailed) {
+            throw new CreateTxFailed(tx, error.message);
+          } else if (error instanceof ChromeExtensionTxFailed) {
+            throw new TxFailed(tx, error.txhash, error.message, null);
+          } else if (error instanceof ChromeExtensionUnspecifiedError) {
+            throw new TxUnspecifiedError(tx, error.message);
+          }
+          // UserDenied - chrome extension will sent original UserDenied error type
+          // All unspecified errors...
+          throw error;
+        });
+    }
+
+    throw new Error(`not implemented`);
+    // TODO implements sign() to other connect types
   };
 
   // ================================================================

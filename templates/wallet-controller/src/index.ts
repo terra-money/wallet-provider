@@ -144,7 +144,7 @@ combineLatest([
               fee: new StdFee(1000000, '200000uusd'),
               msgs: [
                 new MsgSend(states.wallets[0].terraAddress, toAddress, {
-                  uusd: 100000,
+                  uusd: 1000000,
                 }),
               ],
             })

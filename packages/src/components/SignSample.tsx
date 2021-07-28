@@ -1,9 +1,17 @@
-import { MsgSend, StdFee } from '@terra-money/terra.js';
+import {
+  LCDClient,
+  MsgSend,
+  StdFee,
+  StdSignature,
+  StdSignMsg,
+  StdTx,
+  SyncTxBroadcastResult,
+} from '@terra-money/terra.js';
 import {
   CreateTxFailed,
+  SignResult,
   Timeout,
   TxFailed,
-  TxResult,
   TxUnspecifiedError,
   useConnectedWallet,
   UserDenied,
@@ -12,8 +20,9 @@ import React, { useCallback, useState } from 'react';
 
 const toAddress = 'terra12hnhh5vtyg5juqnzm43970nh4fw42pt27nw9g9';
 
-export function TxSample() {
-  const [txResult, setTxResult] = useState<TxResult | null>(null);
+export function SignSample() {
+  const [signResult, setSignResult] = useState<SignResult | null>(null);
+  const [txResult, setTxResult] = useState<SyncTxBroadcastResult | null>(null);
   const [txError, setTxError] = useState<string | null>(null);
 
   const connectedWallet = useConnectedWallet();
@@ -28,10 +37,10 @@ export function TxSample() {
       return;
     }
 
-    setTxResult(null);
+    setSignResult(null);
 
     connectedWallet
-      .post({
+      .sign({
         fee: new StdFee(1000000, '200000uusd'),
         msgs: [
           new MsgSend(connectedWallet.walletAddress, toAddress, {
@@ -39,8 +48,32 @@ export function TxSample() {
           }),
         ],
       })
-      .then((nextTxResult: TxResult) => {
-        console.log(nextTxResult);
+      .then((nextSignResult: SignResult) => {
+        setSignResult(nextSignResult);
+
+        // broadcast
+        const { signature, public_key, stdSignMsgData } = nextSignResult.result;
+
+        const sig = StdSignature.fromData({
+          signature,
+          pub_key: {
+            type: 'tendermint/PubKeySecp256k1',
+            value: public_key,
+          },
+        });
+
+        const stdSignMsg = StdSignMsg.fromData(stdSignMsgData);
+
+        const lcd = new LCDClient({
+          chainID: connectedWallet.network.chainID,
+          URL: connectedWallet.network.lcd,
+        });
+
+        return lcd.tx.broadcastSync(
+          new StdTx(stdSignMsg.msgs, stdSignMsg.fee, [sig], stdSignMsg.memo),
+        );
+      })
+      .then((nextTxResult: SyncTxBroadcastResult) => {
         setTxResult(nextTxResult);
       })
       .catch((error: unknown) => {
@@ -65,34 +98,35 @@ export function TxSample() {
 
   return (
     <div>
-      <h1>Tx Sample</h1>
-      {connectedWallet?.availablePost && !txResult && !txError && (
-        <button onClick={send}>Send 1USD to {toAddress}</button>
+      <h1>Sign Sample</h1>
+      {connectedWallet?.availablePost && !signResult && !txError && (
+        <button onClick={() => send()}>Send 1USD to {toAddress}</button>
       )}
-      {txResult && (
+      {signResult && (
         <>
-          <pre>{JSON.stringify(txResult, null, 2)}</pre>
+          <pre>{JSON.stringify(signResult, null, 2)}</pre>
+          {txResult && <pre>{JSON.stringify(txResult, null, 2)}</pre>}
           {connectedWallet && txResult && (
             <a
-              href={`https://finder.terra.money/${connectedWallet.network.chainID}/tx/${txResult.result.txhash}`}
+              href={`https://finder.terra.money/${connectedWallet.network.chainID}/tx/${txResult.txhash}`}
               target="_blank"
               rel="noreferrer"
             >
               Open Tx Result in Terra Finder
             </a>
           )}
-          <button onClick={() => setTxResult(null)}>Clear Tx Result</button>
+          <button onClick={() => setSignResult(null)}>Clear Result</button>
         </>
       )}
       {txError && (
         <>
           <pre>{txError}</pre>
-          <button onClick={() => setTxError(null)}>Clear Tx Error</button>
+          <button onClick={() => setTxError(null)}>Clear Error</button>
         </>
       )}
       {!connectedWallet && <p>Wallet not connected!</p>}
       {connectedWallet && !connectedWallet.availablePost && (
-        <p>Can not post Tx</p>
+        <p>Can not sign Tx</p>
       )}
     </div>
   );

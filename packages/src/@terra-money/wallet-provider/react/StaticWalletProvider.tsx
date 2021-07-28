@@ -42,6 +42,9 @@ export function StaticWalletProvider({
       post: () => {
         throw new Error('not implemented!');
       },
+      sign: () => {
+        throw new Error('not implemented!');
+      },
       recheckStatus: () => {
         throw new Error('not implemented!');
       },

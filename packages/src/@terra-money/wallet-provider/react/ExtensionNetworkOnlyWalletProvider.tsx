@@ -1,12 +1,6 @@
 import { ChromeExtensionController } from '@terra-dev/chrome-extension';
 import { NetworkInfo } from '@terra-dev/wallet-types';
-import React, {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { WalletStatus } from '../types';
 import { Wallet, WalletContext } from './useWallet';
 
@@ -28,12 +22,6 @@ export function ExtensionNetworkOnlyWalletProvider({
   );
 
   const [network, setNetwork] = useState<NetworkInfo>(defaultNetwork);
-
-  const post = useCallback(async () => {
-    throw new Error(
-      `<ExtensionNetworkOnlyWalletProvider> does not support post()`,
-    );
-  }, []);
 
   useEffect(() => {
     const networkSubscription = controller.networkInfo().subscribe({
@@ -66,10 +54,19 @@ export function ExtensionNetworkOnlyWalletProvider({
       disconnect: () => {
         throw new Error('not implemented!');
       },
-      post,
+      post: () => {
+        throw new Error(
+          `<ExtensionNetworkOnlyWalletProvider> does not support post()`,
+        );
+      },
+      sign: () => {
+        throw new Error(
+          `<ExtensionNetworkOnlyWalletProvider> does not support sign()`,
+        );
+      },
       recheckStatus: controller.recheckStatus,
     };
-  }, [controller.recheckStatus, network, post]);
+  }, [controller.recheckStatus, network]);
 
   return (
     <WalletContext.Provider value={state}>{children}</WalletContext.Provider>

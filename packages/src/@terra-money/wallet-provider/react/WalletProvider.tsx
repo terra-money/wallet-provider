@@ -86,6 +86,7 @@ export function WalletProvider({
       connectReadonly: controller.connectReadonly,
       disconnect: controller.disconnect,
       post: controller.post,
+      sign: controller.sign,
       recheckStatus: controller.recheckStatus,
     };
   }, [
@@ -96,6 +97,7 @@ export function WalletProvider({
     controller.disconnect,
     controller.install,
     controller.post,
+    controller.sign,
     controller.recheckStatus,
     states,
   ]);

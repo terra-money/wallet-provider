@@ -35,7 +35,7 @@ export default function TxSample() {
         fee: new StdFee(1000000, '200000uusd'),
         msgs: [
           new MsgSend(connectedWallet.walletAddress, toAddress, {
-            uusd: 100000,
+            uusd: 1000000,
           }),
         ],
       })
