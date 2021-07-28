@@ -66,6 +66,10 @@ export interface WalletControllerOptions
   /**
    * for walletconnect
    *
+   * The network rules passed by the Terra Station Mobile are 0 is testnet, 1 is mainnet.
+   *
+   * Always set testnet for 0 and mainnet for 1.
+   *
    * @example
    * ```
    * const mainnet: NetworkInfo = {
