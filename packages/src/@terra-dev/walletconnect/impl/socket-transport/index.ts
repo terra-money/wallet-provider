@@ -95,15 +95,15 @@ class SocketTransport implements ITransportLib {
 
   // -- public ---------------------------------------------------------- //
 
-  public open() {
+  public open = () => {
     this._socketCreate();
-  }
+  };
 
-  public close() {
+  public close = () => {
     this._socketClose();
-  }
+  };
 
-  public send(message: string, topic?: string, silent?: boolean): void {
+  public send = (message: string, topic?: string, silent?: boolean): void => {
     if (!topic || typeof topic !== 'string') {
       throw new Error('Missing or invalid topic field');
     }
@@ -114,24 +114,24 @@ class SocketTransport implements ITransportLib {
       payload: message,
       silent: !!silent,
     });
-  }
+  };
 
-  public subscribe(topic: string) {
+  public subscribe = (topic: string) => {
     this._socketSend({
       topic: topic,
       type: 'sub',
       payload: '',
       silent: true,
     });
-  }
+  };
 
-  public on(event: string, callback: (payload: any) => void) {
+  public on = (event: string, callback: (payload: any) => void) => {
     this._events.push({ event, callback });
-  }
+  };
 
   // -- private ---------------------------------------------------------- //
 
-  private _socketCreate() {
+  private _socketCreate = () => {
     if (this._nextSocket) {
       return;
     }
@@ -155,26 +155,26 @@ class SocketTransport implements ITransportLib {
       this._nextSocket = null;
       setTimeout(this._socketCreate, 500);
     };
-  }
+  };
 
-  private _socketOpen() {
+  private _socketOpen = () => {
     this._socketClose();
     this._socket = this._nextSocket;
     this._nextSocket = null;
     this._queueSubscriptions();
     this._pushQueue();
-  }
+  };
 
-  private _socketClose() {
+  private _socketClose = () => {
     if (this._socket) {
       this._socket.onclose = () => {
         // empty
       };
       this._socket.close();
     }
-  }
+  };
 
-  private _socketSend(socketMessage: ISocketMessage) {
+  private _socketSend = (socketMessage: ISocketMessage) => {
     const message: string = JSON.stringify(socketMessage);
 
     if (this._socket && this._socket.readyState === 1) {
@@ -183,9 +183,9 @@ class SocketTransport implements ITransportLib {
       this._setToQueue(socketMessage);
       this._socketCreate();
     }
-  }
+  };
 
-  private async _socketReceive(event: MessageEvent) {
+  private _socketReceive = async (event: MessageEvent) => {
     let socketMessage: ISocketMessage;
 
     try {
@@ -209,16 +209,16 @@ class SocketTransport implements ITransportLib {
         events.forEach((itemEvent) => itemEvent.callback(socketMessage));
       }
     }
-  }
+  };
 
-  private _socketError(e: Event) {
+  private _socketError = (e: Event) => {
     const events = this._events.filter((event) => event.event === 'error');
     if (events && events.length) {
       events.forEach((event) => event.callback(e));
     }
-  }
+  };
 
-  private _queueSubscriptions() {
+  private _queueSubscriptions = () => {
     const subscriptions = this._subscriptions;
 
     subscriptions.forEach((topic: string) =>
@@ -231,13 +231,13 @@ class SocketTransport implements ITransportLib {
     );
 
     this._subscriptions = this.opts.subscriptions || [];
-  }
+  };
 
-  private _setToQueue(socketMessage: ISocketMessage) {
+  private _setToQueue = (socketMessage: ISocketMessage) => {
     this._queue.push(socketMessage);
-  }
+  };
 
-  private _pushQueue() {
+  private _pushQueue = () => {
     const queue = this._queue;
 
     queue.forEach((socketMessage: ISocketMessage) =>
@@ -245,19 +245,19 @@ class SocketTransport implements ITransportLib {
     );
 
     this._queue = [];
-  }
+  };
 }
 
 function getWebSocketUrl(
-  _url: string,
+  webUrl: string,
   protocol: string,
   version: number,
 ): string {
-  const url = _url.startsWith('https')
-    ? _url.replace('https', 'wss')
-    : _url.startsWith('http')
-    ? _url.replace('http', 'ws')
-    : _url;
+  const url = webUrl.startsWith('https')
+    ? webUrl.replace('https', 'wss')
+    : webUrl.startsWith('http')
+    ? webUrl.replace('http', 'ws')
+    : webUrl;
   const splitUrl = url.split('?');
   const params = isBrowser()
     ? {
