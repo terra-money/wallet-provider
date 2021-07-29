@@ -1,5 +1,5 @@
 import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 export function ConnectSample() {
   const {
@@ -12,11 +12,6 @@ export function ConnectSample() {
     install,
     disconnect,
   } = useWallet();
-
-  // TODO remove test codes
-  useEffect(() => {
-    console.log('ConnectSample.tsx..ConnectSample()', status, network, wallets);
-  }, [network, status, wallets]);
 
   return (
     <div>
