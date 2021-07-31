@@ -28,6 +28,11 @@ yarn run dev
 
 [Wallet Provider + Next.js Template](https://github.com/terra-money/wallet-provider/tree/main/templates/next)
 
+### Other templates (experimental)
+
+- [Wallet Provider + Vite.js Template](https://github.com/terra-money/wallet-provider/tree/main/templates/vite)
+- [Wallet Controller Template](https://github.com/terra-money/wallet-provider/tree/main/templates/wallet-controller)
+
 # Basic Usage
 
 If you have used `react-router-dom`'s `<BrowserRouter>`, `useLocation()`, you can easily understand it.
