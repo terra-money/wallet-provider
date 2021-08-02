@@ -38,7 +38,7 @@ export default function App({ Component }: AppProps) {
     </main>
   );
 
-  return process.browser ? (
+  return typeof window !== 'undefined' ? (
     <WalletProvider
       defaultNetwork={mainnet}
       walletConnectChainIds={walletConnectChainIds}
