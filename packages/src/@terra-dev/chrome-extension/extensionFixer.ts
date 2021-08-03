@@ -46,40 +46,105 @@ function toExplicitError(error: any) {
 export function extensionFixer(extension: Extension): FixedExtension {
   let _inTransactionProgress = false;
 
+  const postResolvers = new Map<
+    number,
+    [(data: any) => void, (error: any) => void]
+  >();
+
+  const infoResolvers = new Set<[(data: any) => void, (error: any) => void]>();
+
+  const connectResolvers = new Set<
+    [(data: any) => void, (error: any) => void]
+  >();
+
+  extension.on('onPost', (result) => {
+    if (!result) return;
+
+    const { error, ...payload } = result;
+
+    if (!postResolvers.has(payload.id)) {
+      return;
+    }
+
+    const [resolve, reject] = postResolvers.get(payload.id)!;
+
+    if (!payload.success) {
+      reject(toExplicitError(error));
+    } else if (resolve) {
+      resolve({ name: 'onPost', payload });
+    }
+
+    postResolvers.delete(payload.id);
+
+    if (postResolvers.size === 0) {
+      _inTransactionProgress = false;
+    }
+  });
+
+  extension.on('onInfo', (result) => {
+    if (!result) return;
+    const { error, ...payload } = result;
+
+    for (const [resolve, reject] of infoResolvers) {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(payload);
+      }
+    }
+
+    infoResolvers.clear();
+  });
+
+  extension.on('onConnect', (result) => {
+    if (!result) return;
+    const { error, ...payload } = result;
+
+    for (const [resolve, reject] of connectResolvers) {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(payload);
+      }
+    }
+
+    connectResolvers.clear();
+  });
+
   function post(data: object) {
-    return new Promise<PostResponse>((resolve, reject) => {
+    return new Promise<PostResponse>((...resolver) => {
       _inTransactionProgress = true;
 
-      extension.post({
+      const id = extension.post({
         ...(data as any),
         purgeQueue: true,
       });
 
-      extension.once('onPost', (result) => {
-        _inTransactionProgress = false;
+      postResolvers.set(id, resolver);
 
-        if (!result) return;
+      setTimeout(() => {
+        if (postResolvers.has(id)) {
+          postResolvers.delete(id);
 
-        const { error, ...payload } = result;
-
-        if (!payload.success) {
-          reject(toExplicitError(error));
-        } else if (resolve) {
-          resolve({ name: 'onPost', payload });
+          if (postResolvers.size === 0) {
+            _inTransactionProgress = false;
+          }
         }
-      });
+      }, 1000 * 120);
     });
   }
 
   function connect() {
-    return extension.request('connect').then(({ payload }) => {
-      return payload;
+    return new Promise<ConnectResponse>((...resolver) => {
+      connectResolvers.add(resolver);
+      extension.connect();
     });
   }
 
   function info() {
-    return extension.request('info').then(({ payload }) => {
-      return payload as NetworkInfo;
+    return new Promise<InfoResponse>((...resolver) => {
+      infoResolvers.add(resolver);
+      extension.info();
     });
   }
 
