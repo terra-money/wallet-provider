@@ -14,6 +14,10 @@ export function isMathWallet(userAgent: string) {
   return /MathWallet\//.test(userAgent);
 }
 
+export function isBitKeep(userAgent: string) {
+  return /BitKeep/.test(userAgent);
+}
+
 export const isMobile = () => {
   const mobileDetect = new MobileDetect(navigator.userAgent);
 
@@ -24,6 +28,10 @@ export const isDesktopChrome = () => {
   const userAgent = navigator.userAgent;
 
   if (isMathWallet(userAgent)) {
+    return true;
+  }
+  
+  if (isBitKeep(userAgent)) {
     return true;
   }
 
