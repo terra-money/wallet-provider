@@ -317,7 +317,7 @@ function Component() {
 
 <details>
 
-<summary><code>useConnectedWallet()</code></summary>
+<summary><code>Chrome Extension compatible wallet development guide</code></summary>
 
 # 1. Create dApp for test
 
