@@ -319,7 +319,7 @@ function Component() {
 
 <summary><code>Chrome Extension compatible wallet development guide</code></summary>
 
-# 1. Create dApp for test
+### 1. Create dApp for test
 
 There is the `dangerously__chromeExtensionCompatibleBrowserCheck` option to allow you to create a test environment for
 wallet development.
@@ -337,7 +337,7 @@ extension.
 </WalletProvider>
 ```
 
-# 2. Register your wallet as default allow
+### 2. Register your wallet as default allow
 
 If your wallet has been developed,
 
