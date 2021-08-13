@@ -45,6 +45,9 @@ export function StaticWalletProvider({
       recheckStatus: () => {
         throw new Error('not implemented!');
       },
+      isChromeExtensionCompatibleBrowser: () => {
+        throw new Error('not implemented!');
+      },
     };
   }, [
     availableConnectTypes,

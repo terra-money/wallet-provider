@@ -24,6 +24,7 @@ export function ExtensionNetworkOnlyWalletProvider({
       new ChromeExtensionController({
         defaultNetwork,
         enableWalletConnection: false,
+        dangerously__chromeExtensionCompatibleBrowserCheck: () => false,
       }),
   );
 
@@ -68,6 +69,9 @@ export function ExtensionNetworkOnlyWalletProvider({
       },
       post,
       recheckStatus: controller.recheckStatus,
+      isChromeExtensionCompatibleBrowser: () => {
+        throw new Error('not implemented!');
+      },
     };
   }, [controller.recheckStatus, network, post]);
 

@@ -6,12 +6,12 @@ import { extensionFixer, FixedExtension } from './extensionFixer';
 import { clearStore, getStoredAddress, storeAddress } from './storage';
 import { ChromeExtensionStatus } from './types';
 
-const desktopChrome: boolean =
-  typeof window !== 'undefined' && isDesktopChrome() === true;
-
 export interface ChromeExtensionControllerOptions {
   defaultNetwork: NetworkInfo;
   enableWalletConnection: boolean;
+  dangerously__chromeExtensionCompatibleBrowserCheck: (
+    userAgent: string,
+  ) => boolean;
 }
 
 export class ChromeExtensionController {
@@ -21,10 +21,19 @@ export class ChromeExtensionController {
   readonly _extension: FixedExtension;
 
   private doneFirstCheck = false;
+  private readonly isDesktopChrome: boolean;
 
   constructor(readonly options: ChromeExtensionControllerOptions) {
+    this.isDesktopChrome =
+      typeof window !== 'undefined' &&
+      isDesktopChrome(
+        options.dangerously__chromeExtensionCompatibleBrowserCheck(
+          navigator.userAgent,
+        ),
+      );
+
     this._status = new BehaviorSubject<ChromeExtensionStatus>(
-      desktopChrome
+      this.isDesktopChrome
         ? ChromeExtensionStatus.INITIALIZING
         : ChromeExtensionStatus.UNAVAILABLE,
     );
@@ -37,7 +46,7 @@ export class ChromeExtensionController {
 
     this._extension = extensionFixer(new Extension());
 
-    if (desktopChrome) {
+    if (this.isDesktopChrome) {
       this.checkStatus(true);
     }
   }
@@ -56,7 +65,7 @@ export class ChromeExtensionController {
 
   checkStatus = async (waitingExtensionScriptInjection: boolean = false) => {
     // do not check if browser isn't a chrome
-    if (!desktopChrome) {
+    if (!this.isDesktopChrome) {
       return;
     }
 
