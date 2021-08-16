@@ -17,6 +17,7 @@ export function WalletProvider({
   pushServerOpts,
   createReadonlyWalletSession,
   waitingChromeExtensionInstallCheck,
+  dangerously__chromeExtensionCompatibleBrowserCheck,
 }: WalletProviderProps) {
   const [controller] = useState<WalletController>(
     () =>
@@ -27,15 +28,18 @@ export function WalletProvider({
         pushServerOpts,
         createReadonlyWalletSession,
         waitingChromeExtensionInstallCheck,
+        dangerously__chromeExtensionCompatibleBrowserCheck,
       }),
   );
 
   const [availableConnectTypes, setAvailableConnectTypes] = useState<
     ConnectType[]
   >(() => []);
+
   const [availableInstallTypes, setAvailableInstallTypes] = useState<
     ConnectType[]
   >(() => []);
+
   const [states, setStates] = useState<WalletStates>(() => ({
     status: WalletStatus.INITIALIZING,
     network: defaultNetwork,
@@ -87,6 +91,8 @@ export function WalletProvider({
       disconnect: controller.disconnect,
       post: controller.post,
       recheckStatus: controller.recheckStatus,
+      isChromeExtensionCompatibleBrowser:
+        controller.isChromeExtensionCompatibleBrowser,
     };
   }, [
     availableConnectTypes,
@@ -97,6 +103,7 @@ export function WalletProvider({
     controller.install,
     controller.post,
     controller.recheckStatus,
+    controller.isChromeExtensionCompatibleBrowser,
     states,
   ]);
 

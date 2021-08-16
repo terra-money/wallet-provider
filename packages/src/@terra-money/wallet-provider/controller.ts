@@ -50,6 +50,7 @@ import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import {
   CHROME_EXTENSION_INSTALL_URL,
+  DEFAULT_CHROME_EXTENSION_COMPATIBLE_BROWSER_CHECK,
   WEB_EXTENSION_CONNECTED_KEY,
 } from './env';
 import { TxResult } from './tx';
@@ -107,6 +108,20 @@ export interface WalletControllerOptions
    * @default 1000 * 3 miliseconds
    */
   waitingChromeExtensionInstallCheck?: number;
+
+  /**
+   * ⚠️ This API is an option for wallet developers. Please don't use dApp developers.
+   *
+   * @example
+   * ```
+   * <WalletProvider dangerously__chromeExtensionCompatibleBrowserCheck={(userAgent: string) => {
+   *   return /MyWallet\//.test(userAgent);
+   * }}>
+   * ```
+   */
+  dangerously__chromeExtensionCompatibleBrowserCheck?: (
+    userAgent: string,
+  ) => boolean;
 }
 
 const defaultWaitingChromeExtensionInstallCheck = 1000 * 3;
@@ -156,6 +171,7 @@ export class WalletController {
     checkAvailableExtension(
       options.waitingChromeExtensionInstallCheck ??
         defaultWaitingChromeExtensionInstallCheck,
+      this.isChromeExtensionCompatibleBrowser(),
     ).then((extensionType) => {
       if (extensionType === ConnectType.WEBEXTENSION) {
         this._availableConnectTypes.next([
@@ -202,6 +218,9 @@ export class WalletController {
         this.chromeExtension = new ChromeExtensionController({
           enableWalletConnection: true,
           defaultNetwork: options.defaultNetwork,
+          dangerously__chromeExtensionCompatibleBrowserCheck:
+            options.dangerously__chromeExtensionCompatibleBrowserCheck ??
+            DEFAULT_CHROME_EXTENSION_COMPATIBLE_BROWSER_CHECK,
         });
 
         const subscription = this.chromeExtension
@@ -232,7 +251,7 @@ export class WalletController {
             }
           });
       } else {
-        if (isDesktopChrome()) {
+        if (isDesktopChrome(this.isChromeExtensionCompatibleBrowser())) {
           this._availableInstallTypes.next([ConnectType.CHROME_EXTENSION]);
         }
 
@@ -267,6 +286,14 @@ export class WalletController {
       this.updateStates(this._notConnected);
     }
   }
+
+  /** @see Wallet#isChromeExtensionCompatibleBrowser */
+  isChromeExtensionCompatibleBrowser = (): boolean => {
+    return (
+      this.options.dangerously__chromeExtensionCompatibleBrowserCheck ??
+      DEFAULT_CHROME_EXTENSION_COMPATIBLE_BROWSER_CHECK
+    )(navigator.userAgent);
+  };
 
   /** @see Wallet#availableConnectTypes */
   availableConnectTypes = (): Observable<ConnectType[]> => {

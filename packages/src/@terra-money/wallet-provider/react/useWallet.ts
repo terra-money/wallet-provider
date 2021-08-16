@@ -167,6 +167,13 @@ export interface Wallet {
     tx: CreateTxOptions,
     txTarget?: { network?: NetworkInfo; terraAddress?: string },
   ) => Promise<TxResult>;
+
+  /**
+   * Some mobile wallet emulates the behavior of chrome extension.
+   * It confirms that the current connection environment is such a wallet.
+   * (If you are running connect() by checking availableConnectType, you do not need to use this API.)
+   */
+  isChromeExtensionCompatibleBrowser: () => boolean;
 }
 
 // @ts-ignore

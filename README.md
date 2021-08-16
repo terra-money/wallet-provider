@@ -312,3 +312,45 @@ function Component() {
 # Other documents
 
 - [한국어 (Notion)](https://www.notion.so/terramoneyteam/terra-money-wallet-provider-0-14-0-49a62205608c4e0085e1c8f5361ccc46)
+
+# For Chrome Extension compatible wallet developers
+
+<details>
+
+<summary><code>Chrome Extension compatible wallet development guide</code></summary>
+
+### 1. Create dApp for test
+
+There is the `dangerously__chromeExtensionCompatibleBrowserCheck` option to allow you to create a test environment for
+wallet development.
+
+By declaring the `dangerously__chromeExtensionCompatibleBrowserCheck`, you can make your wallet recognized as the chrome
+extension.
+
+```jsx
+<WalletProvider
+  dangerously__chromeExtensionCompatibleBrowserCheck={(userAgent) =>
+    /YourWallet/.test(userAgent)
+  }
+>
+  ...
+</WalletProvider>
+```
+
+### 2. Register your wallet as default allow
+
+If your wallet has been developed,
+
+Please send me your wallet App link (Testlight version is OK)
+
+And send me Pull Request by modifying `DEFAULT_CHROME_EXTENSION_COMPATIBLE_BROWSER_CHECK` in
+the `packages/src/@terra-money/wallet-provider/env.ts` file. (or just make an issue is OK)
+
+```diff
+export const DEFAULT_CHROME_EXTENSION_COMPATIBLE_BROWSER_CHECK = (userAgent: string) => {
+-  return /MathWallet\//.test(userAgent);
++  return /MathWallet\//.test(userAgent) || /YourWallet/.test(userAgent);
+}
+```
+
+</details>

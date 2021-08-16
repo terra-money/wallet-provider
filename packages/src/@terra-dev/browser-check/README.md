@@ -10,6 +10,9 @@
 import bowser from 'bowser';
 import MobileDetect from 'mobile-detect';
 
+/**
+ * @deprecated use instead of <WalletProvider dangerously__chromeExtensionCompatibleBrowserCheck={} />
+ */
 export function isMathWallet(userAgent: string) {
   return /MathWallet\//.test(userAgent);
 }
@@ -20,17 +23,19 @@ export const isMobile = () => {
   return !!mobileDetect.os();
 };
 
-export const isDesktopChrome = () => {
+export const isDesktopChrome = (
+  isChromeExtensionCompatibleBrowser: boolean,
+): boolean => {
   const userAgent = navigator.userAgent;
 
-  if (isMathWallet(userAgent)) {
+  if (isChromeExtensionCompatibleBrowser) {
     return true;
   }
 
   const browser = bowser.getParser(userAgent);
   const mobileDetect = new MobileDetect(navigator.userAgent);
 
-  return (
+  return !!(
     browser.satisfies({
       chrome: '>60',
       edge: '>80',
