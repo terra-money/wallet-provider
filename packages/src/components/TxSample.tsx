@@ -23,7 +23,7 @@ export function TxSample() {
       return;
     }
 
-    if (!connectedWallet.network.chainID.startsWith('tequila')) {
+    if (connectedWallet.network.chainID.startsWith('columbus')) {
       alert(`Please only execute this example on Testnet`);
       return;
     }
