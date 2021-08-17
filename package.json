@@ -22,10 +22,10 @@
     "@handbook/markdown-source-import": "^1.1.0",
     "@ssen/eslint-config": "^2.0.1",
     "@ssen/prettier-config": "^2.0.1",
-    "eslint": "^7.27.0",
-    "husky": "^6.0.0",
-    "jest": "^27.0.5",
-    "lint-staged": "^11.0.0",
-    "prettier": "^2.3.0"
+    "eslint": "^7.32.0",
+    "husky": "^7.0.1",
+    "jest": "^27.0.6",
+    "lint-staged": "^11.1.2",
+    "prettier": "^2.3.2"
   }
 }

@@ -2,6 +2,7 @@ import { isMobile } from '@terra-dev/browser-check';
 import { TerraWalletconnectQrcodeModal } from '@terra-dev/walletconnect-qrcode-modal';
 import { CreateTxOptions } from '@terra-money/terra.js';
 import Connector from '@walletconnect/core';
+import { selectRandomBridgeUrl } from '@walletconnect/core/dist/esm/url';
 import * as cryptoLib from '@walletconnect/iso-crypto';
 import {
   IPushServerOptions,
@@ -30,7 +31,7 @@ export interface WalletConnectControllerOptions {
    * @default
    * ```js
    * {
-   *   bridge: 'https://bridge.walletconnect.org',
+   *   bridge: selectRandomBridgeUrl(),
    *   qrcodeModal: new TerraWalletconnectQrcodeModal(),
    * }
    * ```
@@ -81,7 +82,7 @@ export function connect(
     options.connectorOpts?.qrcodeModal ?? new TerraWalletconnectQrcodeModal();
 
   const connectorOpts: IWalletConnectOptions = {
-    bridge: 'https://bridge.walletconnect.org',
+    bridge: selectRandomBridgeUrl(),
     qrcodeModal,
     ...options.connectorOpts,
   };
