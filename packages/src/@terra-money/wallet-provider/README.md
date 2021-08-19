@@ -313,6 +313,47 @@ function Component() {
 
 - [한국어 (Notion)](https://www.notion.so/terramoneyteam/terra-money-wallet-provider-0-14-0-49a62205608c4e0085e1c8f5361ccc46)
 
+# Known issues
+
+<details>
+
+<summary>terra.js version conflict</summary>
+
+Dependence on `terra.js` is set to `^1.8.0 || ^2.0.0`
+
+If your dependencies are like this,
+
+```json
+{
+  "dependencies": {
+    "@terra-money/terra.js": "^1.8.9",
+    "@terra-money/wallet-provider": "^2.0.0"
+  }
+}
+```
+
+For `npm`, the `terra.js` of `~/node_modules` tree will all be `1.8.9` or higher.
+
+However, if `yarn` is used, there is a problem that both `^1.8.0` and `^2.0.0` are installed (probably there is a problem that cannot handle the or).
+
+If `yarn` is used (including both classic and berry)
+
+```json
+{
+  "dependencies": {
+    "@terra-money/terra.js": "^1.8.9",
+    "@terra-money/wallet-provider": "^2.0.0"
+  },
+  "resolutions": {
+    "@terra-money/terra.js": "1.8.9"
+  }
+}
+```
+
+If you set `resolution` as above, all `terra.js` will be `^1.8.0`.
+
+</details>
+
 # For Chrome Extension compatible wallet developers
 
 <details>
