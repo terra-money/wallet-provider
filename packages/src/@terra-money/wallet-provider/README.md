@@ -334,7 +334,7 @@ If your dependencies are like this,
 
 For `npm`, the `terra.js` of `~/node_modules` tree will all be `1.8.9` or higher.
 
-However, if `yarn` is used, there is a problem that both `^1.8.0` and `^2.0.0` are installed (probably there is a problem that cannot handle the or).
+However, if `yarn` is used, there is a problem that both `^1.8.0` and `^2.0.0` are installed (probably there is a problem that cannot handle the `||`).
 
 If `yarn` is used (including both classic and berry)
 
