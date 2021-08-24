@@ -11,10 +11,10 @@ Use templates to get your projects started quickly
 If you want to test features quickly, you can simply run them on CodeSandbox without having to download Templates.
 
 - [Wallet Provider + Create-React-App](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/create-react-app)
-- [Wallet Provider + Next.js Template](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/next)
+- [Wallet Provider + Next.js](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/next)
 - Experimental
-  - [Wallet Provider + Vite.js Template](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/vite)
-  - [Wallet Controller Template](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/wallet-controller)
+  - [Wallet Provider + Vite.js](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/vite)
+  - [Wallet Controller](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/wallet-controller)
 
 And if you need to start your project from local computer, use the templates below. 👇
 
@@ -27,7 +27,7 @@ yarn install
 yarn start
 ```
 
-[Wallet Provider + Create-React-App](https://github.com/terra-money/wallet-provider/tree/main/templates/create-react-app)
+<https://github.com/terra-money/wallet-provider/tree/main/templates/create-react-app>
 
 ### Next.js
 
@@ -38,12 +38,12 @@ yarn install
 yarn run dev
 ```
 
-[Wallet Provider + Next.js Template](https://github.com/terra-money/wallet-provider/tree/main/templates/next)
+<https://github.com/terra-money/wallet-provider/tree/main/templates/next>
 
 ### Other templates (experimental)
 
-- [Wallet Provider + Vite.js Template](https://github.com/terra-money/wallet-provider/tree/main/templates/vite)
-- [Wallet Controller Template](https://github.com/terra-money/wallet-provider/tree/main/templates/wallet-controller)
+- [Wallet Provider + Vite.js](https://github.com/terra-money/wallet-provider/tree/main/templates/vite)
+- [Wallet Controller](https://github.com/terra-money/wallet-provider/tree/main/templates/wallet-controller)
 
 # Basic Usage
 
