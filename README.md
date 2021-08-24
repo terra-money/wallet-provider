@@ -327,6 +327,17 @@ function Component() {
 
 - [한국어 (Notion)](https://www.notion.so/terramoneyteam/terra-money-wallet-provider-0-14-0-49a62205608c4e0085e1c8f5361ccc46)
 
+# Trouble-shooting guide
+
+wallet-provider contains the original source codes in sourcemaps.
+
+<img src="https://raw.githubusercontent.com/terra-money/wallet-provider/main/readme-assets/trouble-shooting-guide.png" width="700" style="max-width: 100%" alt="Trouble-Shooting Guide" />
+
+You can check `src/@terra-money/wallet-provider/` in the Chrome Devtools / Sources Tab, and you can also use breakpoints
+here for debug.
+
+(It may not be visible depending on your development settings such as Webpack.)
+
 # Known issues
 
 <details>
@@ -348,7 +359,8 @@ If your dependencies are like this,
 
 For `npm`, the `terra.js` of `~/node_modules` tree will all be `1.8.9` or higher.
 
-However, if `yarn` is used, there is a problem that both `^1.8.0` and `^2.0.0` are installed (probably there is a problem that cannot handle the `||`).
+However, if `yarn` is used, there is a problem that both `^1.8.0` and `^2.0.0` are installed (probably there is a
+problem that cannot handle the `||`).
 
 If `yarn` is used (including both classic and berry)
 
