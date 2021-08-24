@@ -15,7 +15,8 @@ yarn install
 yarn start
 ```
 
-[Wallet Provider + Create-React-App Template](https://github.com/terra-money/wallet-provider/tree/main/templates/create-react-app)
+[Wallet Provider + Create-React-App](https://github.com/terra-money/wallet-provider/tree/main/templates/create-react-app)
+[Preview this template on the CodeSandbox](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/create-react-app)
 
 ### Next.js
 
@@ -27,11 +28,14 @@ yarn run dev
 ```
 
 [Wallet Provider + Next.js Template](https://github.com/terra-money/wallet-provider/tree/main/templates/next)
+[Preview this template on the CodeSandbox](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/next)
 
 ### Other templates (experimental)
 
 - [Wallet Provider + Vite.js Template](https://github.com/terra-money/wallet-provider/tree/main/templates/vite)
+  - [Preview this template on the CodeSandbox](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/vite)
 - [Wallet Controller Template](https://github.com/terra-money/wallet-provider/tree/main/templates/wallet-controller)
+  - [Preview this template on the CodeSandbox](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/wallet-controller)
 
 # Basic Usage
 
