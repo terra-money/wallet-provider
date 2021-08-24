@@ -6,6 +6,18 @@ Library to make React dApps easier using Terra Station Extension or Terra Statio
 
 Use templates to get your projects started quickly
 
+### Code Sandbox
+
+If you want to test features quickly, you can simply run them on CodeSandbox without having to download Templates.
+
+- [Wallet Provider + Create-React-App](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/create-react-app)
+- [Wallet Provider + Next.js Template](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/next)
+- Experimental
+  - [Wallet Provider + Vite.js Template](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/vite)
+  - [Wallet Controller Template](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/wallet-controller)
+
+And now you can start your project through the commands below. 👇
+
 ### Craete React App
 
 ```sh
@@ -15,8 +27,7 @@ yarn install
 yarn start
 ```
 
-- [Wallet Provider + Create-React-App](https://github.com/terra-money/wallet-provider/tree/main/templates/create-react-app)
-- [Preview this template on the CodeSandbox](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/create-react-app)
+[Wallet Provider + Create-React-App](https://github.com/terra-money/wallet-provider/tree/main/templates/create-react-app)
 
 ### Next.js
 
@@ -27,15 +38,12 @@ yarn install
 yarn run dev
 ```
 
-- [Wallet Provider + Next.js Template](https://github.com/terra-money/wallet-provider/tree/main/templates/next)
-- [Preview this template on the CodeSandbox](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/next)
+[Wallet Provider + Next.js Template](https://github.com/terra-money/wallet-provider/tree/main/templates/next)
 
 ### Other templates (experimental)
 
 - [Wallet Provider + Vite.js Template](https://github.com/terra-money/wallet-provider/tree/main/templates/vite)
-  - [Preview this template on the CodeSandbox](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/vite)
 - [Wallet Controller Template](https://github.com/terra-money/wallet-provider/tree/main/templates/wallet-controller)
-  - [Preview this template on the CodeSandbox](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/wallet-controller)
 
 # Basic Usage
 
