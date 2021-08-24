@@ -16,7 +16,7 @@ If you want to test features quickly, you can simply run them on CodeSandbox wit
   - [Wallet Provider + Vite.js Template](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/vite)
   - [Wallet Controller Template](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/wallet-controller)
 
-And now you can start your project through the commands below. 👇
+And if you need to start your project from local computer, use the templates below. 👇
 
 ### Craete React App
 
