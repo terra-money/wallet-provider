@@ -134,7 +134,7 @@ combineLatest([
         txPre.textContent = '';
 
         const send = () => {
-          if (!states.network.chainID.startsWith('tequila')) {
+          if (states.network.chainID.startsWith('columbus')) {
             alert(`Please only execute this example on Testnet`);
             return;
           }
