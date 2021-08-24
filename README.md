@@ -70,6 +70,8 @@ const testnet = {
   lcd: 'https://tequila-lcd.terra.dev',
 };
 
+// WalletConnect separates chainId by number.
+// Currently TerraStation Mobile uses 0 as Testnet, 1 as Mainnet.
 const walletConnectChainIds: Record<number, NetworkInfo> = {
   0: testnet,
   1: mainnet,
