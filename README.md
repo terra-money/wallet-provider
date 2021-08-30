@@ -88,7 +88,7 @@ ReactDOM.render(
 );
 ```
 
-First, you need to provider the `<WalletProvider>` at the top of your React App.
+First, you need to wrap your React App with the `<WalletProvider>` component.
 
 ```jsx
 import { useWallet } from '@terra-money/wallet-provider';
