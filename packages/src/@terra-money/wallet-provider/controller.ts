@@ -14,6 +14,13 @@ import {
 } from '@terra-dev/readonly-wallet';
 import { readonlyWalletModal } from '@terra-dev/readonly-wallet-modal';
 import {
+  ConnectType,
+  TxResult,
+  WalletInfo,
+  WalletStates,
+  WalletStatus,
+} from '@terra-dev/use-wallet';
+import {
   CreateTxFailed,
   NetworkInfo,
   Timeout,
@@ -53,8 +60,6 @@ import {
   DEFAULT_CHROME_EXTENSION_COMPATIBLE_BROWSER_CHECK,
   WEB_EXTENSION_CONNECTED_KEY,
 } from './env';
-import { TxResult } from './tx';
-import { ConnectType, WalletInfo, WalletStates, WalletStatus } from './types';
 import { checkAvailableExtension } from './utils/checkAvailableExtension';
 
 export interface WalletControllerOptions

@@ -1,7 +1,13 @@
+import {
+  ConnectType,
+  Wallet,
+  WalletContext,
+  WalletInfo,
+  WalletStates,
+  WalletStatus,
+} from '@terra-dev/use-wallet';
 import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { WalletController, WalletControllerOptions } from '../controller';
-import { ConnectType, WalletInfo, WalletStates, WalletStatus } from '../types';
-import { Wallet, WalletContext } from './useWallet';
 
 export interface WalletProviderProps extends WalletControllerOptions {
   children: ReactNode;

@@ -1,7 +1,12 @@
+import {
+  ConnectType,
+  Wallet,
+  WalletContext,
+  WalletInfo,
+  WalletStatus,
+} from '@terra-dev/use-wallet';
 import { NetworkInfo } from '@terra-dev/wallet-types';
 import React, { ReactNode, useMemo } from 'react';
-import { ConnectType, WalletInfo, WalletStatus } from '../types';
-import { Wallet, WalletContext } from './useWallet';
 
 export interface StaticWalletProviderProps {
   children: ReactNode;

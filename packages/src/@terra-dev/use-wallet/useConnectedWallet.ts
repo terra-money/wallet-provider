@@ -1,8 +1,8 @@
 import { NetworkInfo } from '@terra-dev/wallet-types';
 import { AccAddress, CreateTxOptions } from '@terra-money/terra.js';
 import { useMemo } from 'react';
-import { TxResult } from '../tx';
-import { ConnectType, WalletStatus } from '../types';
+import { TxResult } from './tx';
+import { ConnectType, WalletStatus } from './types';
 import { useWallet } from './useWallet';
 
 type HumanAddr = string & { __type: 'HumanAddr' };

@@ -1,4 +1,5 @@
 import { ChromeExtensionController } from '@terra-dev/chrome-extension';
+import { Wallet, WalletContext, WalletStatus } from '@terra-dev/use-wallet';
 import { NetworkInfo } from '@terra-dev/wallet-types';
 import React, {
   ReactNode,
@@ -7,8 +8,6 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { WalletStatus } from '../types';
-import { Wallet, WalletContext } from './useWallet';
 
 export interface ExtensionNetworkOnlyWalletProviderProps {
   children: ReactNode;
