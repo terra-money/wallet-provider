@@ -8,6 +8,10 @@ export function isMathWallet(userAgent: string) {
   return /MathWallet\//.test(userAgent);
 }
 
+export function isBitKeep(userAgent: string) {
+  return /BitKeep\//.test(userAgent);
+}
+
 export const isMobile = () => {
   const mobileDetect = new MobileDetect(navigator.userAgent);
 
