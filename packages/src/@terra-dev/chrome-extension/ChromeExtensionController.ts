@@ -108,6 +108,7 @@ export class ChromeExtensionController {
       ) {
         this._status.next(ChromeExtensionStatus.WALLET_CONNECTED);
 
+        // TODO timer check?
         const connectResult = await this._extension.connect();
 
         // if address of extension is not same with the address of localStorage

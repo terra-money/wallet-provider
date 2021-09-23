@@ -35,7 +35,7 @@ export function useConnectedWallet(): ConnectedWallet | undefined {
           walletAddress: terraAddress as HumanAddr,
           design,
           post: (tx: CreateTxOptions) => {
-            return post(tx, { network, terraAddress });
+            return post(tx, { terraAddress });
           },
           availablePost:
             connectType === ConnectType.WEBEXTENSION ||

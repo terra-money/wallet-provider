@@ -151,7 +151,7 @@ export interface Wallet {
    * ```
    *
    * @param { CreateTxOptions } tx transaction data
-   * @param { { network?: NetworkInfo, terraAddress?: string } } txTarget - does not work at this time. for the future extension
+   * @param { { terraAddress?: string } } txTarget - does not work at this time. for the future extension
    *
    * @return { Promise<TxResult> }
    *
@@ -165,7 +165,7 @@ export interface Wallet {
    */
   post: (
     tx: CreateTxOptions,
-    txTarget?: { network?: NetworkInfo; terraAddress?: string },
+    txTarget?: { terraAddress?: string },
   ) => Promise<TxResult>;
 
   /**

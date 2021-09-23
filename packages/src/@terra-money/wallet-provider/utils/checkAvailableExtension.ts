@@ -21,7 +21,7 @@ export async function checkAvailableExtension(
         'head > meta[name="terra-webextension"]',
       );
 
-      if (meta?.getAttribute('connected') === 'true') {
+      if (typeof meta?.getAttribute('connected') === 'string') {
         resolve(ConnectType.WEBEXTENSION);
       } else if (window['isTerraExtensionAvailable'] === true) {
         resolve(ConnectType.CHROME_EXTENSION);

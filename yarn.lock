@@ -3155,6 +3155,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@terra-dev/web-extension@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@terra-dev/web-extension@npm:0.6.0"
+  dependencies:
+    "@terra-money/terra.js": ^1.8.0 || ^2.0.0
+    bowser: ^2.11.0
+    rxjs: ^7.3.0
+  checksum: fa00e52b65647763f164c580ffd4b03acf2aca3c3343d522ee644ebe5f85db4260d5bacf33cdcfb25dc2ad5f49e6388004158a858a4294c416f9c567bc6eade5
+  languageName: node
+  linkType: hard
+
 "@terra-money/key-utils@npm:^1.0.2":
   version: 1.0.2
   resolution: "@terra-money/key-utils@npm:1.0.2"
@@ -13746,7 +13757,7 @@ fsevents@^1.2.7:
   dependencies:
     "@sentry/browser": ^6.11.0
     "@sentry/tracing": ^6.11.0
-    "@terra-dev/web-extension": ^0.5.2
+    "@terra-dev/web-extension": ^0.6.0
     "@terra-money/terra.js": ^2.0.1
     "@testing-library/jest-dom": ^5.14.1
     "@types/jest": ^26.0.24

@@ -430,7 +430,7 @@ export class WalletController {
   post = async (
     tx: CreateTxOptions,
     // TODO not work at this time. for the future extension
-    txTarget: { network?: NetworkInfo; terraAddress?: string } = {},
+    txTarget: { terraAddress?: string } = {},
   ): Promise<TxResult> => {
     // ---------------------------------------------
     // chrome extension - legacy extension
@@ -497,9 +497,6 @@ export class WalletController {
         const subscription = this.webExtension
           .post({
             terraAddress: focusedWallet.terraAddress,
-            network:
-              { ...webExtensionStates.network, ...txTarget.network } ??
-              webExtensionStates.network,
             tx,
           })
           .subscribe({
