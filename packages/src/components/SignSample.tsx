@@ -99,7 +99,7 @@ export function SignSample() {
   return (
     <div>
       <h1>Sign Sample</h1>
-      {connectedWallet?.availablePost && !signResult && !txError && (
+      {connectedWallet?.availableSign && !signResult && !txError && (
         <button onClick={() => send()}>Send 1USD to {toAddress}</button>
       )}
       {signResult && (
@@ -125,7 +125,7 @@ export function SignSample() {
         </>
       )}
       {!connectedWallet && <p>Wallet not connected!</p>}
-      {connectedWallet && !connectedWallet.availablePost && (
+      {connectedWallet && !connectedWallet.availableSign && (
         <p>Can not sign Tx</p>
       )}
     </div>
