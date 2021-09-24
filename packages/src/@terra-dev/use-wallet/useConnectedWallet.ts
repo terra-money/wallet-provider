@@ -1,4 +1,4 @@
-import { NetworkInfo } from '@terra-dev/wallet-types';
+import { NetworkInfo, SignResult } from '@terra-dev/wallet-types';
 import { AccAddress, CreateTxOptions } from '@terra-money/terra.js';
 import { useMemo } from 'react';
 import { TxResult } from './tx';
@@ -13,12 +13,14 @@ export interface ConnectedWallet {
   walletAddress: HumanAddr;
   design?: string;
   post: (tx: CreateTxOptions) => Promise<TxResult>;
+  sign: (tx: CreateTxOptions) => Promise<SignResult>;
   availablePost: boolean;
+  availableSign: boolean;
   connectType: ConnectType;
 }
 
 export function useConnectedWallet(): ConnectedWallet | undefined {
-  const { status, network, wallets, post } = useWallet();
+  const { status, network, wallets, post, sign } = useWallet();
 
   const value = useMemo<ConnectedWallet | undefined>(() => {
     try {
@@ -37,10 +39,14 @@ export function useConnectedWallet(): ConnectedWallet | undefined {
           post: (tx: CreateTxOptions) => {
             return post(tx, { terraAddress });
           },
+          sign: (tx: CreateTxOptions) => {
+            return sign(tx, { terraAddress });
+          },
           availablePost:
             connectType === ConnectType.WEBEXTENSION ||
             connectType === ConnectType.CHROME_EXTENSION ||
             connectType === ConnectType.WALLETCONNECT,
+          availableSign: connectType === ConnectType.CHROME_EXTENSION,
           connectType,
         };
       } else {
@@ -49,7 +55,7 @@ export function useConnectedWallet(): ConnectedWallet | undefined {
     } catch {
       return undefined;
     }
-  }, [network, post, status, wallets]);
+  }, [network, post, sign, status, wallets]);
 
   return value;
 }

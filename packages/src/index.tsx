@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import { ConnectSample } from './components/ConnectSample';
 import { QuerySample } from './components/QuerySample';
 import { TxSample } from './components/TxSample';
+import { SignSample } from './components/SignSample';
 
 const mainnet = {
   name: 'mainnet',
@@ -30,6 +31,7 @@ function App() {
       <ConnectSample />
       <QuerySample />
       <TxSample />
+      <SignSample />
     </main>
   );
 }

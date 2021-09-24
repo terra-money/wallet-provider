@@ -1,4 +1,4 @@
-import { NetworkInfo } from '@terra-dev/wallet-types';
+import { NetworkInfo, SignResult } from '@terra-dev/wallet-types';
 import { CreateTxOptions } from '@terra-money/terra.js';
 import { Consumer, Context, createContext, useContext } from 'react';
 import { TxResult } from './tx';
@@ -167,6 +167,68 @@ export interface Wallet {
     tx: CreateTxOptions,
     txTarget?: { terraAddress?: string },
   ) => Promise<TxResult>;
+
+  /**
+   * sign transaction
+   *
+   * @example
+   * ```
+   * const { sign } = useWallet()
+   *
+   * const callback = useCallback(async () => {
+   *   try {
+   *    const result: SignResult = await sign({...CreateTxOptions})
+   *
+   *    // Broadcast SignResult
+   *    const { signature, public_key, stdSignMsgData } = result.result
+   *
+   *    const sig = StdSignature.fromData({
+   *      signature,
+   *      pub_key: {
+   *        type: 'tendermint/PubKeySecp256k1',
+   *        value: public_key,
+   *      },
+   *    })
+   *
+   *    const stdSignMsg = StdSignMsg.fromData(stdSignMsgData)
+   *
+   *    const lcd = new LCDClient({
+   *      chainID: connectedWallet.network.chainID,
+   *      URL: connectedWallet.network.lcd,
+   *    })
+   *
+   *    const txResult = await lcd.tx.broadcastSync(
+   *      new StdTx(stdSignMsg.msgs, stdSignMsg.fee, [sig], stdSignMsg.memo),
+   *    )
+   *
+   *    // DO SOMETHING...
+   *   } catch (error) {
+   *     if (error instanceof UserDenied) {
+   *       // DO SOMETHING...
+   *     } else {
+   *       // DO SOMETHING...
+   *     }
+   *   }
+   * }, [])
+   * ```
+   *
+   * @param { CreateTxOptions } tx transaction data
+   * @param { { terraAddress?: string } } txTarget - does not work at this time. for the future extension
+   *
+   * @return { Promise<SignResult> }
+   *
+   * @throws { UserDenied } user denied the tx
+   * @throws { CreateTxFailed } did not create txhash (error dose not broadcasted)
+   * @throws { TxFailed } created txhash (error broadcated)
+   * @throws { Timeout } user does not act anything in specific time
+   * @throws { TxUnspecifiedError } unknown error
+   *
+   * @see WalletController#sign
+   */
+  sign: (
+    tx: CreateTxOptions,
+    txTarget?: { terraAddress?: string },
+  ) => Promise<SignResult>;
 
   /**
    * Some mobile wallet emulates the behavior of chrome extension.

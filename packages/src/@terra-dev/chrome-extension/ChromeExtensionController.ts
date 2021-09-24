@@ -170,6 +170,12 @@ export class ChromeExtensionController {
   ): Promise<{ name: string; payload: Payload }> => {
     return this._extension.post(data);
   };
+
+  sign = <SendData extends {}, Payload extends {}>(
+    data: SendData,
+  ): Promise<{ name: string; payload: Payload }> => {
+    return this._extension.sign(data);
+  };
 }
 
 async function intervalCheck(

@@ -8,11 +8,13 @@ import {
 
 type ConnectResponse = { address?: string };
 type PostResponse = any;
+type SignResponse = any;
 type InfoResponse = NetworkInfo;
 
 export interface FixedExtension {
   isAvailable: () => boolean;
   post: (data: object) => Promise<PostResponse>;
+  sign: (data: object) => Promise<SignResponse>;
   info: () => Promise<InfoResponse>;
   connect: () => Promise<ConnectResponse>;
   inTransactionProgress: () => boolean;
@@ -51,6 +53,11 @@ export function extensionFixer(extension: Extension): FixedExtension {
     [(data: any) => void, (error: any) => void]
   >();
 
+  const signResolvers = new Map<
+    number,
+    [(data: any) => void, (error: any) => void]
+  >();
+
   const infoResolvers = new Set<[(data: any) => void, (error: any) => void]>();
 
   const connectResolvers = new Set<
@@ -77,6 +84,30 @@ export function extensionFixer(extension: Extension): FixedExtension {
     postResolvers.delete(payload.id);
 
     if (postResolvers.size === 0) {
+      _inTransactionProgress = false;
+    }
+  });
+
+  extension.on('onSign', (result) => {
+    if (!result) return;
+
+    const { error, ...payload } = result;
+
+    if (!signResolvers.has(payload.id)) {
+      return;
+    }
+
+    const [resolve, reject] = signResolvers.get(payload.id)!;
+
+    if (!payload.success) {
+      reject(toExplicitError(error));
+    } else if (resolve) {
+      resolve({ name: 'onSign', payload });
+    }
+
+    signResolvers.delete(payload.id);
+
+    if (signResolvers.size === 0) {
       _inTransactionProgress = false;
     }
   });
@@ -134,6 +165,29 @@ export function extensionFixer(extension: Extension): FixedExtension {
     });
   }
 
+  function sign(data: object) {
+    return new Promise<SignResponse>((...resolver) => {
+      _inTransactionProgress = true;
+
+      const id = extension.sign({
+        ...(data as any),
+        purgeQueue: true,
+      });
+
+      signResolvers.set(id, resolver);
+
+      setTimeout(() => {
+        if (signResolvers.has(id)) {
+          signResolvers.delete(id);
+
+          if (signResolvers.size === 0) {
+            _inTransactionProgress = false;
+          }
+        }
+      }, 1000 * 120);
+    });
+  }
+
   function connect() {
     return new Promise<ConnectResponse>((...resolver) => {
       connectResolvers.add(resolver);
@@ -158,6 +212,7 @@ export function extensionFixer(extension: Extension): FixedExtension {
 
   return {
     post,
+    sign,
     connect,
     info,
     isAvailable,
