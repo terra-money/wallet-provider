@@ -4,11 +4,11 @@ Library to make React dApps easier using Terra Station Extension or Terra Statio
 
 # Important Notice for Columnus-5.
 
-I added an API called `getChainOptions()` to change the network of Columnbus-4 and Columnbus-5.
+I added an API `getChainOptions()` for upgrade the network Columnbus-4 to Columnbus-5.
 
 This API automatically processes `defaultNetwork` and `walletConnectChainIds`, which were previously manually entered.
 
-Please refer to the code below and update it. This feature is supported in `2.1.0` and above.
+Please refer to the code below and update it. This feature is supported in `2.1.0` and higher.
 
 ```diff
 - import { WalletProvider } from '@terra-money/wallet-provider';
