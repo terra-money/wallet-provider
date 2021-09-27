@@ -20,7 +20,7 @@ import React, { useCallback, useState } from 'react';
 
 const toAddress = 'terra12hnhh5vtyg5juqnzm43970nh4fw42pt27nw9g9';
 
-export function SignSample() {
+export default function SignSample() {
   const [signResult, setSignResult] = useState<SignResult | null>(null);
   const [txResult, setTxResult] = useState<SyncTxBroadcastResult | null>(null);
   const [txError, setTxError] = useState<string | null>(null);
