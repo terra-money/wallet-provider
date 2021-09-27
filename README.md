@@ -54,38 +54,20 @@ import {
   NetworkInfo,
   WalletProvider,
   WalletStatus,
+  getChainOptions,
 } from '@terra-money/wallet-provider';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-const mainnet = {
-  name: 'mainnet',
-  chainID: 'columbus-4',
-  lcd: 'https://lcd.terra.dev',
-};
-
-const testnet = {
-  name: 'testnet',
-  chainID: 'tequila-0004',
-  lcd: 'https://tequila-lcd.terra.dev',
-};
-
-// WalletConnect separates chainId by number.
-// Currently TerraStation Mobile uses 0 as Testnet, 1 as Mainnet.
-const walletConnectChainIds: Record<number, NetworkInfo> = {
-  0: testnet,
-  1: mainnet,
-};
-
-ReactDOM.render(
-  <WalletProvider
-    defaultNetwork={mainnet}
-    walletConnectChainIds={walletConnectChainIds}
-  >
-    <YOUR_APP />
-  </WalletProvider>,
-  document.getElementById('root'),
-);
+// getChainOptions(): Promise<{ defaultNetwork, walletConnectChainIds }>
+getChainOptions().then((chainOptions) => {
+  ReactDOM.render(
+    <WalletProvider {...chainOptions}>
+      <YOUR_APP />
+    </WalletProvider>,
+    document.getElementById('root'),
+  );
+});
 ```
 
 First, you need to provider the `<WalletProvider>` at the top of your React App.
