@@ -2,6 +2,55 @@
 
 Library to make React dApps easier using Terra Station Extension or Terra Station Mobile.
 
+# Important Notice for Columnus-5.
+
+We added an API called getChain Options() to change the network of Columnbus-4 and Columnbus-5.
+
+This API automatically processes defaultNetwork and walletConnectChainIds, which were previously manually entered.
+
+Please refer to the code below and update it. This feature is supported in 2.1.0 and above.
+
+```diff
+- import { WalletProvider } from '@terra-money/wallet-provider';
+- const mainnet = {
+-   name: 'mainnet',
+-   chainID: 'columbus-4',
+-   lcd: 'https://lcd.terra.dev',
+- };
+-
+- const testnet = {
+-   name: 'testnet',
+-   chainID: 'tequila-0004',
+-   lcd: 'https://tequila-lcd.terra.dev',
+- };
+-
+- const walletConnectChainIds: Record<number, NetworkInfo> = {
+-   0: testnet,
+-   1: mainnet,
+- };
+-
+- ReactDOM.render(
+-   <WalletProvider
+-     defaultNetwork={mainnet}
+-     walletConnectChainIds={walletConnectChainIds}
+-   >
+-     <YourApp />
+-   </WalletProvider>,
+-   document.getElementById('root'),
+- );
+
++ import { getChainOptions, WalletProvider } from '@terra-money/wallet-provider';
++
++ getChainOptions().then((chainOptions) => {
++   ReactDOM.render(
++     <WalletProvider {...chainOptions}>
++       <App />
++     </WalletProvider>,
++     document.getElementById('root'),
++   );
++ });
+```
+
 # Quick Start
 
 Use templates to get your projects started quickly
