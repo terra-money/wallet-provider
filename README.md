@@ -4,6 +4,8 @@ Library to make React dApps easier using Terra Station Extension or Terra Statio
 
 # Important Notice for Columnus-5.
 
+### Use `getChainOptions()`
+
 I added an API `getChainOptions()` for upgrade the network Columnbus-4 to Columnbus-5.
 
 This API automatically processes `defaultNetwork` and `walletConnectChainIds`, which were previously manually entered.
@@ -50,6 +52,11 @@ Please refer to the code below and update it. This feature is supported in `2.1.
 +   );
 + });
 ```
+
+### `terra.js` upgrade timing
+
+- Before Col-5 upgrade : Use `^1.8.x`
+- After Col-5 upgrade : Use `latest` (currently `2.0.11`)
 
 # Quick Start
 
