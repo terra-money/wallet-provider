@@ -56,7 +56,8 @@ Please refer to the code below and update it. This feature is supported in `2.1.
 ### `terra.js` upgrade timing
 
 - Before Col-5 upgrade : Use `^1.8.x`
-- After Col-5 upgrade : Use `latest` (currently `2.0.11`)
+    - For `bombay` test : Use `latest` (currently `2.0.11`)
+- After Col-5 upgrade : Use `latest` 
 
 # Quick Start
 
