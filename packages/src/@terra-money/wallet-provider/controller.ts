@@ -10,9 +10,9 @@ import {
   connect as reConnect,
   connectIfSessionExists as reConnectIfSessionExists,
   ReadonlyWalletController,
+  readonlyWalletModal,
   ReadonlyWalletSession,
 } from '@terra-dev/readonly-wallet';
-import { readonlyWalletModal } from '@terra-dev/readonly-wallet-modal';
 import {
   ConnectType,
   TxResult,
