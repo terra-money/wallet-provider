@@ -66,11 +66,15 @@ import { checkAvailableExtension } from './utils/checkAvailableExtension';
 export interface WalletControllerOptions
   extends WalletConnectControllerOptions {
   /**
+   * ⚠️ Don't hardcoding this, use getChain Options()
+   *
    * fallback network if controller is not connected
    */
   defaultNetwork: NetworkInfo;
 
   /**
+   * ⚠️ Don't hardcoding this, use getChain Options()
+   *
    * for walletconnect
    *
    * The network rules passed by the Terra Station Mobile are 0 is testnet, 1 is mainnet.
@@ -81,14 +85,14 @@ export interface WalletControllerOptions
    * ```
    * const mainnet: NetworkInfo = {
    *  name: 'mainnet',
-   *  chainID: 'columbus-4',
+   *  chainID: 'columbus-5',
    *  lcd: 'https://lcd.terra.dev',
    * }
    *
    * const testnet: NetworkInfo = {
    *  name: 'testnet',
-   *  chainID: 'tequila-0004',
-   *  lcd: 'https://tequila-lcd.terra.dev',
+   *  chainID: 'bombay-12',
+   *  lcd: 'https://bombay-lcd.terra.dev',
    * }
    *
    * const walletConnectChainIds: Record<number, NetworkInfo> = {

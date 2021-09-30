@@ -13,10 +13,9 @@ export type WalletControllerChainOptions = Pick<
   'defaultNetwork' | 'walletConnectChainIds'
 >;
 
-// TODO update to columnbus-5
 const FALLBACK_MAINNET = {
   name: 'mainnet',
-  chainID: 'columbus-4',
+  chainID: 'columbus-5',
   lcd: 'https://lcd.terra.dev',
 };
 
@@ -26,12 +25,7 @@ const FALLBACK: WalletControllerChainOptions = {
     1: FALLBACK_MAINNET,
     0: {
       name: 'testnet',
-      chainID: 'tequila-0004',
-      lcd: 'https://tequila-lcd.terra.dev',
-    },
-    2: {
-      name: 'bombay',
-      chainID: 'bombay-11',
+      chainID: 'bombay-12',
       lcd: 'https://bombay-lcd.terra.dev',
     },
   },
@@ -51,9 +45,6 @@ export async function getChainOptions(): Promise<WalletControllerChainOptions> {
           result[1] = network;
         } else if (!result[0] && network.name === 'testnet') {
           result[0] = network;
-        } else if (!result[2] && network.name === 'bombay') {
-          // TODO remove bombay
-          result[2] = network;
         }
         return result;
       }, {} as Record<number, NetworkInfo>);
