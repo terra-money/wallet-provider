@@ -30,7 +30,7 @@ export interface WalletConnectControllerOptions {
    * @default
    * ```js
    * {
-   *   bridge: 'https://tequila-walletconnect.terra.dev/',
+   *   bridge: 'https://walletconnect.terra.dev/',
    *   qrcodeModal: new TerraWalletconnectQrcodeModal(),
    * }
    * ```
@@ -81,7 +81,7 @@ export function connect(
     options.connectorOpts?.qrcodeModal ?? new TerraWalletconnectQrcodeModal();
 
   const connectorOpts: IWalletConnectOptions = {
-    bridge: 'https://tequila-walletconnect.terra.dev/',
+    bridge: 'https://walletconnect.terra.dev/',
     qrcodeModal,
     ...options.connectorOpts,
   };

@@ -4,7 +4,7 @@ export interface NetworkInfo {
   /** Network name (e.g. mainnet) */
   name: string;
 
-  /** chainID (e.g. columbus-4) */
+  /** chainID (e.g. columbus-5) */
   chainID: string;
 
   /** lcd endpoint (e.g. https://lcd.terra.dev) */
