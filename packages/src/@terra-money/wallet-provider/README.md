@@ -2,55 +2,6 @@
 
 Library to make React dApps easier using Terra Station Extension or Terra Station Mobile.
 
-# Important Notice for Columnus-5.
-
-I added an API called `getChainOptions()` to change the network of Columnbus-4 and Columnbus-5.
-
-This API automatically processes `defaultNetwork` and `walletConnectChainIds`, which were previously manually entered.
-
-Please refer to the code below and update it. This feature is supported in `2.1.0` and above.
-
-```diff
-- import { WalletProvider } from '@terra-money/wallet-provider';
-- const mainnet = {
--   name: 'mainnet',
--   chainID: 'columbus-4',
--   lcd: 'https://lcd.terra.dev',
-- };
--
-- const testnet = {
--   name: 'testnet',
--   chainID: 'tequila-0004',
--   lcd: 'https://tequila-lcd.terra.dev',
-- };
--
-- const walletConnectChainIds: Record<number, NetworkInfo> = {
--   0: testnet,
--   1: mainnet,
-- };
--
-- ReactDOM.render(
--   <WalletProvider
--     defaultNetwork={mainnet}
--     walletConnectChainIds={walletConnectChainIds}
--   >
--     <YourApp />
--   </WalletProvider>,
--   document.getElementById('root'),
-- );
-
-+ import { getChainOptions, WalletProvider } from '@terra-money/wallet-provider';
-+
-+ getChainOptions().then((chainOptions) => {
-+   ReactDOM.render(
-+     <WalletProvider {...chainOptions}>
-+       <App />
-+     </WalletProvider>,
-+     document.getElementById('root'),
-+   );
-+ });
-```
-
 # Quick Start
 
 Use templates to get your projects started quickly
@@ -163,14 +114,14 @@ import { WalletProvider, NetworkInfo } from '@terra-money/wallet-provider';
 // network information
 const mainnet: NetworkInfo = {
   name: 'mainnet',
-  chainID: 'columbus-4',
+  chainID: 'columbus-5',
   lcd: 'https://lcd.terra.dev',
 };
 
 const testnet: NetworkInfo = {
   name: 'testnet',
-  chainID: 'tequila-0004',
-  lcd: 'https://tequila-lcd.terra.dev',
+  chainID: 'bombay-12',
+  lcd: 'https://bombay-lcd.terra.dev',
 };
 
 // WalletConnect separates chainId by number.
@@ -179,6 +130,8 @@ const walletConnectChainIds: Record<number, NetworkInfo> = {
   0: testnet,
   1: mainnet,
 };
+
+// ⚠️ If there is no special reason, use `getChainOptions()` instead of `walletConnectChainIds` above.
 
 // Optional
 // If you need to modify the modal, such as changing the design, you can put it in,
@@ -368,48 +321,6 @@ You can check `src/@terra-money/wallet-provider/` in the Chrome Devtools / Sourc
 here for debug.
 
 (It may not be visible depending on your development settings such as Webpack.)
-
-# Known issues
-
-<details>
-
-<summary>terra.js version conflict</summary>
-
-Dependence on `terra.js` is set to `^1.8.0 || ^2.0.0`
-
-If your dependencies are like this,
-
-```json
-{
-  "dependencies": {
-    "@terra-money/terra.js": "^1.8.9",
-    "@terra-money/wallet-provider": "^2.0.0"
-  }
-}
-```
-
-For `npm`, the `terra.js` of `~/node_modules` tree will all be `1.8.9` or higher.
-
-However, if `yarn` is used, there is a problem that both `^1.8.0` and `^2.0.0` are installed (probably there is a
-problem that cannot handle the `||`).
-
-If `yarn` is used (including both classic and berry)
-
-```json
-{
-  "dependencies": {
-    "@terra-money/terra.js": "^1.8.9",
-    "@terra-money/wallet-provider": "^2.0.0"
-  },
-  "resolutions": {
-    "@terra-money/terra.js": "1.8.9"
-  }
-}
-```
-
-If you set `resolution` as above, all `terra.js` will be `^1.8.0`.
-
-</details>
 
 # For Chrome Extension compatible wallet developers
 

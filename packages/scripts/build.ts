@@ -36,7 +36,7 @@ build({
     }
     
     if ('@terra-money/terra.js' in dependencies) {
-      dependencies['@terra-money/terra.js'] = '^1.8.0 || ^2.0.0';
+      dependencies['@terra-money/terra.js'] = '^2.0.0';
     }
 
     //switch (packageName) {
