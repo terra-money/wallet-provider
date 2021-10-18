@@ -7,11 +7,11 @@ import {
   ChromeExtensionUnspecifiedError,
 } from '@terra-dev/chrome-extension';
 
-export { ChromeExtensionController };
-export type {
-  ChromeExtensionControllerOptions,
-  ChromeExtensionCreateTxFailed,
+export {
+  ChromeExtensionController,
   ChromeExtensionStatus,
+  ChromeExtensionCreateTxFailed,
   ChromeExtensionTxFailed,
   ChromeExtensionUnspecifiedError,
 };
+export type { ChromeExtensionControllerOptions };

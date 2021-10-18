@@ -16,18 +16,21 @@ import {
   WalletConnectUserDenied,
 } from '@terra-dev/walletconnect';
 
-export { connect, connectIfSessionExists };
-export type {
-  WalletConnectSession,
-  WalletConnectController,
-  WalletConnectControllerOptions,
+export {
+  connect,
+  connectIfSessionExists,
   WalletConnectCreateTxFailed,
   WalletConnectSessionStatus,
   WalletConnectTimeout,
   WalletConnectTxFailed,
-  WalletConnectTxResult,
   WalletConnectTxUnspecifiedError,
   WalletConnectUserDenied,
+};
+export type {
+  WalletConnectTxResult,
+  WalletConnectSession,
+  WalletConnectController,
+  WalletConnectControllerOptions,
   WalletConnectSessionConnected,
   WalletConnectSessionDisconnected,
   WalletConnectSessionRequested,
