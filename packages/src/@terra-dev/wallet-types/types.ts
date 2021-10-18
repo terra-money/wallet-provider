@@ -1,4 +1,4 @@
-import { CreateTxOptions, StdSignMsg } from '@terra-money/terra.js';
+import { CreateTxOptions, PublicKey, StdSignMsg } from '@terra-money/terra.js';
 
 export interface NetworkInfo {
   /** Network name (e.g. mainnet) */
@@ -22,7 +22,7 @@ export interface TxResult extends CreateTxOptions {
 
 export interface SignResult extends CreateTxOptions {
   result: {
-    public_key: string;
+    public_key: PublicKey.Data;
     recid: number;
     signature: string;
     stdSignMsgData: StdSignMsg.Data;

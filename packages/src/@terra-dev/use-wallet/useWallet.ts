@@ -184,10 +184,7 @@ export interface Wallet {
    *
    *    const sig = StdSignature.fromData({
    *      signature,
-   *      pub_key: {
-   *        type: 'tendermint/PubKeySecp256k1',
-   *        value: public_key,
-   *      },
+   *      pub_key: public_key,
    *    })
    *
    *    const stdSignMsg = StdSignMsg.fromData(stdSignMsgData)
