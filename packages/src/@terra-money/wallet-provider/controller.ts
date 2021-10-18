@@ -1,17 +1,4 @@
 import { isDesktopChrome } from '@terra-dev/browser-check';
-import {
-  ChromeExtensionController,
-  ChromeExtensionCreateTxFailed,
-  ChromeExtensionStatus,
-  ChromeExtensionTxFailed,
-  ChromeExtensionUnspecifiedError,
-} from '@terra-dev/chrome-extension';
-import {
-  connect as reConnect,
-  connectIfSessionExists as reConnectIfSessionExists,
-  ReadonlyWalletController,
-  ReadonlyWalletSession,
-} from '@terra-dev/readonly-wallet';
 import { readonlyWalletModal } from '@terra-dev/readonly-wallet-modal';
 import {
   ConnectType,
@@ -29,6 +16,37 @@ import {
   TxUnspecifiedError,
   UserDenied,
 } from '@terra-dev/wallet-types';
+import { WebConnectorController } from '@terra-dev/web-connector-controller';
+import {
+  WebConnectorCreateTxFailed,
+  WebConnectorStatusType,
+  WebConnectorTxFailed,
+  WebConnectorTxResult,
+  WebConnectorTxStatus,
+  WebConnectorUserDenied,
+} from '@terra-dev/web-connector-interface';
+import { AccAddress, CreateTxOptions } from '@terra-money/terra.js';
+import deepEqual from 'fast-deep-equal';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import {
+  CHROME_EXTENSION_INSTALL_URL,
+  DEFAULT_CHROME_EXTENSION_COMPATIBLE_BROWSER_CHECK,
+  WEB_EXTENSION_CONNECTED_KEY,
+} from './env';
+import {
+  ChromeExtensionController,
+  ChromeExtensionCreateTxFailed,
+  ChromeExtensionStatus,
+  ChromeExtensionTxFailed,
+  ChromeExtensionUnspecifiedError,
+} from './modules/chrome-extension';
+import {
+  connect as reConnect,
+  connectIfSessionExists as reConnectIfSessionExists,
+  ReadonlyWalletController,
+  ReadonlyWalletSession,
+} from './modules/readonly-wallet';
 import {
   connect as wcConnect,
   connectIfSessionExists as wcConnectIfSessionExists,
@@ -41,26 +59,7 @@ import {
   WalletConnectTxResult,
   WalletConnectTxUnspecifiedError,
   WalletConnectUserDenied,
-} from '@terra-dev/walletconnect';
-import {
-  WebExtensionController,
-  WebExtensionCreateTxFailed,
-  WebExtensionStatusType,
-  WebExtensionTxFailed,
-  WebExtensionTxProgress,
-  WebExtensionTxStatus,
-  WebExtensionTxSucceed,
-  WebExtensionUserDenied,
-} from '@terra-dev/web-extension';
-import { AccAddress, CreateTxOptions } from '@terra-money/terra.js';
-import deepEqual from 'fast-deep-equal';
-import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import {
-  CHROME_EXTENSION_INSTALL_URL,
-  DEFAULT_CHROME_EXTENSION_COMPATIBLE_BROWSER_CHECK,
-  WEB_EXTENSION_CONNECTED_KEY,
-} from './env';
+} from './modules/walletconnect';
 import { checkAvailableExtension } from './utils/checkAvailableExtension';
 
 export interface WalletControllerOptions
@@ -138,7 +137,7 @@ const defaultWaitingChromeExtensionInstallCheck = 1000 * 3;
 
 export class WalletController {
   private chromeExtension: ChromeExtensionController | null = null;
-  private webExtension: WebExtensionController | null = null;
+  private webConnector: WebConnectorController | null = null;
   private walletConnect: WalletConnectController | null = null;
   private readonlyWallet: ReadonlyWalletController | null = null;
 
@@ -183,21 +182,21 @@ export class WalletController {
         defaultWaitingChromeExtensionInstallCheck,
       this.isChromeExtensionCompatibleBrowser(),
     ).then((extensionType) => {
-      if (extensionType === ConnectType.WEBEXTENSION) {
+      if (extensionType === ConnectType.WEB_CONNECT) {
         this._availableConnectTypes.next([
           ConnectType.READONLY,
-          ConnectType.WEBEXTENSION,
+          ConnectType.WEB_CONNECT,
           ConnectType.WALLETCONNECT,
         ]);
 
-        this.webExtension = new WebExtensionController(window);
+        this.webConnector = new WebConnectorController(window);
 
-        const subscription = this.webExtension
+        const subscription = this.webConnector
           .status()
           .pipe(
             filter((webExtensionStatus) => {
               return (
-                webExtensionStatus.type !== WebExtensionStatusType.INITIALIZING
+                webExtensionStatus.type !== WebConnectorStatusType.INITIALIZING
               );
             }),
           )
@@ -205,7 +204,7 @@ export class WalletController {
             subscription.unsubscribe();
 
             if (
-              webExtensionStatus.type === WebExtensionStatusType.READY &&
+              webExtensionStatus.type === WebConnectorStatusType.READY &&
               localStorage.getItem(WEB_EXTENSION_CONNECTED_KEY) === 'true' &&
               !this.disableWalletConnect &&
               !this.disableReadonlyWallet
@@ -354,10 +353,10 @@ export class WalletController {
   install = (type: ConnectType) => {
     if (type === ConnectType.CHROME_EXTENSION) {
       window.open(CHROME_EXTENSION_INSTALL_URL, '_blank');
-    } else if (type === ConnectType.WEBEXTENSION) {
-      const webExtensionStatus = this.webExtension?.getLastStatus();
+    } else if (type === ConnectType.WEB_CONNECT) {
+      const webExtensionStatus = this.webConnector?.getLastStatus();
       if (
-        webExtensionStatus?.type === WebExtensionStatusType.NO_AVAILABLE &&
+        webExtensionStatus?.type === WebConnectorStatusType.NO_AVAILABLE &&
         webExtensionStatus.installLink
       ) {
         window.open(webExtensionStatus.installLink, '_blank');
@@ -395,7 +394,7 @@ export class WalletController {
           }
         });
         break;
-      case ConnectType.WEBEXTENSION:
+      case ConnectType.WEB_CONNECT:
         this.enableWebExtension();
         break;
       default:
@@ -475,12 +474,12 @@ export class WalletController {
     // ---------------------------------------------
     else if (this.disableWebExtension) {
       return new Promise<TxResult>((resolve, reject) => {
-        if (!this.webExtension) {
+        if (!this.webConnector) {
           reject(new Error(`webExtension instance not created!`));
           return;
         }
 
-        const webExtensionStates = this.webExtension.getLastStates();
+        const webExtensionStates = this.webConnector.getLastStates();
 
         if (!webExtensionStates) {
           reject(new Error(`webExtension.getLastStates() returns undefined!`));
@@ -499,17 +498,12 @@ export class WalletController {
             ) ?? webExtensionStates.wallets[0]
           : webExtensionStates.wallets[0];
 
-        const subscription = this.webExtension
-          .post({
-            terraAddress: focusedWallet.terraAddress,
-            tx,
-          })
+        const subscription = this.webConnector
+          .post(focusedWallet.terraAddress, tx)
           .subscribe({
-            next: (
-              extensionTxResult: WebExtensionTxProgress | WebExtensionTxSucceed,
-            ) => {
+            next: (extensionTxResult: WebConnectorTxResult) => {
               switch (extensionTxResult.status) {
-                case WebExtensionTxStatus.SUCCEED:
+                case WebConnectorTxStatus.SUCCEED:
                   resolve({
                     ...tx,
                     result: extensionTxResult.payload,
@@ -520,11 +514,11 @@ export class WalletController {
               }
             },
             error: (error) => {
-              if (error instanceof WebExtensionUserDenied) {
+              if (error instanceof WebConnectorUserDenied) {
                 reject(new UserDenied());
-              } else if (error instanceof WebExtensionCreateTxFailed) {
+              } else if (error instanceof WebConnectorCreateTxFailed) {
                 reject(new CreateTxFailed(tx, error.message));
-              } else if (error instanceof WebExtensionTxFailed) {
+              } else if (error instanceof WebConnectorTxFailed) {
                 reject(
                   new TxFailed(
                     tx,
@@ -694,19 +688,19 @@ export class WalletController {
     this.disableWalletConnect?.();
     this.disableChromeExtension?.();
 
-    if (this.disableWebExtension || !this.webExtension) {
+    if (this.disableWebExtension || !this.webConnector) {
       return;
     }
 
     const extensionSubscription = combineLatest([
-      this.webExtension.status(),
-      this.webExtension.states(),
+      this.webConnector.status(),
+      this.webConnector.states(),
     ]).subscribe(([status, states]) => {
       if (!states) {
         return;
       }
 
-      if (status.type === WebExtensionStatusType.READY) {
+      if (status.type === WebConnectorStatusType.READY) {
         if (states.wallets.length > 0) {
           const focusedWallet = states.focusedWalletAddress
             ? states.wallets.find(
@@ -720,14 +714,14 @@ export class WalletController {
             network: states.network,
             wallets: [
               {
-                connectType: ConnectType.WEBEXTENSION,
+                connectType: ConnectType.WEB_CONNECT,
                 terraAddress: focusedWallet.terraAddress,
                 design: focusedWallet.design,
               },
             ],
           });
         }
-      } else if (status.type === WebExtensionStatusType.NO_AVAILABLE) {
+      } else if (status.type === WebConnectorStatusType.NO_AVAILABLE) {
         localStorage.removeItem(WEB_EXTENSION_CONNECTED_KEY);
         this.updateStates(this._notConnected);
 
@@ -739,13 +733,13 @@ export class WalletController {
 
     localStorage.setItem(WEB_EXTENSION_CONNECTED_KEY, 'true');
 
-    const lastExtensionStatus = this.webExtension.getLastStatus();
+    const lastExtensionStatus = this.webConnector.getLastStatus();
 
     if (
-      lastExtensionStatus.type === WebExtensionStatusType.NO_AVAILABLE &&
+      lastExtensionStatus.type === WebConnectorStatusType.NO_AVAILABLE &&
       lastExtensionStatus.isApproved === false
     ) {
-      this.webExtension.requestApproval();
+      this.webConnector.requestApproval();
     }
 
     this.disableWebExtension = () => {

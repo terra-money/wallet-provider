@@ -3129,6 +3129,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@terra-dev/web-connector-controller@npm:^0.7.0-alpha.3":
+  version: 0.7.0-alpha.3
+  resolution: "@terra-dev/web-connector-controller@npm:0.7.0-alpha.3"
+  dependencies:
+    "@terra-dev/web-connector-interface": ^0.7.0-alpha.3
+    "@terra-money/terra.js": ^2.0.14
+    bowser: ^2.11.0
+    rxjs: ^7.3.0
+  checksum: 422d9625a4a28e8e00335abf8441e5fb6a3f30da501311acd4be96293d92c14fbadb43087b08d4acc53be17f750c1f3fda127a53660bd96f612927862b3a27dd
+  languageName: node
+  linkType: hard
+
+"@terra-dev/web-connector-interface@npm:^0.7.0-alpha.3":
+  version: 0.7.0-alpha.3
+  resolution: "@terra-dev/web-connector-interface@npm:0.7.0-alpha.3"
+  dependencies:
+    "@terra-money/terra.js": ^2.0.14
+    rxjs: ^7.3.0
+  checksum: 967c2afb63d2f907f86f65cf4db382c27e23c487b36504733e2fc22790236db5d19cda3eac36062930baf3538f09e44b0cbf6f5d0959f6d141bf66bf49b4b25b
+  languageName: node
+  linkType: hard
+
 "@terra-dev/web-extension@npm:^0.6.0":
   version: 0.6.0
   resolution: "@terra-dev/web-extension@npm:0.6.0"
@@ -13723,7 +13745,8 @@ fsevents@^1.2.7:
   dependencies:
     "@sentry/browser": ^6.11.0
     "@sentry/tracing": ^6.11.0
-    "@terra-dev/web-extension": ^0.6.0
+    "@terra-dev/web-connector-controller": ^0.7.0-alpha.3
+    "@terra-dev/web-connector-interface": ^0.7.0-alpha.3
     "@terra-money/terra.js": ^2.0.1
     "@testing-library/jest-dom": ^5.14.1
     "@types/jest": ^26.0.24

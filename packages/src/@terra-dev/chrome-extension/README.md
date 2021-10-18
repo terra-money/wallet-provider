@@ -1,3 +1,7 @@
+# Deprecation warning
+
+> We think this is an unnecessarily separated package. So this package will be removed in the next major release. please use `@terra-money/wallet-provider/modules/chrome-extension`.
+
 # `@terra-dev/chrome-extension`
 
 This package is one of the components

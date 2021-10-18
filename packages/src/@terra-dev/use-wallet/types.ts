@@ -11,7 +11,7 @@ export enum ConnectType {
   CHROME_EXTENSION = 'CHROME_EXTENSION',
 
   /** [Hidden mode]: Next version of the Terra Station Browser Extensions */
-  WEBEXTENSION = 'WEBEXTENSION',
+  WEB_CONNECT = 'WEB_CONNECT',
 
   /** Terra Station Mobile */
   WALLETCONNECT = 'WALLETCONNECT',
