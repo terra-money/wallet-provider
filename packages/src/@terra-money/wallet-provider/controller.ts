@@ -25,7 +25,12 @@ import {
   WebConnectorTxStatus,
   WebConnectorUserDenied,
 } from '@terra-dev/web-connector-interface';
-import { AccAddress, CreateTxOptions } from '@terra-money/terra.js';
+import {
+  AccAddress,
+  CreateTxOptions,
+  PublicKey,
+  StdSignMsg,
+} from '@terra-money/terra.js';
 import deepEqual from 'fast-deep-equal';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
@@ -594,17 +599,40 @@ export class WalletController {
     // TODO not work at this time. for the future extension
     txTarget: { terraAddress?: string } = {},
   ): Promise<SignResult> => {
+    interface SignResultRaw extends CreateTxOptions {
+      result: {
+        public_key: string | PublicKey.Data;
+        recid: number;
+        signature: string;
+        stdSignMsgData: StdSignMsg.Data;
+      };
+      success: boolean;
+    }
+
     if (this.disableChromeExtension) {
       if (!this.chromeExtension) {
         throw new Error(`chromeExtension instance not created!`);
       }
 
       return this.chromeExtension
-        .sign<CreateTxOptions, SignResult>(tx)
+        .sign<CreateTxOptions, SignResultRaw>(tx)
         .then(({ payload }) => {
+          const publicKey: PublicKey.Data =
+            typeof payload.result.public_key === 'string'
+              ? {
+                  type: 'tendermint/PubKeySecp256k1',
+                  value: payload.result.public_key,
+                }
+              : payload.result.public_key;
+
+          const signResult: SignResult['result'] = {
+            ...payload.result,
+            public_key: publicKey,
+          };
+
           return {
             ...tx,
-            result: payload.result,
+            result: signResult,
             success: true,
           };
         })
