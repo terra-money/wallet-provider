@@ -56,10 +56,13 @@ export function SignSample() {
 
         const sig = StdSignature.fromData({
           signature,
-          pub_key: {
-            type: 'tendermint/PubKeySecp256k1',
-            value: public_key,
-          },
+          pub_key:
+            typeof public_key === 'string'
+              ? {
+                  type: 'tendermint/PubKeySecp256k1',
+                  value: public_key,
+                }
+              : public_key,
         });
 
         const stdSignMsg = StdSignMsg.fromData(stdSignMsgData);
