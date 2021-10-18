@@ -40,8 +40,8 @@
     ]
   },
   "dependencies": {
-    "@terra-dev/web-connector-controller": "^0.7.0-alpha.3",
-    "@terra-dev/web-connector-interface": "^0.7.0-alpha.3",
+    "@terra-dev/web-connector-controller": "^0.7.0",
+    "@terra-dev/web-connector-interface": "^0.7.0",
     "@terra-money/terra.js": "^2.0.1",
     "@walletconnect/core": "^1.6.1",
     "@walletconnect/iso-crypto": "^1.6.1",
