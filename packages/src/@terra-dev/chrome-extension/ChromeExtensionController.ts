@@ -176,6 +176,12 @@ export class ChromeExtensionController {
   ): Promise<{ name: string; payload: Payload }> => {
     return this._extension.sign(data);
   };
+
+  signBytes = <Payload extends {}>(
+    bytes: Buffer,
+  ): Promise<{ name: string; payload: Payload }> => {
+    return this._extension.signBytes(bytes);
+  };
 }
 
 async function intervalCheck(

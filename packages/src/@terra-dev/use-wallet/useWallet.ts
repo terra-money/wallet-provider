@@ -1,4 +1,8 @@
-import { NetworkInfo, SignResult } from '@terra-dev/wallet-types';
+import {
+  NetworkInfo,
+  SignBytesResult,
+  SignResult,
+} from '@terra-dev/wallet-types';
 import { CreateTxOptions } from '@terra-money/terra.js';
 import { Consumer, Context, createContext, useContext } from 'react';
 import { TxResult } from './tx';
@@ -226,6 +230,15 @@ export interface Wallet {
     tx: CreateTxOptions,
     txTarget?: { terraAddress?: string },
   ) => Promise<SignResult>;
+
+  /**
+   * TODO
+   * @param bytes
+   */
+  signBytes: (
+    bytes: Buffer,
+    txTarget?: { terraAddress?: string },
+  ) => Promise<SignBytesResult>;
 
   /**
    * Some mobile wallet emulates the behavior of chrome extension.

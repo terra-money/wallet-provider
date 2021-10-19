@@ -10,6 +10,7 @@ import {
 import {
   CreateTxFailed,
   NetworkInfo,
+  SignBytesResult,
   SignResult,
   Timeout,
   TxFailed,
@@ -652,6 +653,54 @@ export class WalletController {
 
     throw new Error(`sign() method only available on chrome extension`);
     // TODO implements sign() to other connect types
+  };
+
+  /** @see Wallet#signBytes */
+  signBytes = async (
+    bytes: Buffer,
+    // TODO not work at this time. for the future extension
+    txTarget: { terraAddress?: string } = {},
+  ): Promise<SignBytesResult> => {
+    interface SignBytesResultRaw {
+      bytes: string;
+      result: {
+        public_key: PublicKey.Data;
+        recid: string;
+        signature: string;
+      };
+      success: boolean;
+    }
+
+    if (this.disableChromeExtension) {
+      if (!this.chromeExtension) {
+        throw new Error(`chromeExtension instance not created!`);
+      }
+
+      return this.chromeExtension
+        .signBytes<SignBytesResultRaw>(bytes)
+        .then(({ payload }) => {
+          return {
+            ...payload,
+            encryptedBytes: payload.bytes,
+          };
+        });
+      //.catch((error) => {
+      //  // TODO more detailed errors
+      //  if (error instanceof ChromeExtensionCreateTxFailed) {
+      //    throw new CreateTxFailed({} as any, error.message);
+      //  } else if (error instanceof ChromeExtensionTxFailed) {
+      //    throw new TxFailed({} as any, error.txhash, error.message, null);
+      //  } else if (error instanceof ChromeExtensionUnspecifiedError) {
+      //    throw new TxUnspecifiedError({} as any, error.message);
+      //  }
+      //  // UserDenied - chrome extension will sent original UserDenied error type
+      //  // All unspecified errors...
+      //  throw error;
+      //});
+    }
+
+    throw new Error(`signBytes() method only available on chrome extension`);
+    // TODO implements signBytes() to other connect types
   };
 
   // ================================================================

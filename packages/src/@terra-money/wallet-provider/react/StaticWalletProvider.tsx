@@ -50,6 +50,9 @@ export function StaticWalletProvider({
       sign: () => {
         throw new Error('not implemented!');
       },
+      signBytes: () => {
+        throw new Error('not implemented!');
+      },
       recheckStatus: () => {
         throw new Error('not implemented!');
       },

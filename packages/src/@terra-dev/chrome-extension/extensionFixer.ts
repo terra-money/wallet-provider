@@ -9,12 +9,14 @@ import {
 type ConnectResponse = { address?: string };
 type PostResponse = any;
 type SignResponse = any;
+type SignBytesResponse = any;
 type InfoResponse = NetworkInfo;
 
 export interface FixedExtension {
   isAvailable: () => boolean;
   post: (data: object) => Promise<PostResponse>;
   sign: (data: object) => Promise<SignResponse>;
+  signBytes: (bytes: Buffer) => Promise<SignBytesResponse>;
   info: () => Promise<InfoResponse>;
   connect: () => Promise<ConnectResponse>;
   inTransactionProgress: () => boolean;
@@ -58,6 +60,11 @@ export function extensionFixer(extension: Extension): FixedExtension {
     [(data: any) => void, (error: any) => void]
   >();
 
+  const signBytesResolvers = new Map<
+    number,
+    [(data: any) => void, (error: any) => void]
+  >();
+
   const infoResolvers = new Set<[(data: any) => void, (error: any) => void]>();
 
   const connectResolvers = new Set<
@@ -89,26 +96,48 @@ export function extensionFixer(extension: Extension): FixedExtension {
   });
 
   extension.on('onSign', (result) => {
+    console.log('extensionFixer.ts..()', result);
+
     if (!result) return;
 
     const { error, ...payload } = result;
 
-    if (!signResolvers.has(payload.id)) {
-      return;
-    }
+    if (signResolvers.has(payload.id)) {
+      if (!signResolvers.has(payload.id)) {
+        return;
+      }
 
-    const [resolve, reject] = signResolvers.get(payload.id)!;
+      const [resolve, reject] = signResolvers.get(payload.id)!;
 
-    if (!payload.success) {
-      reject(toExplicitError(error));
-    } else if (resolve) {
-      resolve({ name: 'onSign', payload });
-    }
+      if (!payload.success) {
+        reject(toExplicitError(error));
+      } else if (resolve) {
+        resolve({ name: 'onSign', payload });
+      }
 
-    signResolvers.delete(payload.id);
+      signResolvers.delete(payload.id);
 
-    if (signResolvers.size === 0) {
-      _inTransactionProgress = false;
+      if (signResolvers.size === 0) {
+        _inTransactionProgress = false;
+      }
+    } else if (signBytesResolvers.has(payload.id)) {
+      if (!signBytesResolvers.has(payload.id)) {
+        return;
+      }
+
+      const [resolve, reject] = signBytesResolvers.get(payload.id)!;
+
+      if (!payload.success) {
+        reject(toExplicitError(error));
+      } else if (resolve) {
+        resolve({ name: 'onSignBytes', payload });
+      }
+
+      signBytesResolvers.delete(payload.id);
+
+      if (signBytesResolvers.size === 0) {
+        _inTransactionProgress = false;
+      }
     }
   });
 
@@ -188,6 +217,29 @@ export function extensionFixer(extension: Extension): FixedExtension {
     });
   }
 
+  function signBytes(bytes: Buffer) {
+    return new Promise<SignResponse>((...resolver) => {
+      _inTransactionProgress = true;
+
+      const id = extension.signBytes({
+        bytes,
+        purgeQueue: true,
+      });
+
+      signBytesResolvers.set(id, resolver);
+
+      setTimeout(() => {
+        if (signBytesResolvers.has(id)) {
+          signBytesResolvers.delete(id);
+
+          if (signBytesResolvers.size === 0) {
+            _inTransactionProgress = false;
+          }
+        }
+      }, 1000 * 120);
+    });
+  }
+
   function connect() {
     return new Promise<ConnectResponse>((...resolver) => {
       connectResolvers.add(resolver);
@@ -213,6 +265,7 @@ export function extensionFixer(extension: Extension): FixedExtension {
   return {
     post,
     sign,
+    signBytes,
     connect,
     info,
     isAvailable,

@@ -64,6 +64,11 @@ export function ExtensionNetworkOnlyWalletProvider({
           `<ExtensionNetworkOnlyWalletProvider> does not support sign()`,
         );
       },
+      signBytes: () => {
+        throw new Error(
+          `<ExtensionNetworkOnlyWalletProvider> does not support signBytes()`,
+        );
+      },
       recheckStatus: controller.recheckStatus,
       isChromeExtensionCompatibleBrowser: () => {
         throw new Error('not implemented!');

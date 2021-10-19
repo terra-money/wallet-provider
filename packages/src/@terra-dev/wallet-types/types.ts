@@ -29,3 +29,13 @@ export interface SignResult extends CreateTxOptions {
   };
   success: boolean;
 }
+
+export interface SignBytesResult {
+  encryptedBytes: string;
+  result: {
+    public_key: PublicKey.Data;
+    recid: string;
+    signature: string;
+  };
+  success: boolean;
+}
