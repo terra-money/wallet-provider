@@ -664,7 +664,7 @@ export class WalletController {
     interface SignBytesResultRaw {
       bytes: string;
       result: {
-        public_key: PublicKey.Data;
+        public_key: string | PublicKey.Data;
         recid: string;
         signature: string;
       };
@@ -679,8 +679,22 @@ export class WalletController {
       return this.chromeExtension
         .signBytes<SignBytesResultRaw>(bytes)
         .then(({ payload }) => {
+          const publicKey: PublicKey.Data =
+            typeof payload.result.public_key === 'string'
+              ? {
+                  type: 'tendermint/PubKeySecp256k1',
+                  value: payload.result.public_key,
+                }
+              : payload.result.public_key;
+
+          const signBytesResult: SignBytesResult['result'] = {
+            ...payload.result,
+            public_key: publicKey,
+          };
+
           return {
             ...payload,
+            result: signBytesResult,
             encryptedBytes: payload.bytes,
           };
         });
