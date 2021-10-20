@@ -1,4 +1,4 @@
-import { MsgSend, StdFee } from '@terra-money/terra.js';
+import { Fee, MsgSend } from '@terra-money/terra.js';
 import {
   CreateTxFailed,
   Timeout,
@@ -32,7 +32,7 @@ export function TxSample() {
 
     connectedWallet
       .post({
-        fee: new StdFee(1000000, '200000uusd'),
+        fee: new Fee(1000000, '200000uusd'),
         msgs: [
           new MsgSend(connectedWallet.walletAddress, toAddress, {
             uusd: 1000000,

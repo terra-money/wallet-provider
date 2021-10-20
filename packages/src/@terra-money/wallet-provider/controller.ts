@@ -28,9 +28,11 @@ import {
 } from '@terra-dev/web-connector-interface';
 import {
   AccAddress,
+  AuthInfo,
   CreateTxOptions,
   PublicKey,
-  StdSignMsg,
+  Tx,
+  TxBody,
 } from '@terra-money/terra.js';
 import deepEqual from 'fast-deep-equal';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
@@ -602,10 +604,9 @@ export class WalletController {
   ): Promise<SignResult> => {
     interface SignResultRaw extends CreateTxOptions {
       result: {
-        public_key: string | PublicKey.Data;
-        recid: number;
-        signature: string;
-        stdSignMsgData: StdSignMsg.Data;
+        body: TxBody.Data;
+        auth_info: AuthInfo.Data;
+        signatures: string[];
       };
       success: boolean;
     }
@@ -618,22 +619,18 @@ export class WalletController {
       return this.chromeExtension
         .sign<CreateTxOptions, SignResultRaw>(tx)
         .then(({ payload }) => {
-          const publicKey: PublicKey.Data =
-            typeof payload.result.public_key === 'string'
-              ? {
-                  type: 'tendermint/PubKeySecp256k1',
-                  value: payload.result.public_key,
-                }
-              : payload.result.public_key;
-
-          const signResult: SignResult['result'] = {
-            ...payload.result,
-            public_key: publicKey,
+          const result: SignResult['result'] = {
+            public_key: null,
+            recid: 0,
+            signature: null,
+            stdSignMsgData: null,
+            txData: payload.result,
+            tx: Tx.fromData(payload.result),
           };
 
           return {
             ...tx,
-            result: signResult,
+            result,
             success: true,
           };
         })
@@ -682,8 +679,8 @@ export class WalletController {
           const publicKey: PublicKey.Data =
             typeof payload.result.public_key === 'string'
               ? {
-                  type: 'tendermint/PubKeySecp256k1',
-                  value: payload.result.public_key,
+                  '@type': '/cosmos.crypto.secp256k1.PubKey',
+                  'key': payload.result.public_key,
                 }
               : payload.result.public_key;
 

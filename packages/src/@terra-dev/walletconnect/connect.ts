@@ -243,11 +243,13 @@ export function connect(
       msgs: tx.msgs.map((msg) => msg.toJSON()),
       fee: tx.fee?.toJSON(),
       memo: tx.memo,
+      gas: tx.gas,
       gasPrices: tx.gasPrices?.toString(),
       gasAdjustment: tx.gasAdjustment?.toString(),
-      account_number: tx.account_number,
-      sequence: tx.sequence,
+      //account_number: tx.account_number,
+      //sequence: tx.sequence,
       feeDenoms: tx.feeDenoms,
+      timeoutHeight: tx.timeoutHeight,
     };
 
     if (isMobile()) {

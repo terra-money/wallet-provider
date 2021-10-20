@@ -20,7 +20,9 @@ export function QuerySample() {
 
   useEffect(() => {
     if (connectedWallet && lcd) {
-      lcd.bank.balance(connectedWallet.walletAddress).then((coins) => {
+      // FIXME the return data of LCDClient.bank.balance() is changed
+      //lcd.bank.balance(connectedWallet.walletAddress).then((coins) => {
+      lcd.bank.balance(connectedWallet.walletAddress).then(([coins]) => {
         setBank(coins.toString());
       });
     } else {

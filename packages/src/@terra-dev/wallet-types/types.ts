@@ -1,4 +1,4 @@
-import { CreateTxOptions, PublicKey, StdSignMsg } from '@terra-money/terra.js';
+import { CreateTxOptions, PublicKey, Tx } from '@terra-money/terra.js';
 
 export interface NetworkInfo {
   /** Network name (e.g. mainnet) */
@@ -22,10 +22,17 @@ export interface TxResult extends CreateTxOptions {
 
 export interface SignResult extends CreateTxOptions {
   result: {
-    public_key: PublicKey.Data;
+    /** @deprecated This API has been deprecated. please use result.tx.auth_info */
+    public_key: null;
+    /** @deprecated This API has been deprecated. this value will be always 0 */
     recid: number;
-    signature: string;
-    stdSignMsgData: StdSignMsg.Data;
+    /** @deprecated This API has been deprecated. please use result.tx.signatures */
+    signature: null;
+    /** @deprecated This API has been deprecated. please use result.tx or result.txData */
+    stdSignMsgData: null;
+
+    txData: Tx.Data;
+    tx: Tx;
   };
   success: boolean;
 }

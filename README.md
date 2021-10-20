@@ -2,6 +2,14 @@
 
 Library to make React dApps easier using Terra Station Extension or Terra Station Mobile.
 
+# Warning
+
+`@terra-money/terra.js@2.1.x` contains many breaking changes. `wallet-provider`, which relies on terra.js, also includes breaking changes.
+
+In most cases, there won't be a big problem, and if you're using TypeScript, you'll be able to track the API that's causing the problem through TypeScript Error. (And, I wrote a comment on the API corresponding to the breaking change.)
+
+If you are using `wallet-provider` as Javascript, please refer to the [sample codes](https://github.com/terra-money/wallet-provider/tree/main/packages/src/components).
+
 # Quick Start
 
 Use templates to get your projects started quickly

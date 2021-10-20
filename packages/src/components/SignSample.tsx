@@ -1,10 +1,7 @@
 import {
+  Fee,
   LCDClient,
   MsgSend,
-  StdFee,
-  StdSignature,
-  StdSignMsg,
-  StdTx,
   SyncTxBroadcastResult,
 } from '@terra-money/terra.js';
 import {
@@ -41,7 +38,8 @@ export function SignSample() {
 
     connectedWallet
       .sign({
-        fee: new StdFee(1000000, '200000uusd'),
+        fee: new Fee(1000000, '200000uusd'),
+        //fee: new StdFee(1000000, '200000uusd'),
         msgs: [
           new MsgSend(connectedWallet.walletAddress, toAddress, {
             uusd: 1000000,
@@ -51,24 +49,28 @@ export function SignSample() {
       .then((nextSignResult: SignResult) => {
         setSignResult(nextSignResult);
 
+        // FIXME API changed please refer this comments
+        //const { signature, public_key, stdSignMsgData } = nextSignResult.result;
+        //
+        //const sig = StdSignature.fromData({
+        //  signature,
+        //  pub_key: public_key,
+        //});
+        //
+        //const stdSignMsg = StdSignMsg.fromData(stdSignMsgData);
+
         // broadcast
-        const { signature, public_key, stdSignMsgData } = nextSignResult.result;
-
-        const sig = StdSignature.fromData({
-          signature,
-          pub_key: public_key,
-        });
-
-        const stdSignMsg = StdSignMsg.fromData(stdSignMsgData);
+        const { tx } = nextSignResult.result;
 
         const lcd = new LCDClient({
           chainID: connectedWallet.network.chainID,
           URL: connectedWallet.network.lcd,
         });
 
-        return lcd.tx.broadcastSync(
-          new StdTx(stdSignMsg.msgs, stdSignMsg.fee, [sig], stdSignMsg.memo),
-        );
+        //return lcd.tx.broadcastSync(
+        //  new StdTx(stdSignMsg.msgs, stdSignMsg.fee, [sig], stdSignMsg.memo),
+        //);
+        return lcd.tx.broadcastSync(tx);
       })
       .then((nextTxResult: SyncTxBroadcastResult) => {
         setTxResult(nextTxResult);
