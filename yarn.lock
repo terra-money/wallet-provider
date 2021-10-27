@@ -3224,9 +3224,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@terra-money/terra.js@npm:2.1.17":
-  version: 2.1.17
-  resolution: "@terra-money/terra.js@npm:2.1.17"
+"@terra-money/terra.js@npm:2.1.19":
+  version: 2.1.19
+  resolution: "@terra-money/terra.js@npm:2.1.19"
   dependencies:
     "@terra-money/terra.proto": ^0.1.7
     axios: ^0.21.1
@@ -3242,7 +3242,7 @@ __metadata:
     tmp: ^0.2.1
     utf-8-validate: ^5.0.5
     ws: ^7.4.2
-  checksum: fab5fc8efab3f9e9ad9d57a469e61b2e769fc1a7bed815415e84fc197a4e8bbf32e1199ed9356ec8f22970ff2ca155ad46a30cdd7f81836ffd9df07277ca7918
+  checksum: 81123b719cdc11b424ff9ca32f123de85f513d7377de338e86f3a662f181dcd7e0f75c132e6071102e1dcaac7f00de9ff40554801d4fb783100127ea4b016c7a
   languageName: node
   linkType: hard
 
@@ -13851,7 +13851,7 @@ fsevents@^1.2.7:
     "@sentry/tracing": ^6.11.0
     "@terra-dev/web-connector-controller": ^0.7.0
     "@terra-dev/web-connector-interface": ^0.7.0
-    "@terra-money/terra.js": ^2.1.17
+    "@terra-money/terra.js": ^2.1.19
     "@testing-library/jest-dom": ^5.14.1
     "@types/jest": ^26.0.24
     "@types/puppeteer": ^5.4.4

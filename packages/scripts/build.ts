@@ -36,7 +36,8 @@ build({
     }
     
     if ('@terra-money/terra.js' in dependencies) {
-      dependencies['@terra-money/terra.js'] = '^2.0.0';
+      delete dependencies['@terra-money/terra.js'];
+      peerDependencies['@terra-money/terra.js'] = '^2.1.19';
     }
 
     //switch (packageName) {
