@@ -725,7 +725,10 @@ export class WalletController {
       next.status === WalletStatus.WALLET_CONNECTED &&
       next.wallets.length === 0
     ) {
-      console.trace('???');
+      next = {
+        status: WalletStatus.WALLET_NOT_CONNECTED,
+        network: next.network,
+      };
     }
 
     if (prev.status !== next.status || !deepEqual(prev, next)) {
@@ -788,6 +791,8 @@ export class WalletController {
         return;
       }
 
+      localStorage.setItem(WEB_EXTENSION_CONNECTED_KEY, 'true');
+
       if (status.type === WebConnectorStatusType.READY) {
         if (states.wallets.length > 0) {
           const focusedWallet = states.focusedWalletAddress
@@ -808,6 +813,11 @@ export class WalletController {
               },
             ],
           });
+        } else {
+          console.warn(
+            `[WalletController] There are no wallets (wallets.length is 0), will change states to NOT_CONNECTED`,
+          );
+          this.updateStates(this._notConnected);
         }
       } else if (status.type === WebConnectorStatusType.NO_AVAILABLE) {
         localStorage.removeItem(WEB_EXTENSION_CONNECTED_KEY);
@@ -818,8 +828,6 @@ export class WalletController {
         }
       }
     });
-
-    localStorage.setItem(WEB_EXTENSION_CONNECTED_KEY, 'true');
 
     const lastExtensionStatus = this.webConnector.getLastStatus();
 
