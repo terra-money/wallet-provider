@@ -3214,6 +3214,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@terra-dev/web-connector-controller@npm:^0.8.0":
+  version: 0.8.0
+  resolution: "@terra-dev/web-connector-controller@npm:0.8.0"
+  dependencies:
+    "@terra-dev/web-connector-interface": ^0.8.0
+    "@terra-money/terra.js": ^2.1.19
+    bowser: ^2.11.0
+    rxjs: ^7.4.0
+  checksum: 44aa5841a0892221130d027dee474de78b4679e943b1e839656dcd2b86a509e116744c21d8238ee1116eb0e813e421fa729bb5f1150715ddeeca51cbb037bdf5
+  languageName: node
+  linkType: hard
+
 "@terra-dev/web-connector-interface@npm:^0.7.0":
   version: 0.7.0
   resolution: "@terra-dev/web-connector-interface@npm:0.7.0"
@@ -3221,6 +3233,16 @@ __metadata:
     "@terra-money/terra.js": ^2.0.14
     rxjs: ^7.3.0
   checksum: 95a26e1aef6a6cb31644f8ff572a0501413b71f609f840798ef105b98c49d9d9aa2d010aa573471072fd4cf50bcf66fcc31ac10a4dec5a12c81459c5eac2364a
+  languageName: node
+  linkType: hard
+
+"@terra-dev/web-connector-interface@npm:^0.8.0":
+  version: 0.8.0
+  resolution: "@terra-dev/web-connector-interface@npm:0.8.0"
+  dependencies:
+    "@terra-money/terra.js": ^2.1.19
+    rxjs: ^7.4.0
+  checksum: fec0032e50455b1659f0dc597653b7164cfe118b63259e9d5f350c98370960631d2ba56270d7376958cbb829ac997b42b75e165fc04682e21338bd68e7f26817
   languageName: node
   linkType: hard
 
@@ -3530,10 +3552,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^16.6.1":
-  version: 16.6.1
-  resolution: "@types/node@npm:16.6.1"
-  checksum: c13aa0da0c2bf9070e521d1b537ba38f64b213dd1b8aeec66c279fc21f8c0ccaf380364f6dc2ec8f84440c4cd1460b67dfe47de2cafcb6eaf4b648817cb27dc4
+"@types/node@npm:*, @types/node@npm:>=13.7.0, @types/node@npm:^16.6.1":
+  version: 16.11.1
+  resolution: "@types/node@npm:16.11.1"
+  checksum: 22cea470b89292810733b8b9fc1b6a1873bc3ed4d4cdf2f25e777dc607994bd7c12e64166d1a66dd5924734192b0a891b6aeb6813aa935f731345f4086234375
   languageName: node
   linkType: hard
 
@@ -3548,13 +3570,6 @@ __metadata:
   version: 11.11.6
   resolution: "@types/node@npm:11.11.6"
   checksum: 075f1c011cf568e49701419acbcb55c24906b3bb5a34d9412a3b88f228a7a78401a5ad4d3e1cd6855c99aaea5ef96e37fc86ca097e50f06da92cf822befc1fff
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:>=13.7.0":
-  version: 16.11.1
-  resolution: "@types/node@npm:16.11.1"
-  checksum: 22cea470b89292810733b8b9fc1b6a1873bc3ed4d4cdf2f25e777dc607994bd7c12e64166d1a66dd5924734192b0a891b6aeb6813aa935f731345f4086234375
   languageName: node
   linkType: hard
 
@@ -13849,8 +13864,8 @@ fsevents@^1.2.7:
   dependencies:
     "@sentry/browser": ^6.11.0
     "@sentry/tracing": ^6.11.0
-    "@terra-dev/web-connector-controller": ^0.7.0
-    "@terra-dev/web-connector-interface": ^0.7.0
+    "@terra-dev/web-connector-controller": ^0.8.0
+    "@terra-dev/web-connector-interface": ^0.8.0
     "@terra-money/terra.js": ^2.1.19
     "@testing-library/jest-dom": ^5.14.1
     "@types/jest": ^26.0.24
@@ -16621,12 +16636,12 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"rxjs@npm:^7.3.0":
-  version: 7.3.0
-  resolution: "rxjs@npm:7.3.0"
+"rxjs@npm:^7.3.0, rxjs@npm:^7.4.0":
+  version: 7.4.0
+  resolution: "rxjs@npm:7.4.0"
   dependencies:
     tslib: ~2.1.0
-  checksum: e63adb8808ea6c299a020d56d2af92bcf71efe641adf838499932e29b8f5fd5ff00873653ad48ba3ecf6c9fc11c3c595acf995e8d456f9d8cb85c7d37a1fd72e
+  checksum: 6b33172a760dcad6882fdc836ee8cf1ebe160dd7eaad95c45a12338ffdaa96eb41e48e6c25bbd3d1fdf45075949ff447954bc17a9d01c688558a67967d09c114
   languageName: node
   linkType: hard
 
