@@ -18,7 +18,7 @@ If you want to test features quickly, you can simply run them on CodeSandbox wit
 
 And if you need to start your project from local computer, use the templates below. 👇
 
-### Craete React App
+### Create React App
 
 ```sh
 npx copy-github-directory https://github.com/terra-money/wallet-provider/tree/main/templates/create-react-app your-app-name
