@@ -18,7 +18,7 @@ If you want to test features quickly, you can simply run them on CodeSandbox wit
 
 And if you need to start your project from local computer, use the templates below. 👇
 
-### Craete React App
+### Create React App
 
 ```sh
 npx copy-github-directory https://github.com/terra-money/wallet-provider/tree/main/templates/create-react-app your-app-name
@@ -313,9 +313,9 @@ function Component() {
 - [Anchor Web App](https://github.com/Anchor-Protocol/anchor-web-app/blob/master/base/src/base/AppProviders.tsx#L154)
 - [Mirror Web App](https://github.com/Mirror-Protocol/terra-web-app/blob/master/src/layouts/WalletConnectProvider.tsx#L12)
 
-# Other documents
+# Links
 
-- [한국어 (Notion)](https://www.notion.so/terramoneyteam/terra-money-wallet-provider-0-14-0-49a62205608c4e0085e1c8f5361ccc46)
+- [Releases (Changelog)](https://github.com/terra-money/wallet-provider/releases)
 
 # Trouble-shooting guide
 
