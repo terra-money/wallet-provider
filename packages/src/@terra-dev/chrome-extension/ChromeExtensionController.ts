@@ -1,9 +1,11 @@
 import { isDesktopChrome } from '@terra-dev/browser-check';
 import { NetworkInfo } from '@terra-dev/wallet-types';
-import { AccAddress, Extension } from '@terra-money/terra.js';
+import { AccAddress } from '@terra-money/terra.js';
 import { BehaviorSubject } from 'rxjs';
+import { defaultSelectModal } from './defaultSelectModal';
 import { extensionFixer, FixedExtension } from './extensionFixer';
-import { clearStore, getStoredAddress, storeAddress } from './storage';
+import { ChromeExtensionInfo, getTerraChromeExtensions } from './multiChannel';
+import { clearSession, getStoredSession, storeSession } from './storage';
 import { ChromeExtensionStatus } from './types';
 
 export interface ChromeExtensionControllerOptions {
@@ -12,15 +14,18 @@ export interface ChromeExtensionControllerOptions {
   dangerously__chromeExtensionCompatibleBrowserCheck: (
     userAgent: string,
   ) => boolean;
+  selectExtension?: (
+    extensionInfos: ChromeExtensionInfo[],
+  ) => Promise<ChromeExtensionInfo | null>;
 }
 
 export class ChromeExtensionController {
   readonly _status: BehaviorSubject<ChromeExtensionStatus>;
   readonly _networkInfo: BehaviorSubject<NetworkInfo>;
   readonly _terraAddress: BehaviorSubject<string | null>;
-  readonly _extension: FixedExtension;
+  private _extension: FixedExtension | null = null;
 
-  private doneFirstCheck = false;
+  private readonly extensionInfos: ChromeExtensionInfo[];
   private readonly isDesktopChrome: boolean;
 
   constructor(readonly options: ChromeExtensionControllerOptions) {
@@ -42,13 +47,42 @@ export class ChromeExtensionController {
       options.defaultNetwork,
     );
 
-    this._terraAddress = new BehaviorSubject<string | null>(getStoredAddress());
+    this.extensionInfos = getTerraChromeExtensions();
 
-    this._extension = extensionFixer(new Extension());
-
-    if (this.isDesktopChrome) {
-      this.checkStatus(true);
+    if (!this.isDesktopChrome) {
+      this._terraAddress = new BehaviorSubject<string | null>(null);
+      return;
     }
+
+    // ---------------------------------------------
+    // initialize session
+    // ---------------------------------------------
+    if (this.extensionInfos.length === 0) {
+      this._terraAddress = new BehaviorSubject<string | null>(null);
+      this._status.next(ChromeExtensionStatus.UNAVAILABLE);
+      return;
+    }
+
+    const session = getStoredSession();
+
+    if (
+      !session ||
+      !this.extensionInfos.some(
+        (item) => item.identifier === session.identifier,
+      )
+    ) {
+      this._terraAddress = new BehaviorSubject<string | null>(null);
+      this._status.next(ChromeExtensionStatus.WALLET_NOT_CONNECTED);
+      return;
+    }
+
+    this._terraAddress = new BehaviorSubject<string | null>(
+      session.walletAddress,
+    );
+
+    this._extension = extensionFixer(session.identifier);
+
+    this.checkStatus();
   }
 
   status = () => {
@@ -63,28 +97,19 @@ export class ChromeExtensionController {
     return this._terraAddress.asObservable();
   };
 
-  checkStatus = async (waitingExtensionScriptInjection: boolean = false) => {
+  checkStatus = async () => {
     // do not check if browser isn't a chrome
     if (!this.isDesktopChrome) {
       return;
     }
 
-    // ignore the checks before first check done
-    // first check -------------------------------→ done
-    // --------------- second check (ignore)
-    if (!waitingExtensionScriptInjection && !this.doneFirstCheck) {
+    if (this.extensionInfos.length === 0) {
+      this._status.next(ChromeExtensionStatus.UNAVAILABLE);
       return;
     }
 
-    // check the extension installed
-    const isExtensionInstalled = waitingExtensionScriptInjection
-      ? await intervalCheck(20, () => this._extension.isAvailable())
-      : this._extension.isAvailable();
-
-    this.doneFirstCheck = true;
-
-    if (!isExtensionInstalled) {
-      this._status.next(ChromeExtensionStatus.UNAVAILABLE);
+    if (!this._extension) {
+      this._status.next(ChromeExtensionStatus.WALLET_NOT_CONNECTED);
       return;
     }
 
@@ -99,16 +124,13 @@ export class ChromeExtensionController {
     }
 
     if (this.options.enableWalletConnection) {
-      const storageStoredWalletAddress: string | null = getStoredAddress();
+      //const storageStoredWalletAddress: string | null = getStoredAddress();
+      const session = getStoredSession();
 
       // if the storage has wallet address
-      if (
-        storageStoredWalletAddress &&
-        AccAddress.validate(storageStoredWalletAddress)
-      ) {
+      if (session && AccAddress.validate(session.walletAddress)) {
         this._status.next(ChromeExtensionStatus.WALLET_CONNECTED);
 
-        // TODO timer check?
         const connectResult = await this._extension.connect();
 
         // if address of extension is not same with the address of localStorage
@@ -116,7 +138,10 @@ export class ChromeExtensionController {
           connectResult.address &&
           AccAddress.validate(connectResult.address)
         ) {
-          storeAddress(connectResult.address);
+          storeSession({
+            walletAddress: connectResult.address,
+            identifier: session.identifier,
+          });
         }
 
         if (!!connectResult.address) {
@@ -124,12 +149,12 @@ export class ChromeExtensionController {
             this._terraAddress.next(connectResult.address);
           }
         } else {
-          clearStore();
+          clearSession();
           this._status.next(ChromeExtensionStatus.WALLET_NOT_CONNECTED);
         }
       } else {
-        if (storageStoredWalletAddress) {
-          clearStore();
+        if (session) {
+          clearSession();
         }
 
         this._status.next(ChromeExtensionStatus.WALLET_NOT_CONNECTED);
@@ -141,54 +166,83 @@ export class ChromeExtensionController {
     }
   };
 
-  connect = async () => {
-    const result = await this._extension.connect();
+  connect = async (identifier?: string) => {
+    const extensionInfos = getTerraChromeExtensions();
 
-    if (result?.address) {
-      const walletAddress: string = result.address;
-      storeAddress(walletAddress);
-
-      await this.checkStatus();
+    if (extensionInfos.length === 0) {
+      return false;
     }
 
-    return result?.address ?? false;
+    let extensionInfo: ChromeExtensionInfo | undefined;
+
+    if (identifier) {
+      extensionInfo = extensionInfos.find(
+        (item) => item.identifier === identifier,
+      );
+    } else if (extensionInfos.length === 1) {
+      extensionInfo = extensionInfos[0];
+    } else {
+      const select = this.options.selectExtension ?? defaultSelectModal;
+      const selection = await select(extensionInfos);
+
+      if (selection) {
+        extensionInfo = selection;
+      }
+    }
+
+    if (extensionInfo) {
+      this._extension = extensionFixer(extensionInfo.identifier);
+
+      const result = await this._extension.connect();
+
+      if (result?.address) {
+        const walletAddress: string = result.address;
+
+        storeSession({
+          identifier: extensionInfo.identifier,
+          walletAddress,
+        });
+
+        await this.checkStatus();
+
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
   };
 
   disconnect = () => {
-    clearStore();
-    this.checkStatus();
+    clearSession();
+
+    this._status.next(ChromeExtensionStatus.WALLET_NOT_CONNECTED);
+    this._terraAddress.next(null);
+    this._extension = null;
   };
 
   recheckStatus = () => {
-    if (!this._extension.inTransactionProgress()) {
-      this.checkStatus(false);
+    if (this._extension && !this._extension.inTransactionProgress()) {
+      this.checkStatus();
     }
   };
 
   post = <SendData extends {}, Payload extends {}>(
     data: SendData,
   ): Promise<{ name: string; payload: Payload }> => {
+    if (!this._extension) {
+      throw new Error(`There is no connected wallet`);
+    }
     return this._extension.post(data);
   };
 
   sign = <SendData extends {}, Payload extends {}>(
     data: SendData,
   ): Promise<{ name: string; payload: Payload }> => {
+    if (!this._extension) {
+      throw new Error(`There is no connected wallet`);
+    }
     return this._extension.sign(data);
   };
-}
-
-async function intervalCheck(
-  count: number,
-  fn: () => boolean,
-  intervalMs: number = 500,
-): Promise<boolean> {
-  let i: number = -1;
-  while (++i < count) {
-    if (fn()) {
-      return true;
-    }
-    await new Promise((resolve) => setTimeout(resolve, intervalMs));
-  }
-  return false;
 }

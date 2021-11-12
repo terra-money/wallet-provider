@@ -8,15 +8,15 @@
     "type-check": "tsc"
   },
   "dependencies": {
-    "@terra-money/terra.js": "^2.0.1",
+    "@terra-money/terra.js": "^2.0.16",
     "@terra-money/wallet-provider": "^2.3.0",
-    "next": "^11.1.0",
+    "next": "^11.1.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@types/react": "^17.0.18",
-    "@types/react-dom": "^17.0.9",
-    "typescript": "^4.3.5"
+    "@types/react": "^17.0.34",
+    "@types/react-dom": "^17.0.11",
+    "typescript": "^4.4.4"
   }
 }
