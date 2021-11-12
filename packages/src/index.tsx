@@ -1,10 +1,10 @@
 import { getChainOptions, WalletProvider } from '@terra-money/wallet-provider';
+import { ConnectSample } from 'components/ConnectSample';
+import { QuerySample } from 'components/QuerySample';
+import { SignSample } from 'components/SignSample';
+import { TxSample } from 'components/TxSample';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { ConnectSample } from './components/ConnectSample';
-import { QuerySample } from './components/QuerySample';
-import { SignSample } from './components/SignSample';
-import { TxSample } from './components/TxSample';
 
 function App() {
   return (

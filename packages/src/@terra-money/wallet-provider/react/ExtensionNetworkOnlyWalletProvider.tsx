@@ -39,6 +39,7 @@ export function ExtensionNetworkOnlyWalletProvider({
     return {
       availableConnectTypes: [],
       availableInstallTypes: [],
+      availableConnections: [],
       status: WalletStatus.WALLET_NOT_CONNECTED,
       network,
       wallets: [],

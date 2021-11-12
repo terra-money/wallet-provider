@@ -1,10 +1,10 @@
 import { NetworkInfo, UserDenied } from '@terra-dev/wallet-types';
-import { Extension } from '@terra-money/terra.js';
 import {
   ChromeExtensionCreateTxFailed,
   ChromeExtensionTxFailed,
   ChromeExtensionUnspecifiedError,
 } from './errors';
+import { Extension } from './terrajs/Extension';
 
 type ConnectResponse = { address?: string };
 type PostResponse = any;
@@ -12,7 +12,8 @@ type SignResponse = any;
 type InfoResponse = NetworkInfo;
 
 export interface FixedExtension {
-  isAvailable: () => boolean;
+  ///** @deprecated do not use extension.isAvailable just use window.isTerraExtensionAvailable... */
+  //isAvailable: () => boolean;
   post: (data: object) => Promise<PostResponse>;
   sign: (data: object) => Promise<SignResponse>;
   info: () => Promise<InfoResponse>;
@@ -45,7 +46,15 @@ function toExplicitError(error: any) {
   }
 }
 
-export function extensionFixer(extension: Extension): FixedExtension {
+const pool = new Map<string, FixedExtension>();
+
+export function extensionFixer(identifier: string): FixedExtension {
+  if (pool.has(identifier)) {
+    return pool.get(identifier)!;
+  }
+
+  const extension = new Extension(identifier);
+
   let _inTransactionProgress = false;
 
   const postResolvers = new Map<
@@ -202,20 +211,24 @@ export function extensionFixer(extension: Extension): FixedExtension {
     });
   }
 
-  function isAvailable() {
-    return extension.isAvailable;
-  }
+  //function isAvailable() {
+  //  return extension.isAvailable;
+  //}
 
   function inTransactionProgress() {
     return _inTransactionProgress;
   }
 
-  return {
+  const result: FixedExtension = {
     post,
     sign,
     connect,
     info,
-    isAvailable,
+    //isAvailable,
     inTransactionProgress,
   };
+
+  pool.set(identifier, result);
+
+  return result;
 }
