@@ -193,6 +193,12 @@ const {
   // Available when configuring a UI that determines which Connect Type to connect to.
   availableConnectTypes,
 
+  // It can be used instead of available ConnectTypes.
+  //
+  // If user have multiple extensions installed in its browser,
+  // it can get more detailed information than available ConnectTypes.
+  availableConnections,
+
   // Can receive the Connect Types that are currently available for installation.
   //
   // If the Browser is Desktop Chrome and does not have Chrome Extension installed,
