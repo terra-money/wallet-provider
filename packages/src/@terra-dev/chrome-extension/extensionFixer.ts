@@ -4,7 +4,7 @@ import {
   ChromeExtensionTxFailed,
   ChromeExtensionUnspecifiedError,
 } from './errors';
-import { Extension } from './terrajs/Extension';
+import { Extension } from '@terra-money/terra.js';
 
 type ConnectResponse = { address?: string };
 type PostResponse = any;

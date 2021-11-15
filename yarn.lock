@@ -3332,15 +3332,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@terra-dev/web-connector-controller@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "@terra-dev/web-connector-controller@npm:0.8.0"
+"@terra-dev/web-connector-controller@npm:^0.8.1":
+  version: 0.8.1
+  resolution: "@terra-dev/web-connector-controller@npm:0.8.1"
   dependencies:
-    "@terra-dev/web-connector-interface": ^0.8.0
-    "@terra-money/terra.js": ^2.1.19
+    "@terra-dev/web-connector-interface": ^0.8.1
     bowser: ^2.11.0
     rxjs: ^7.4.0
-  checksum: 44aa5841a0892221130d027dee474de78b4679e943b1e839656dcd2b86a509e116744c21d8238ee1116eb0e813e421fa729bb5f1150715ddeeca51cbb037bdf5
+  peerDependencies:
+    "@terra-money/terra.js": ^2.0.0
+  checksum: 02cfde81e49301e5f2a6431163fbf11c290f9403890712027cb03f633056554ea85256e51b2984652b54d011d6e6bb2842f79c1204b662fc8f4e7e1adad1d10a
   languageName: node
   linkType: hard
 
@@ -3354,13 +3355,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@terra-dev/web-connector-interface@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "@terra-dev/web-connector-interface@npm:0.8.0"
+"@terra-dev/web-connector-interface@npm:^0.8.1":
+  version: 0.8.1
+  resolution: "@terra-dev/web-connector-interface@npm:0.8.1"
   dependencies:
-    "@terra-money/terra.js": ^2.1.19
     rxjs: ^7.4.0
-  checksum: fec0032e50455b1659f0dc597653b7164cfe118b63259e9d5f350c98370960631d2ba56270d7376958cbb829ac997b42b75e165fc04682e21338bd68e7f26817
+  peerDependencies:
+    "@terra-money/terra.js": ^2.0.0
+  checksum: 779d237d5b0a37b126ef43429a9946271c955d2e290cfce9885eadbaf0594cdcff6ad1b5426ab1bff80f8a11ba0855d2a2c683200901c7f75b1018d6baeda6b0
   languageName: node
   linkType: hard
 
@@ -14352,8 +14354,8 @@ fsevents@^1.2.7:
   dependencies:
     "@sentry/browser": ^6.14.1
     "@sentry/tracing": ^6.14.1
-    "@terra-dev/web-connector-controller": ^0.8.0
-    "@terra-dev/web-connector-interface": ^0.8.0
+    "@terra-dev/web-connector-controller": ^0.8.1
+    "@terra-dev/web-connector-interface": ^0.8.1
     "@terra-money/terra.js": ^2.0.16
     "@testing-library/jest-dom": ^5.15.0
     "@types/jest": ^27.0.2
