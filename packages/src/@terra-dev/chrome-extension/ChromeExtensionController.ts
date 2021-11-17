@@ -249,6 +249,9 @@ export class ChromeExtensionController {
   signBytes = <Payload extends {}>(
     bytes: Buffer,
   ): Promise<{ name: string; payload: Payload }> => {
+    if (!this._extension) {
+      throw new Error(`There is no connected wallet`);
+    }
     return this._extension.signBytes(bytes);
   };
 }
