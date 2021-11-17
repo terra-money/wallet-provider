@@ -32,7 +32,8 @@ build({
     }
     
     if ('styled-components' in dependencies) {
-      dependencies['styled-components'] = '^5.0.0';
+      delete dependencies['styled-components'];
+      peerDependencies['styled-components'] = '^5.0.0';
     }
     
     if ('@terra-money/terra.js' in dependencies) {
@@ -49,13 +50,13 @@ build({
     //    break;
     //}
 
-    switch (packageName) {
-      case '@terra-money/wallet-provider':
-        peerDependenciesMeta['react-router-dom'] = {
-          optional: true,
-        };
-        break;
-    }
+    //switch (packageName) {
+    //  case '@terra-money/wallet-provider':
+    //    peerDependenciesMeta['react-router-dom'] = {
+    //      optional: true,
+    //    };
+    //    break;
+    //}
 
     //[
     //  '@terra-money/wallet-provider',
