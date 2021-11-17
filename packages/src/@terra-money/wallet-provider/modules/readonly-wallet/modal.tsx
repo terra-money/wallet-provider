@@ -1,9 +1,9 @@
-import { ReadonlyWalletSession } from '@terra-dev/readonly-wallet';
-import { NetworkInfo } from '@terra-dev/wallet-types';
 import { AccAddress } from '@terra-money/terra.js';
+import { NetworkInfo } from '@terra-money/use-wallet';
 import { createElement, useCallback, useMemo, useState } from 'react';
 import { render } from 'react-dom';
 import styled, { keyframes } from 'styled-components';
+import { ReadonlyWalletSession } from './types';
 
 interface Options {
   networks: NetworkInfo[];

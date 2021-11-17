@@ -1,9 +1,9 @@
-import { isMobile as isMobileBrowser } from '@terra-dev/browser-check';
 import { IQRCodeModal, IQRCodeModalOptions } from '@walletconnect/types';
 import QRCode from 'qrcode.react';
 import React, { createElement, useCallback, useMemo } from 'react';
 import { render } from 'react-dom';
 import styled, { keyframes } from 'styled-components';
+import { isMobile as isMobileBrowser } from '../../utils/browser-check';
 
 export class TerraWalletconnectQrcodeModal implements IQRCodeModal {
   modalContainer: HTMLDivElement | null = null;

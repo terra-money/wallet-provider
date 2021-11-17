@@ -1,4 +1,4 @@
-import { ConnectType, useWallet } from '@terra-dev/use-wallet';
+import { ConnectType, useWallet } from '@terra-money/use-wallet';
 import { useMemo } from 'react';
 
 export function useInstallChromeExtension() {

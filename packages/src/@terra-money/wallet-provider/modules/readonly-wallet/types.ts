@@ -1,4 +1,4 @@
-import { NetworkInfo } from '@terra-dev/wallet-types';
+import { NetworkInfo } from '@terra-money/use-wallet';
 
 export interface ReadonlyWalletSession {
   network: NetworkInfo;

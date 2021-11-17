@@ -1,7 +1,7 @@
-import { isDesktopChrome } from '@terra-dev/browser-check';
-import { NetworkInfo } from '@terra-dev/wallet-types';
 import { AccAddress } from '@terra-money/terra.js';
+import { NetworkInfo } from '@terra-money/use-wallet';
 import { BehaviorSubject } from 'rxjs';
+import { isDesktopChrome } from '../../utils/browser-check';
 import { defaultSelectModal } from './defaultSelectModal';
 import { extensionFixer, FixedExtension } from './extensionFixer';
 import { ChromeExtensionInfo, getTerraChromeExtensions } from './multiChannel';

@@ -6,7 +6,7 @@ import {
   WalletInfo,
   WalletStates,
   WalletStatus,
-} from '@terra-dev/use-wallet';
+} from '@terra-money/use-wallet';
 import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { WalletController, WalletControllerOptions } from '../controller';
 

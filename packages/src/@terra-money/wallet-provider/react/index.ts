@@ -1,5 +1,5 @@
-export * from '@terra-dev/use-wallet/useWallet';
-export * from '@terra-dev/use-wallet/useConnectedWallet';
+export * from '@terra-money/use-wallet/useWallet';
+export * from '@terra-money/use-wallet/useConnectedWallet';
 
 export * from './useChainOptions';
 export * from './ExtensionNetworkOnlyWalletProvider';

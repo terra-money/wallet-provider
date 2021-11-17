@@ -1,6 +1,4 @@
-import { TxResult } from '@terra-dev/wallet-types';
-
-export type { TxResult } from '@terra-dev/wallet-types';
+import { TxResult } from './types';
 
 export interface StringifiedTxResult {
   fee: string;

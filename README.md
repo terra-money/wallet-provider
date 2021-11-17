@@ -2,9 +2,9 @@
 
 Library to make React dApps easier using Terra Station Extension or Terra Station Mobile.
 
-# Warning
+# Version `3.0` update warning
 
-`@terra-money/terra.js@2.1.x` contains many breaking changes. `wallet-provider`, which relies on terra.js, also includes breaking changes.
+`@terra-money/terra.js@3.x.x` contains many breaking changes. `wallet-provider`, which relies on terra.js, also includes breaking changes.
 
 In most cases, there won't be a big problem, and if you're using TypeScript, you'll be able to track the API that's causing the problem through TypeScript Error. (And, I wrote a comment on the API corresponding to the breaking change.)
 
@@ -116,8 +116,11 @@ Afterwards, you can use React Hooks such as `useWallet()` and `useConnectedWalle
 <summary><code>&lt;WalletProvider&gt;</code></summary>
 
 ```jsx
-import { ReadonlyWalletSession } from '@terra-dev/readonly-wallet';
-import { WalletProvider, NetworkInfo } from '@terra-money/wallet-provider';
+import {
+  WalletProvider,
+  NetworkInfo,
+  ReadonlyWalletSession,
+} from '@terra-money/wallet-provider';
 
 // network information
 const mainnet: NetworkInfo = {

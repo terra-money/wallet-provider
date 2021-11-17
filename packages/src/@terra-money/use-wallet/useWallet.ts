@@ -1,8 +1,14 @@
-import { NetworkInfo, SignResult } from '@terra-dev/wallet-types';
 import { CreateTxOptions } from '@terra-money/terra.js';
-import { Consumer, Context, createContext, useContext } from 'react';
-import { TxResult } from './tx';
-import { Connection, ConnectType, WalletInfo, WalletStatus } from './types';
+import { Context, createContext, useContext } from 'react';
+import {
+  Connection,
+  ConnectType,
+  NetworkInfo,
+  SignResult,
+  TxResult,
+  WalletInfo,
+  WalletStatus,
+} from './types';
 
 export interface Wallet {
   /**
@@ -272,8 +278,3 @@ export const WalletContext: Context<Wallet> = createContext<Wallet>();
 export function useWallet(): Wallet {
   return useContext(WalletContext);
 }
-
-/**
- * can use insteadof useWallet() on the class component
- */
-export const WalletConsumer: Consumer<Wallet> = WalletContext.Consumer;

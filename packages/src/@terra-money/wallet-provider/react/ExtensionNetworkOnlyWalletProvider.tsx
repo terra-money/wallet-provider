@@ -1,5 +1,9 @@
-import { Wallet, WalletContext, WalletStatus } from '@terra-dev/use-wallet';
-import { NetworkInfo } from '@terra-dev/wallet-types';
+import {
+  NetworkInfo,
+  Wallet,
+  WalletContext,
+  WalletStatus,
+} from '@terra-money/use-wallet';
 import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { ChromeExtensionController } from '../modules/chrome-extension';
 

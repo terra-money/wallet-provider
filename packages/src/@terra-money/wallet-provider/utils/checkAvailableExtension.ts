@@ -1,4 +1,4 @@
-import { ConnectType } from '@terra-dev/use-wallet';
+import { ConnectType } from '@terra-money/use-wallet';
 
 const interval = 500;
 

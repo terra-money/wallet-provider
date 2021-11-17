@@ -1,27 +1,3 @@
-import { isDesktopChrome } from '@terra-dev/browser-check';
-import {
-  ChromeExtensionInfo,
-  getTerraChromeExtensions,
-} from '@terra-dev/chrome-extension';
-import { readonlyWalletModal } from '@terra-dev/readonly-wallet-modal';
-import {
-  Connection,
-  ConnectType,
-  TxResult,
-  WalletInfo,
-  WalletStates,
-  WalletStatus,
-} from '@terra-dev/use-wallet';
-import {
-  CreateTxFailed,
-  NetworkInfo,
-  SignBytesResult,
-  SignResult,
-  Timeout,
-  TxFailed,
-  TxUnspecifiedError,
-  UserDenied,
-} from '@terra-dev/wallet-types';
 import { WebConnectorController } from '@terra-dev/web-connector-controller';
 import {
   WebConnectorCreateTxFailed,
@@ -39,6 +15,22 @@ import {
   Tx,
   TxBody,
 } from '@terra-money/terra.js';
+import {
+  Connection,
+  ConnectType,
+  CreateTxFailed,
+  NetworkInfo,
+  SignBytesResult,
+  SignResult,
+  Timeout,
+  TxFailed,
+  TxResult,
+  TxUnspecifiedError,
+  UserDenied,
+  WalletInfo,
+  WalletStates,
+  WalletStatus,
+} from '@terra-money/use-wallet';
 import deepEqual from 'fast-deep-equal';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
@@ -50,14 +42,17 @@ import {
 import {
   ChromeExtensionController,
   ChromeExtensionCreateTxFailed,
+  ChromeExtensionInfo,
   ChromeExtensionStatus,
   ChromeExtensionTxFailed,
   ChromeExtensionUnspecifiedError,
+  getTerraChromeExtensions,
 } from './modules/chrome-extension';
 import {
   connect as reConnect,
   connectIfSessionExists as reConnectIfSessionExists,
   ReadonlyWalletController,
+  readonlyWalletModal,
   ReadonlyWalletSession,
 } from './modules/readonly-wallet';
 import {
@@ -73,6 +68,7 @@ import {
   WalletConnectTxUnspecifiedError,
   WalletConnectUserDenied,
 } from './modules/walletconnect';
+import { isDesktopChrome } from './utils/browser-check';
 import { checkAvailableExtension } from './utils/checkAvailableExtension';
 
 export interface WalletControllerOptions

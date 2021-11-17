@@ -1,5 +1,3 @@
-import { isMobile } from '@terra-dev/browser-check';
-import { TerraWalletconnectQrcodeModal } from '@terra-dev/walletconnect-qrcode-modal';
 import { CreateTxOptions } from '@terra-money/terra.js';
 import Connector from '@walletconnect/core';
 import * as cryptoLib from '@walletconnect/iso-crypto';
@@ -9,6 +7,7 @@ import {
 } from '@walletconnect/types';
 import { uuid } from '@walletconnect/utils';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { isMobile } from '../../utils/browser-check';
 import {
   WalletConnectCreateTxFailed,
   WalletConnectTimeout,
@@ -17,6 +16,7 @@ import {
   WalletConnectUserDenied,
 } from './errors';
 import SocketTransport from './impl/socket-transport';
+import { TerraWalletconnectQrcodeModal } from './modal';
 import {
   WalletConnectSession,
   WalletConnectSessionStatus,
