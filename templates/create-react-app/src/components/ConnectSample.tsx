@@ -8,6 +8,7 @@ export function ConnectSample() {
     wallets,
     availableConnectTypes,
     availableInstallTypes,
+    availableConnections,
     connect,
     install,
     disconnect,
@@ -51,6 +52,22 @@ export function ConnectSample() {
                 Connect {connectType}
               </button>
             ))}
+            <br />
+            {availableConnections.map(
+              ({ type, name, icon, identifier = '' }) => (
+                <button
+                  key={'connection-' + type + identifier}
+                  onClick={() => connect(type, identifier)}
+                >
+                  <img
+                    src={icon}
+                    alt={name}
+                    style={{ width: '1em', height: '1em' }}
+                  />
+                  {name}
+                </button>
+              ),
+            )}
           </>
         )}
         {status === WalletStatus.WALLET_CONNECTED && (

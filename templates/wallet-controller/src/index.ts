@@ -1,4 +1,4 @@
-import { LCDClient, MsgSend, StdFee } from '@terra-money/terra.js';
+import { Fee, LCDClient, MsgSend } from '@terra-money/terra.js';
 import {
   ConnectType,
   CreateTxFailed,
@@ -126,7 +126,7 @@ import { combineLatest } from 'rxjs';
 
             controller
               .post({
-                fee: new StdFee(1000000, '200000uusd'),
+                fee: new Fee(1000000, '200000uusd'),
                 msgs: [
                   new MsgSend(states.wallets[0].terraAddress, toAddress, {
                     uusd: 1000000,

@@ -1,4 +1,4 @@
-import { MsgSend, StdFee } from '@terra-money/terra.js';
+import { Fee, MsgSend } from '@terra-money/terra.js';
 import {
   CreateTxFailed,
   Timeout,
@@ -32,7 +32,7 @@ export function TxSample() {
 
     connectedWallet
       .post({
-        fee: new StdFee(1000000, '200000uusd'),
+        fee: new Fee(1000000, '200000uusd'),
         msgs: [
           new MsgSend(connectedWallet.walletAddress, toAddress, {
             uusd: 1000000,
@@ -72,6 +72,15 @@ export function TxSample() {
       {txResult && (
         <>
           <pre>{JSON.stringify(txResult, null, 2)}</pre>
+          {connectedWallet && txResult && (
+            <a
+              href={`https://finder.terra.money/${connectedWallet.network.chainID}/tx/${txResult.result.txhash}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Open Tx Result in Terra Finder
+            </a>
+          )}
           <button onClick={() => setTxResult(null)}>Clear Tx Result</button>
         </>
       )}

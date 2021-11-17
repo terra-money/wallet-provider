@@ -20,7 +20,7 @@ export default function QuerySample() {
 
   useEffect(() => {
     if (connectedWallet && lcd) {
-      lcd.bank.balance(connectedWallet.walletAddress).then((coins) => {
+      lcd.bank.balance(connectedWallet.walletAddress).then(([coins]) => {
         setBank(coins.toString());
       });
     } else {

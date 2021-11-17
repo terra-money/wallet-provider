@@ -34,8 +34,8 @@
     ]
   },
   "dependencies": {
-    "@terra-money/terra.js": "^2.0.16",
-    "@terra-money/wallet-provider": "^2.3.0",
+    "@terra-money/terra.js": "^3.0.0",
+    "@terra-money/wallet-provider": "^3.0.0-alpha.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
