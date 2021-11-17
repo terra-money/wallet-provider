@@ -1,4 +1,5 @@
 import {
+  Connection,
   ConnectType,
   Wallet,
   WalletContext,
@@ -22,6 +23,7 @@ export function WalletProvider({
   connectorOpts,
   pushServerOpts,
   createReadonlyWalletSession,
+  selectChromeExtension,
   waitingChromeExtensionInstallCheck,
   dangerously__chromeExtensionCompatibleBrowserCheck,
 }: WalletProviderProps) {
@@ -33,6 +35,7 @@ export function WalletProvider({
         connectorOpts,
         pushServerOpts,
         createReadonlyWalletSession,
+        selectChromeExtension,
         waitingChromeExtensionInstallCheck,
         dangerously__chromeExtensionCompatibleBrowserCheck,
       }),
@@ -44,6 +47,10 @@ export function WalletProvider({
 
   const [availableInstallTypes, setAvailableInstallTypes] = useState<
     ConnectType[]
+  >(() => []);
+
+  const [availableConnections, setAvailableConnections] = useState<
+    Connection[]
   >(() => []);
 
   const [states, setStates] = useState<WalletStates>(() => ({
@@ -68,6 +75,14 @@ export function WalletProvider({
         },
       });
 
+    const availableConnectionsSubscription = controller
+      .availableConnections()
+      .subscribe({
+        next: (value) => {
+          setAvailableConnections(value);
+        },
+      });
+
     const statesSubscription = controller.states().subscribe({
       next: (value) => {
         setStates(value);
@@ -77,6 +92,7 @@ export function WalletProvider({
     return () => {
       availableConnectTypesSubscription.unsubscribe();
       availableInstallTypesSubscription.unsubscribe();
+      availableConnectionsSubscription.unsubscribe();
       statesSubscription.unsubscribe();
     };
   }, [controller]);
@@ -85,6 +101,7 @@ export function WalletProvider({
     return {
       availableConnectTypes,
       availableInstallTypes,
+      availableConnections,
       status: states.status,
       network: states.network,
       wallets:
@@ -105,6 +122,7 @@ export function WalletProvider({
   }, [
     availableConnectTypes,
     availableInstallTypes,
+    availableConnections,
     controller.connect,
     controller.connectReadonly,
     controller.disconnect,

@@ -1,11 +1,11 @@
 {
   "$schema": "https://rocket-hangar.github.io/rocket-punch/schemas/packages.json",
   "@terra-dev/*": {
-    "version": "2.4.0-alpha.3",
-    "tag": "next"
+    "version": "2.5.3",
+    "tag": "latest"
   },
   "@terra-money/*": {
-    "version": "2.4.0-alpha.5",
-    "tag": "next"
+    "version": "2.5.3",
+    "tag": "latest"
   }
 }

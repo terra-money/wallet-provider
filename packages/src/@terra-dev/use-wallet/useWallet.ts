@@ -2,7 +2,7 @@ import { NetworkInfo, SignResult } from '@terra-dev/wallet-types';
 import { CreateTxOptions } from '@terra-money/terra.js';
 import { Consumer, Context, createContext, useContext } from 'react';
 import { TxResult } from './tx';
-import { ConnectType, WalletInfo, WalletStatus } from './types';
+import { Connection, ConnectType, WalletInfo, WalletStatus } from './types';
 
 export interface Wallet {
   /**
@@ -39,6 +39,28 @@ export interface Wallet {
   availableConnectTypes: ConnectType[];
 
   /**
+   * available connections includes identifier, name, icon
+   *
+   * @example
+   * ```
+   * const { availableConnections, connect } = useWallet()
+   *
+   * return (
+   *  <div>
+   *    {
+   *      availableConnections.map(({type, identifier, name, icon}) => (
+   *        <butotn key={`${type}:${identifier}`} onClick={() => connect(type, identifier)}>
+   *          <img src={icon} /> {name}
+   *        </button>
+   *      ))
+   *    }
+   *  </div>
+   * )
+   * ```
+   */
+  availableConnections: Connection[];
+
+  /**
    * connect to wallet
    *
    * @example
@@ -55,7 +77,7 @@ export interface Wallet {
    * @see Wallet#availableConnectTypes
    * @see WalletController#connect
    */
-  connect: (type: ConnectType) => void;
+  connect: (type: ConnectType, identifier?: string) => void;
 
   /**
    * manual connect to read only session

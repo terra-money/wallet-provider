@@ -1,6 +1,11 @@
 import { isDesktopChrome } from '@terra-dev/browser-check';
+import {
+  ChromeExtensionInfo,
+  getTerraChromeExtensions,
+} from '@terra-dev/chrome-extension';
 import { readonlyWalletModal } from '@terra-dev/readonly-wallet-modal';
 import {
+  Connection,
   ConnectType,
   TxResult,
   WalletInfo,
@@ -120,6 +125,14 @@ export interface WalletControllerOptions
   ) => Promise<ReadonlyWalletSession | null>;
 
   /**
+   * run at executing the `connect(ConnectType.CHROME_EXTENSION)`
+   * if user installed multiple wallets
+   */
+  selectChromeExtension?: (
+    extensionInfos: ChromeExtensionInfo[],
+  ) => Promise<ChromeExtensionInfo | null>;
+
+  /**
    * milliseconds to wait checking chrome extension is installed
    *
    * @default 1000 * 3 miliseconds
@@ -140,6 +153,24 @@ export interface WalletControllerOptions
     userAgent: string,
   ) => boolean;
 }
+
+const CONNECTIONS = {
+  [ConnectType.READONLY]: {
+    type: ConnectType.READONLY,
+    name: 'View an address',
+    icon: 'https://assets.terra.money/icon/station-extension/icon.png',
+  } as Connection,
+  [ConnectType.WALLETCONNECT]: {
+    type: ConnectType.WALLETCONNECT,
+    name: 'Terra Station Mobile',
+    icon: 'https://assets.terra.money/icon/station-extension/icon.png',
+  } as Connection,
+  [ConnectType.WEB_CONNECT]: {
+    type: ConnectType.WEB_CONNECT,
+    name: 'Terra Station',
+    icon: 'https://assets.terra.money/icon/station-extension/icon.png',
+  } as Connection,
+} as const;
 
 const defaultWaitingChromeExtensionInstallCheck = 1000 * 3;
 
@@ -235,6 +266,7 @@ export class WalletController {
         this.chromeExtension = new ChromeExtensionController({
           enableWalletConnection: true,
           defaultNetwork: options.defaultNetwork,
+          selectExtension: options.selectChromeExtension,
           dangerously__chromeExtensionCompatibleBrowserCheck:
             options.dangerously__chromeExtensionCompatibleBrowserCheck ??
             DEFAULT_CHROME_EXTENSION_COMPATIBLE_BROWSER_CHECK,
@@ -317,6 +349,32 @@ export class WalletController {
     return this._availableConnectTypes.asObservable();
   };
 
+  /** @see Wallet#availableConnections */
+  availableConnections = (): Observable<Connection[]> => {
+    return this._availableConnectTypes.pipe(
+      map((connectTypes) => {
+        const connections: Connection[] = [];
+
+        for (const connectType of connectTypes) {
+          if (connectType === ConnectType.CHROME_EXTENSION) {
+            const terraExtensions = getTerraChromeExtensions();
+
+            for (const terraExtension of terraExtensions) {
+              connections.push({
+                type: ConnectType.CHROME_EXTENSION,
+                ...terraExtension,
+              });
+            }
+          } else {
+            connections.push(CONNECTIONS[connectType]);
+          }
+        }
+
+        return connections;
+      }),
+    );
+  };
+
   /** @see Wallet#availableInstallTypes */
   availableInstallTypes = (): Observable<ConnectType[]> => {
     return this._availableInstallTypes.asObservable();
@@ -375,7 +433,7 @@ export class WalletController {
   };
 
   /** @see Wallet#connect */
-  connect = (type: ConnectType) => {
+  connect = (type: ConnectType, identifier?: string) => {
     switch (type) {
       case ConnectType.READONLY:
         const networks: NetworkInfo[] = Object.keys(
@@ -396,7 +454,7 @@ export class WalletController {
         this.enableWalletConnect(wcConnect(this.options));
         break;
       case ConnectType.CHROME_EXTENSION:
-        this.chromeExtension!.connect().then((success) => {
+        this.chromeExtension!.connect(identifier).then((success) => {
           if (success) {
             this.enableChromeExtension();
           }

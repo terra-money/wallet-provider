@@ -1,4 +1,5 @@
 import {
+  Connection,
   ConnectType,
   Wallet,
   WalletContext,
@@ -14,6 +15,7 @@ export interface StaticWalletProviderProps {
   status?: WalletStatus;
   availableConnectTypes?: ConnectType[];
   availableInstallTypes?: ConnectType[];
+  availableConnections?: Connection[];
   wallets?: WalletInfo[];
 }
 
@@ -23,12 +25,14 @@ export function StaticWalletProvider({
   status = WalletStatus.INITIALIZING,
   availableConnectTypes = [],
   availableInstallTypes = [],
+  availableConnections = [],
   wallets = [],
 }: StaticWalletProviderProps) {
   const state = useMemo<Wallet>(() => {
     return {
       availableConnectTypes,
       availableInstallTypes,
+      availableConnections,
       status,
       network: defaultNetwork,
       wallets,
@@ -63,6 +67,7 @@ export function StaticWalletProvider({
   }, [
     availableConnectTypes,
     availableInstallTypes,
+    availableConnections,
     defaultNetwork,
     status,
     wallets,

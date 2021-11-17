@@ -26,7 +26,7 @@ If you want to test features quickly, you can simply run them on CodeSandbox wit
 
 And if you need to start your project from local computer, use the templates below. 👇
 
-### Craete React App
+### Create React App
 
 ```sh
 npx copy-github-directory https://github.com/terra-money/wallet-provider/tree/main/templates/create-react-app your-app-name
@@ -201,6 +201,12 @@ const {
   // Available when configuring a UI that determines which Connect Type to connect to.
   availableConnectTypes,
 
+  // It can be used instead of available ConnectTypes.
+  //
+  // If user have multiple extensions installed in its browser,
+  // it can get more detailed information than available ConnectTypes.
+  availableConnections,
+
   // Can receive the Connect Types that are currently available for installation.
   //
   // If the Browser is Desktop Chrome and does not have Chrome Extension installed,
@@ -315,9 +321,9 @@ function Component() {
 - [Anchor Web App](https://github.com/Anchor-Protocol/anchor-web-app/blob/master/base/src/base/AppProviders.tsx#L154)
 - [Mirror Web App](https://github.com/Mirror-Protocol/terra-web-app/blob/master/src/layouts/WalletConnectProvider.tsx#L12)
 
-# Other documents
+# Links
 
-- [한국어 (Notion)](https://www.notion.so/terramoneyteam/terra-money-wallet-provider-0-14-0-49a62205608c4e0085e1c8f5361ccc46)
+- [Releases (Changelog)](https://github.com/terra-money/wallet-provider/releases)
 
 # Trouble-shooting guide
 

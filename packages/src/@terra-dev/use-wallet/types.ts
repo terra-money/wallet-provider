@@ -20,6 +20,14 @@ export enum ConnectType {
   READONLY = 'READONLY',
 }
 
+export interface Connection {
+  type: ConnectType;
+  identifier?: string;
+
+  name: string;
+  icon: string;
+}
+
 export interface WalletInfo {
   connectType: ConnectType;
   terraAddress: string;
