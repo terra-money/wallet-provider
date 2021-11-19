@@ -5,10 +5,8 @@ export function useInstallChromeExtension() {
   const { availableInstallTypes, install } = useWallet();
 
   return useMemo<(() => void) | null>(() => {
-    return availableInstallTypes.some(
-      (type) => type === ConnectType.CHROME_EXTENSION,
-    )
-      ? () => install(ConnectType.CHROME_EXTENSION)
+    return availableInstallTypes.some((type) => type === ConnectType.EXTENSION)
+      ? () => install(ConnectType.EXTENSION)
       : null;
   }, [availableInstallTypes, install]);
 }

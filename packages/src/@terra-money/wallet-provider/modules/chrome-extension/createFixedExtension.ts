@@ -1,4 +1,4 @@
-import { Extension } from '@terra-money/terra.js';
+import { CreateTxOptions, Extension, Tx } from '@terra-money/terra.js';
 import { NetworkInfo, UserDenied } from '@terra-money/use-wallet';
 import {
   ChromeExtensionCreateTxFailed,
@@ -7,20 +7,29 @@ import {
 } from './errors';
 
 type ConnectResponse = { address?: string };
-type PostResponse = any;
-type SignResponse = any;
+type PostResponse = {
+  result: {
+    height: number;
+    raw_log: string;
+    txhash: string;
+  };
+};
+type SignResponse = {
+  result: Tx.Data;
+};
 type SignBytesResponse = any;
 type InfoResponse = NetworkInfo;
 
 export interface FixedExtension {
   ///** @deprecated do not use extension.isAvailable just use window.isTerraExtensionAvailable... */
   //isAvailable: () => boolean;
-  post: (data: object) => Promise<PostResponse>;
-  sign: (data: object) => Promise<SignResponse>;
+  post: (data: CreateTxOptions) => Promise<PostResponse>;
+  sign: (data: CreateTxOptions) => Promise<SignResponse>;
   signBytes: (bytes: Buffer) => Promise<SignBytesResponse>;
   info: () => Promise<InfoResponse>;
   connect: () => Promise<ConnectResponse>;
   inTransactionProgress: () => boolean;
+  disconnect: () => void;
 }
 
 function toExplicitError(error: any) {
@@ -50,7 +59,7 @@ function toExplicitError(error: any) {
 
 const pool = new Map<string, FixedExtension>();
 
-export function extensionFixer(identifier: string): FixedExtension {
+export function createFixedExtension(identifier: string): FixedExtension {
   if (pool.has(identifier)) {
     return pool.get(identifier)!;
   }
@@ -263,6 +272,14 @@ export function extensionFixer(identifier: string): FixedExtension {
     });
   }
 
+  function disconnect() {
+    connectResolvers.clear();
+    infoResolvers.clear();
+    postResolvers.clear();
+    signResolvers.clear();
+    signBytesResolvers.clear();
+  }
+
   //function isAvailable() {
   //  return extension.isAvailable;
   //}
@@ -278,6 +295,7 @@ export function extensionFixer(identifier: string): FixedExtension {
     connect,
     info,
     //isAvailable,
+    disconnect,
     inTransactionProgress,
   };
 

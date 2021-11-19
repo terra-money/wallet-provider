@@ -32,3 +32,4 @@ test/storage/
 .eslintcache
 .chrome/
 tsconfig.tsbuildinfo
+puppeteer-user-data/

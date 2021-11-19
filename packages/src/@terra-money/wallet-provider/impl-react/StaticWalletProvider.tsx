@@ -57,7 +57,7 @@ export function StaticWalletProvider({
       signBytes: () => {
         throw new Error('not implemented!');
       },
-      recheckStatus: () => {
+      refetchStates: () => {
         throw new Error('not implemented!');
       },
       isChromeExtensionCompatibleBrowser: () => {

@@ -149,13 +149,11 @@ export interface Wallet {
   disconnect: () => void;
 
   /**
-   * reload the connected wallet status
+   * reload the connected wallet states
    *
    * in this time, this only work on the chrome extension connection
-   *
-   * @see Wallet#status
    */
-  recheckStatus: () => void;
+  refetchStates: () => void;
 
   /**
    * post transaction
@@ -179,7 +177,7 @@ export interface Wallet {
    * ```
    *
    * @param { CreateTxOptions } tx transaction data
-   * @param { { terraAddress?: string } } txTarget - does not work at this time. for the future extension
+   * @param terraAddress - does not work at this time. for the future extension
    *
    * @return { Promise<TxResult> }
    *
@@ -191,10 +189,7 @@ export interface Wallet {
    *
    * @see WalletController#post
    */
-  post: (
-    tx: CreateTxOptions,
-    txTarget?: { terraAddress?: string },
-  ) => Promise<TxResult>;
+  post: (tx: CreateTxOptions, terraAddress?: string) => Promise<TxResult>;
 
   /**
    * sign transaction
@@ -238,7 +233,7 @@ export interface Wallet {
    * ```
    *
    * @param { CreateTxOptions } tx transaction data
-   * @param { { terraAddress?: string } } txTarget - does not work at this time. for the future extension
+   * @param terraAddress - does not work at this time. for the future extension
    *
    * @return { Promise<SignResult> }
    *
@@ -250,10 +245,7 @@ export interface Wallet {
    *
    * @see WalletController#sign
    */
-  sign: (
-    tx: CreateTxOptions,
-    txTarget?: { terraAddress?: string },
-  ) => Promise<SignResult>;
+  sign: (tx: CreateTxOptions, terraAddress?: string) => Promise<SignResult>;
 
   ///**
   // * TODO

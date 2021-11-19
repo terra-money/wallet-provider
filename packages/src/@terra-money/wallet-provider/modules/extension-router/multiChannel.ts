@@ -1,16 +1,21 @@
-export interface ChromeExtensionInfo {
+import { TerraWebExtensionConnector } from '@terra-dev/web-extension-interface';
+
+export interface ExtensionInfo {
   name: string;
   identifier: string;
   icon: string;
+  connector?: () =>
+    | TerraWebExtensionConnector
+    | Promise<TerraWebExtensionConnector>;
 }
 
 declare global {
   interface Window {
-    terraWallets: ChromeExtensionInfo[] | undefined;
+    terraWallets: ExtensionInfo[] | undefined;
   }
 }
 
-export function getTerraChromeExtensions(): ChromeExtensionInfo[] {
+export function getTerraExtensions(): ExtensionInfo[] {
   return Array.isArray(window.terraWallets)
     ? window.terraWallets
     : window.isTerraExtensionAvailable

@@ -50,6 +50,7 @@ export function SignSample() {
         setSignResult(nextSignResult);
 
         // FIXME API changed please refer this comments
+        // TODO remove after a month
         //const { signature, public_key, stdSignMsgData } = nextSignResult.result;
         //
         //const sig = StdSignature.fromData({
@@ -60,7 +61,7 @@ export function SignSample() {
         //const stdSignMsg = StdSignMsg.fromData(stdSignMsgData);
 
         // broadcast
-        const { tx } = nextSignResult.result;
+        const tx = nextSignResult.result;
 
         const lcd = new LCDClient({
           chainID: connectedWallet.network.chainID,

@@ -5,6 +5,7 @@
     "build": "TS_NODE_PROJECT=tsconfig.script.json node -r ts-node/register -r tsconfig-paths/register scripts/build.ts",
     "publish": "rocket-punch publish",
     "start": "HTTPS=true SSL_CRT_FILE=$LOCALHOST_HTTPS_CERT SSL_KEY_FILE=$LOCALHOST_HTTPS_KEY PORT=9221 react-scripts start",
+    "start:multiple-wallets": "TS_NODE_PROJECT=tsconfig.script.json node -r ts-node/register -r tsconfig-paths/register scripts/start.multiple-wallets.ts",
     "test": "react-scripts test --colors",
     "coverage": "react-scripts test --coverage",
     "precommit": "lint-staged"
@@ -40,8 +41,7 @@
     ]
   },
   "dependencies": {
-    "@terra-dev/web-connector-controller": "^0.9.0",
-    "@terra-dev/web-connector-interface": "^0.9.0",
+    "@terra-dev/web-extension-interface": "^0.12.0",
     "@terra-money/terra.js": "^3.0.0",
     "@walletconnect/core": "^1.6.6",
     "@walletconnect/iso-crypto": "^1.6.6",
@@ -78,6 +78,7 @@
     "puppeteer": "^11.0.0",
     "react-scripts": "4.0.3",
     "rocket-punch": "^3.0.2",
+    "terra-web-extension": "^0.11.4",
     "ts-node": "^10.4.0",
     "tsconfig-paths": "^3.11.0",
     "typescript": "^4.4.4",

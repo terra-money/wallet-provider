@@ -2,15 +2,15 @@ import { fixHMR } from 'fix-hmr';
 import { createElement } from 'react';
 import { render } from 'react-dom';
 import styled, { keyframes } from 'styled-components';
-import { ChromeExtensionInfo } from './multiChannel';
+import { ExtensionInfo } from './multiChannel';
 
 export function defaultSelectModal(
-  extensionInfos: ChromeExtensionInfo[],
-): Promise<ChromeExtensionInfo | null> {
-  return new Promise<ChromeExtensionInfo | null>((resolve) => {
+  extensionInfos: ExtensionInfo[],
+): Promise<ExtensionInfo | null> {
+  return new Promise<ExtensionInfo | null>((resolve) => {
     const modalContainer = window.document.createElement('div');
 
-    function onComplete(extensionInfo: ChromeExtensionInfo | null) {
+    function onComplete(extensionInfo: ExtensionInfo | null) {
       resolve(extensionInfo);
       modalContainer.parentElement?.removeChild(modalContainer);
     }
@@ -31,8 +31,8 @@ function Component({
   onComplete,
 }: {
   className?: string;
-  extensionInfos: ChromeExtensionInfo[];
-  onComplete: (extensionInfo: ChromeExtensionInfo | null) => void;
+  extensionInfos: ExtensionInfo[];
+  onComplete: (extensionInfo: ExtensionInfo | null) => void;
 }) {
   return (
     <div className={className}>
@@ -45,7 +45,9 @@ function Component({
             <li key={extensionInfo.identifier}>
               <button onClick={() => onComplete(extensionInfo)}>
                 <img src={extensionInfo.icon} alt={extensionInfo.name} />
-                <span>{extensionInfo.name}</span>
+                <span>
+                  {extensionInfo.name} [{extensionInfo.identifier}]
+                </span>
               </button>
             </li>
           ))}

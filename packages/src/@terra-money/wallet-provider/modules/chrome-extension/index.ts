@@ -1,4 +1,2 @@
-export * from './ChromeExtensionController';
-export * from './types';
-export * from './errors';
-export * from './multiChannel';
+export * from './ChromeExtensionConnector';
+export * from './createFixedExtension';

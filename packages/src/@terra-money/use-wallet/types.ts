@@ -21,19 +21,7 @@ export interface TxResult extends CreateTxOptions {
 }
 
 export interface SignResult extends CreateTxOptions {
-  result: {
-    /** @deprecated This API has been deprecated. please use result.tx.auth_info */
-    public_key: null;
-    /** @deprecated This API has been deprecated. this value will be always 0 */
-    recid: number;
-    /** @deprecated This API has been deprecated. please use result.tx.signatures */
-    signature: null;
-    /** @deprecated This API has been deprecated. please use result.tx or result.txData */
-    stdSignMsgData: null;
-
-    txData: Tx.Data;
-    tx: Tx;
-  };
+  result: Tx;
   success: boolean;
 }
 
@@ -55,10 +43,7 @@ export enum WalletStatus {
 
 export enum ConnectType {
   /** Terra Station Chrome Extension */
-  CHROME_EXTENSION = 'CHROME_EXTENSION',
-
-  /** [Hidden mode]: Next version of the Terra Station Browser Extensions */
-  WEB_CONNECT = 'WEB_CONNECT',
+  EXTENSION = 'EXTENSION',
 
   /** Terra Station Mobile */
   WALLETCONNECT = 'WALLETCONNECT',

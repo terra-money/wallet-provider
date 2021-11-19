@@ -64,7 +64,7 @@ export function ConnectSample() {
                     alt={name}
                     style={{ width: '1em', height: '1em' }}
                   />
-                  {name}
+                  {name} [{identifier}]
                 </button>
               ),
             )}

@@ -1,13 +1,6 @@
 import bowser from 'bowser';
 import MobileDetect from 'mobile-detect';
 
-/**
- * @deprecated use instead of <WalletProvider dangerously__chromeExtensionCompatibleBrowserCheck={} />
- */
-export function isMathWallet(userAgent: string) {
-  return /MathWallet\//.test(userAgent);
-}
-
 export const isMobile = () => {
   const mobileDetect = new MobileDetect(navigator.userAgent);
 

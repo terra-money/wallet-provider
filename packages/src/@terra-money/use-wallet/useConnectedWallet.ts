@@ -13,8 +13,9 @@ type HumanAddr = string & { __type: 'HumanAddr' };
 
 export interface ConnectedWallet {
   network: NetworkInfo;
-  terraAddress: HumanAddr;
   walletAddress: HumanAddr;
+  /** terraAddress is same as walletAddress */
+  terraAddress: HumanAddr;
   design?: string;
   post: (tx: CreateTxOptions) => Promise<TxResult>;
   sign: (tx: CreateTxOptions) => Promise<SignResult>;
@@ -43,19 +44,18 @@ export function useConnectedWallet(): ConnectedWallet | undefined {
           walletAddress: terraAddress as HumanAddr,
           design,
           post: (tx: CreateTxOptions) => {
-            return post(tx, { terraAddress });
+            return post(tx, terraAddress);
           },
           sign: (tx: CreateTxOptions) => {
-            return sign(tx, { terraAddress });
+            return sign(tx, terraAddress);
           },
           //signBytes: (bytes: Buffer) => {
           //  return signBytes(bytes, { terraAddress });
           //},
           availablePost:
-            connectType === ConnectType.WEB_CONNECT ||
-            connectType === ConnectType.CHROME_EXTENSION ||
+            connectType === ConnectType.EXTENSION ||
             connectType === ConnectType.WALLETCONNECT,
-          availableSign: connectType === ConnectType.CHROME_EXTENSION,
+          availableSign: connectType === ConnectType.EXTENSION,
           //availableSignBytes: connectType === ConnectType.CHROME_EXTENSION,
           connectType,
         };

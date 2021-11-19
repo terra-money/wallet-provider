@@ -23,7 +23,7 @@ export function WalletProvider({
   connectorOpts,
   pushServerOpts,
   createReadonlyWalletSession,
-  selectChromeExtension,
+  selectExtension,
   waitingChromeExtensionInstallCheck,
   dangerously__chromeExtensionCompatibleBrowserCheck,
 }: WalletProviderProps) {
@@ -35,7 +35,7 @@ export function WalletProvider({
         connectorOpts,
         pushServerOpts,
         createReadonlyWalletSession,
-        selectChromeExtension,
+        selectExtension,
         waitingChromeExtensionInstallCheck,
         dangerously__chromeExtensionCompatibleBrowserCheck,
       }),
@@ -114,8 +114,8 @@ export function WalletProvider({
       disconnect: controller.disconnect,
       post: controller.post,
       sign: controller.sign,
-      signBytes: controller.signBytes,
-      recheckStatus: controller.recheckStatus,
+      //signBytes: controller.signBytes,
+      refetchStates: controller.refetchStates,
       isChromeExtensionCompatibleBrowser:
         controller.isChromeExtensionCompatibleBrowser,
     };
@@ -129,8 +129,7 @@ export function WalletProvider({
     controller.install,
     controller.post,
     controller.sign,
-    controller.signBytes,
-    controller.recheckStatus,
+    controller.refetchStates,
     controller.isChromeExtensionCompatibleBrowser,
     states,
   ]);

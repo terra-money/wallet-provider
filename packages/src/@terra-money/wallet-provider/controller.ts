@@ -1,53 +1,40 @@
-import { WebConnectorController } from '@terra-dev/web-connector-controller';
 import {
-  WebConnectorCreateTxFailed,
-  WebConnectorStatusType,
-  WebConnectorTxFailed,
-  WebConnectorTxResult,
-  WebConnectorTxStatus,
-  WebConnectorUserDenied,
-} from '@terra-dev/web-connector-interface';
-import {
-  AccAddress,
-  AuthInfo,
-  CreateTxOptions,
-  PublicKey,
-  Tx,
-  TxBody,
-} from '@terra-money/terra.js';
+  WebExtensionCreateTxFailed,
+  WebExtensionTxFailed,
+  WebExtensionTxStatus,
+  WebExtensionTxUnspecifiedError,
+  WebExtensionUserDenied,
+} from '@terra-dev/web-extension-interface';
+import { AccAddress, CreateTxOptions, Tx } from '@terra-money/terra.js';
 import {
   Connection,
   ConnectType,
   CreateTxFailed,
   NetworkInfo,
-  SignBytesResult,
   SignResult,
   Timeout,
   TxFailed,
   TxResult,
   TxUnspecifiedError,
   UserDenied,
-  WalletInfo,
   WalletStates,
   WalletStatus,
 } from '@terra-money/use-wallet';
 import deepEqual from 'fast-deep-equal';
-import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import {
   CHROME_EXTENSION_INSTALL_URL,
   DEFAULT_CHROME_EXTENSION_COMPATIBLE_BROWSER_CHECK,
-  WEB_EXTENSION_CONNECTED_KEY,
 } from './env';
 import {
-  ChromeExtensionController,
-  ChromeExtensionCreateTxFailed,
-  ChromeExtensionInfo,
-  ChromeExtensionStatus,
-  ChromeExtensionTxFailed,
-  ChromeExtensionUnspecifiedError,
-  getTerraChromeExtensions,
-} from './modules/chrome-extension';
+  ExtensionRouter,
+  ExtensionRouterStatus,
+} from './modules/extension-router';
+import {
+  ExtensionInfo,
+  getTerraExtensions,
+} from './modules/extension-router/multiChannel';
 import {
   connect as reConnect,
   connectIfSessionExists as reConnectIfSessionExists,
@@ -64,12 +51,11 @@ import {
   WalletConnectSessionStatus,
   WalletConnectTimeout,
   WalletConnectTxFailed,
-  WalletConnectTxResult,
   WalletConnectTxUnspecifiedError,
   WalletConnectUserDenied,
 } from './modules/walletconnect';
 import { isDesktopChrome } from './utils/browser-check';
-import { checkAvailableExtension } from './utils/checkAvailableExtension';
+import { checkExtensionReady } from './utils/checkExtensionReady';
 
 export interface WalletControllerOptions
   extends WalletConnectControllerOptions {
@@ -124,9 +110,9 @@ export interface WalletControllerOptions
    * run at executing the `connect(ConnectType.CHROME_EXTENSION)`
    * if user installed multiple wallets
    */
-  selectChromeExtension?: (
-    extensionInfos: ChromeExtensionInfo[],
-  ) => Promise<ChromeExtensionInfo | null>;
+  selectExtension?: (
+    extensionInfos: ExtensionInfo[],
+  ) => Promise<ExtensionInfo | null>;
 
   /**
    * milliseconds to wait checking chrome extension is installed
@@ -161,18 +147,12 @@ const CONNECTIONS = {
     name: 'Terra Station Mobile',
     icon: 'https://assets.terra.money/icon/station-extension/icon.png',
   } as Connection,
-  [ConnectType.WEB_CONNECT]: {
-    type: ConnectType.WEB_CONNECT,
-    name: 'Terra Station',
-    icon: 'https://assets.terra.money/icon/station-extension/icon.png',
-  } as Connection,
 } as const;
 
 const defaultWaitingChromeExtensionInstallCheck = 1000 * 3;
 
 export class WalletController {
-  private chromeExtension: ChromeExtensionController | null = null;
-  private webConnector: WebConnectorController | null = null;
+  private extension: ExtensionRouter | null = null;
   private walletConnect: WalletConnectController | null = null;
   private readonlyWallet: ReadonlyWalletController | null = null;
 
@@ -181,8 +161,7 @@ export class WalletController {
   private _states: BehaviorSubject<WalletStates>;
 
   private disableReadonlyWallet: (() => void) | null = null;
-  private disableChromeExtension: (() => void) | null = null;
-  private disableWebExtension: (() => void) | null = null;
+  private disableExtension: (() => void) | null = null;
   private disableWalletConnect: (() => void) | null = null;
 
   private readonly _notConnected: WalletStates;
@@ -212,83 +191,43 @@ export class WalletController {
 
     // wait checking the availability of the chrome extension
     // 0. check if extension wallet session is exists
-    checkAvailableExtension(
+    checkExtensionReady(
       options.waitingChromeExtensionInstallCheck ??
         defaultWaitingChromeExtensionInstallCheck,
       this.isChromeExtensionCompatibleBrowser(),
-    ).then((extensionType) => {
-      if (extensionType === ConnectType.WEB_CONNECT) {
+    ).then((ready: boolean) => {
+      if (ready) {
         this._availableConnectTypes.next([
-          ConnectType.READONLY,
-          ConnectType.WEB_CONNECT,
+          ConnectType.EXTENSION,
           ConnectType.WALLETCONNECT,
+          ConnectType.READONLY,
         ]);
 
-        this.webConnector = new WebConnectorController(window);
-
-        const subscription = this.webConnector
-          .status()
-          .pipe(
-            filter((webExtensionStatus) => {
-              return (
-                webExtensionStatus.type !== WebConnectorStatusType.INITIALIZING
-              );
-            }),
-          )
-          .subscribe((webExtensionStatus) => {
-            subscription.unsubscribe();
-
-            if (
-              webExtensionStatus.type === WebConnectorStatusType.READY &&
-              localStorage.getItem(WEB_EXTENSION_CONNECTED_KEY) === 'true' &&
-              !this.disableWalletConnect &&
-              !this.disableReadonlyWallet
-            ) {
-              this.enableWebExtension();
-            } else if (numSessionCheck === 0) {
-              numSessionCheck += 1;
-            } else {
-              this.updateStates(this._notConnected);
-              localStorage.removeItem(WEB_EXTENSION_CONNECTED_KEY);
-            }
-          });
-      } else if (extensionType === ConnectType.CHROME_EXTENSION) {
-        this._availableConnectTypes.next([
-          ConnectType.READONLY,
-          ConnectType.CHROME_EXTENSION,
-          ConnectType.WALLETCONNECT,
-        ]);
-
-        this.chromeExtension = new ChromeExtensionController({
-          enableWalletConnection: true,
-          defaultNetwork: options.defaultNetwork,
-          selectExtension: options.selectChromeExtension,
+        this.extension = new ExtensionRouter({
+          hostWindow: window,
+          selectExtension: options.selectExtension,
           dangerously__chromeExtensionCompatibleBrowserCheck:
             options.dangerously__chromeExtensionCompatibleBrowserCheck ??
             DEFAULT_CHROME_EXTENSION_COMPATIBLE_BROWSER_CHECK,
+          defaultNetwork: options.defaultNetwork,
         });
 
-        const subscription = this.chromeExtension
-          .status()
+        const subscription = this.extension
+          .states()
           .pipe(
-            filter((chromeExtensionStatus) => {
-              return (
-                chromeExtensionStatus !== ChromeExtensionStatus.INITIALIZING
-              );
-            }),
+            filter(({ type }) => type !== ExtensionRouterStatus.INITIALIZING),
           )
-          .subscribe((chromeExtensionStatus) => {
+          .subscribe((extensionStates) => {
             try {
               subscription.unsubscribe();
             } catch {}
 
             if (
-              chromeExtensionStatus ===
-                ChromeExtensionStatus.WALLET_CONNECTED &&
+              extensionStates.type === ExtensionRouterStatus.WALLET_CONNECTED &&
               !this.disableWalletConnect &&
               !this.disableReadonlyWallet
             ) {
-              this.enableChromeExtension();
+              this.enableExtension();
             } else if (numSessionCheck === 0) {
               numSessionCheck += 1;
             } else {
@@ -297,7 +236,7 @@ export class WalletController {
           });
       } else {
         if (isDesktopChrome(this.isChromeExtensionCompatibleBrowser())) {
-          this._availableInstallTypes.next([ConnectType.CHROME_EXTENSION]);
+          this._availableInstallTypes.next([ConnectType.EXTENSION]);
         }
 
         if (numSessionCheck === 0) {
@@ -352,13 +291,15 @@ export class WalletController {
         const connections: Connection[] = [];
 
         for (const connectType of connectTypes) {
-          if (connectType === ConnectType.CHROME_EXTENSION) {
-            const terraExtensions = getTerraChromeExtensions();
+          if (connectType === ConnectType.EXTENSION) {
+            const terraExtensions = getTerraExtensions();
 
             for (const terraExtension of terraExtensions) {
               connections.push({
-                type: ConnectType.CHROME_EXTENSION,
-                ...terraExtension,
+                type: ConnectType.EXTENSION,
+                identifier: terraExtension.identifier,
+                name: terraExtension.name,
+                icon: terraExtension.icon,
               });
             }
           } else {
@@ -385,46 +326,22 @@ export class WalletController {
     return this._states.asObservable();
   };
 
-  /** @deprecated please use `states()` */
-  status = (): Observable<WalletStatus> => {
-    return this._states.pipe(map((data) => data.status));
-  };
-
-  /** @deprecated please use `states()` */
-  network = (): Observable<NetworkInfo> => {
-    return this._states.pipe(map((data) => data.network));
-  };
-
-  /** @deprecated please use `states()` */
-  wallets = (): Observable<WalletInfo[]> => {
-    return this._states.pipe(
-      map((data) =>
-        data.status === WalletStatus.WALLET_CONNECTED ? data.wallets : [],
-      ),
-    );
-  };
-
   /** @see Wallet#recheckStatus */
-  recheckStatus = () => {
-    if (this.disableChromeExtension) {
-      this.chromeExtension?.recheckStatus();
+  refetchStates = () => {
+    if (this.disableExtension) {
+      this.extension?.refetchStates();
     }
   };
 
   /** @see Wallet#install */
   install = (type: ConnectType) => {
-    if (type === ConnectType.CHROME_EXTENSION) {
+    if (type === ConnectType.EXTENSION) {
+      // TODO separate install links by browser types
       window.open(CHROME_EXTENSION_INSTALL_URL, '_blank');
-    } else if (type === ConnectType.WEB_CONNECT) {
-      const webExtensionStatus = this.webConnector?.getLastStatus();
-      if (
-        webExtensionStatus?.type === WebConnectorStatusType.NO_AVAILABLE &&
-        webExtensionStatus.installLink
-      ) {
-        window.open(webExtensionStatus.installLink, '_blank');
-      }
     } else {
-      console.warn(`ConnectType "${type}" does not support install() function`);
+      console.warn(
+        `[WalletController] ConnectType "${type}" does not support install() function`,
+      );
     }
   };
 
@@ -449,15 +366,12 @@ export class WalletController {
       case ConnectType.WALLETCONNECT:
         this.enableWalletConnect(wcConnect(this.options));
         break;
-      case ConnectType.CHROME_EXTENSION:
-        this.chromeExtension!.connect(identifier).then((success) => {
-          if (success) {
-            this.enableChromeExtension();
-          }
-        });
-        break;
-      case ConnectType.WEB_CONNECT:
-        this.enableWebExtension();
+      case ConnectType.EXTENSION:
+        if (!this.extension) {
+          throw new Error(`extension instance is not created!`);
+        }
+        this.extension.connect(identifier);
+        this.enableExtension();
         break;
       default:
         throw new Error(`Unknown ConnectType!`);
@@ -479,127 +393,67 @@ export class WalletController {
     this.disableReadonlyWallet?.();
     this.disableReadonlyWallet = null;
 
-    this.disableChromeExtension?.();
-    this.disableChromeExtension = null;
-
-    this.disableWebExtension?.();
-    this.disableWebExtension = null;
+    this.disableExtension?.();
+    this.disableExtension = null;
 
     this.disableWalletConnect?.();
     this.disableWalletConnect = null;
 
-    localStorage.removeItem(WEB_EXTENSION_CONNECTED_KEY);
     this.updateStates(this._notConnected);
   };
 
-  /** @see Wallet#post */
+  /**
+   * @see Wallet#post
+   * @param tx
+   * @param terraAddress only available new extension
+   */
   post = async (
     tx: CreateTxOptions,
-    // TODO not work at this time. for the future extension
-    txTarget: { terraAddress?: string } = {},
+    terraAddress?: string,
   ): Promise<TxResult> => {
     // ---------------------------------------------
-    // chrome extension - legacy extension
+    // extension
     // ---------------------------------------------
-    if (this.disableChromeExtension) {
-      if (!this.chromeExtension) {
-        throw new Error(`chromeExtension instance not created!`);
-      }
-
-      return (
-        this.chromeExtension
-          // TODO make WalletConnectTxResult to common type
-          .post<CreateTxOptions, { result: WalletConnectTxResult }>(tx)
-          .then(({ payload }) => {
-            return {
-              ...tx,
-              result: payload.result,
-              success: true,
-            } as TxResult;
-          })
-          .catch((error) => {
-            if (error instanceof ChromeExtensionCreateTxFailed) {
-              throw new CreateTxFailed(tx, error.message);
-            } else if (error instanceof ChromeExtensionTxFailed) {
-              throw new TxFailed(tx, error.txhash, error.message, null);
-            } else if (error instanceof ChromeExtensionUnspecifiedError) {
-              throw new TxUnspecifiedError(tx, error.message);
-            }
-            // UserDeniedError
-            // All unspecified errors...
-            throw error;
-          })
-      );
-    }
-    // ---------------------------------------------
-    // web extension - new extension
-    // ---------------------------------------------
-    else if (this.disableWebExtension) {
+    if (this.disableExtension) {
       return new Promise<TxResult>((resolve, reject) => {
-        if (!this.webConnector) {
-          reject(new Error(`webExtension instance not created!`));
+        if (!this.extension) {
+          reject(new Error(`extension instance not created!`));
           return;
         }
 
-        const webExtensionStates = this.webConnector.getLastStates();
-
-        if (!webExtensionStates) {
-          reject(new Error(`webExtension.getLastStates() returns undefined!`));
-          return;
-        }
-
-        const focusedWallet = txTarget.terraAddress
-          ? webExtensionStates.wallets.find(
-              (itemWallet) => itemWallet.terraAddress === txTarget.terraAddress,
-            ) ?? webExtensionStates.wallets[0]
-          : webExtensionStates.focusedWalletAddress
-          ? webExtensionStates.wallets.find(
-              (itemWallet) =>
-                itemWallet.terraAddress ===
-                webExtensionStates.focusedWalletAddress,
-            ) ?? webExtensionStates.wallets[0]
-          : webExtensionStates.wallets[0];
-
-        const subscription = this.webConnector
-          .post(focusedWallet.terraAddress, tx)
-          .subscribe({
-            next: (extensionTxResult: WebConnectorTxResult) => {
-              switch (extensionTxResult.status) {
-                case WebConnectorTxStatus.SUCCEED:
-                  resolve({
-                    ...tx,
-                    result: extensionTxResult.payload,
-                    success: true,
-                  });
-                  subscription.unsubscribe();
-                  break;
-              }
-            },
-            error: (error) => {
-              if (error instanceof WebConnectorUserDenied) {
-                reject(new UserDenied());
-              } else if (error instanceof WebConnectorCreateTxFailed) {
-                reject(new CreateTxFailed(tx, error.message));
-              } else if (error instanceof WebConnectorTxFailed) {
-                reject(
-                  new TxFailed(
-                    tx,
-                    error.txhash,
-                    error.message,
-                    error.raw_message,
-                  ),
-                );
-              } else {
-                reject(
-                  new TxUnspecifiedError(
-                    tx,
-                    'message' in error ? error.message : String(error),
-                  ),
-                );
-              }
+        const subscription = this.extension.post(tx, terraAddress).subscribe({
+          next: (txResult) => {
+            if (txResult.status === WebExtensionTxStatus.SUCCEED) {
+              resolve({
+                ...tx,
+                result: txResult.payload,
+                success: true,
+              });
               subscription.unsubscribe();
-            },
-          });
+            }
+          },
+          error: (error) => {
+            if (error instanceof UserDenied || error instanceof Timeout) {
+              reject(error);
+            } else if (error instanceof WebExtensionUserDenied) {
+              reject(new UserDenied());
+            } else if (error instanceof WebExtensionCreateTxFailed) {
+              reject(new CreateTxFailed(tx, error.message));
+            } else if (error instanceof WebExtensionTxFailed) {
+              reject(new TxFailed(tx, error.txhash, error.message, null));
+            } else if (error instanceof WebExtensionTxUnspecifiedError) {
+              reject(new TxUnspecifiedError(tx, error.message));
+            } else {
+              reject(
+                new TxUnspecifiedError(
+                  tx,
+                  error instanceof Error ? error.message : String(error),
+                ),
+              );
+            }
+            subscription.unsubscribe();
+          },
+        });
       });
     }
     // ---------------------------------------------
@@ -650,123 +504,122 @@ export class WalletController {
     }
   };
 
-  /** @see Wallet#sign */
+  /**
+   * @see Wallet#sign
+   * @param tx
+   * @param terraAddress only available new extension
+   */
   sign = async (
     tx: CreateTxOptions,
-    // TODO not work at this time. for the future extension
-    txTarget: { terraAddress?: string } = {},
+    terraAddress?: string,
   ): Promise<SignResult> => {
-    interface SignResultRaw extends CreateTxOptions {
-      result: {
-        body: TxBody.Data;
-        auth_info: AuthInfo.Data;
-        signatures: string[];
-      };
-      success: boolean;
-    }
+    if (this.disableExtension) {
+      return new Promise<SignResult>((resolve, reject) => {
+        if (!this.extension) {
+          reject(new Error(`extension instance is not created!`));
+          return;
+        }
 
-    if (this.disableChromeExtension) {
-      if (!this.chromeExtension) {
-        throw new Error(`chromeExtension instance not created!`);
-      }
-
-      return this.chromeExtension
-        .sign<CreateTxOptions, SignResultRaw>(tx)
-        .then(({ payload }) => {
-          const result: SignResult['result'] = {
-            public_key: null,
-            recid: 0,
-            signature: null,
-            stdSignMsgData: null,
-            txData: payload.result,
-            tx: Tx.fromData(payload.result),
-          };
-
-          return {
-            ...tx,
-            result,
-            success: true,
-          };
-        })
-        .catch((error) => {
-          if (error instanceof ChromeExtensionCreateTxFailed) {
-            throw new CreateTxFailed(tx, error.message);
-          } else if (error instanceof ChromeExtensionTxFailed) {
-            throw new TxFailed(tx, error.txhash, error.message, null);
-          } else if (error instanceof ChromeExtensionUnspecifiedError) {
-            throw new TxUnspecifiedError(tx, error.message);
-          }
-          // UserDenied - chrome extension will sent original UserDenied error type
-          // All unspecified errors...
-          throw error;
+        const subscription = this.extension.sign(tx, terraAddress).subscribe({
+          next: (txResult) => {
+            if (txResult.status === WebExtensionTxStatus.SUCCEED) {
+              resolve({
+                ...tx,
+                result: Tx.fromData(txResult.payload),
+                success: true,
+              });
+              subscription.unsubscribe();
+            }
+          },
+          error: (error) => {
+            if (error instanceof UserDenied || error instanceof Timeout) {
+              reject(error);
+            } else if (error instanceof WebExtensionUserDenied) {
+              reject(new UserDenied());
+            } else if (error instanceof WebExtensionCreateTxFailed) {
+              reject(new CreateTxFailed(tx, error.message));
+            } else if (error instanceof WebExtensionTxFailed) {
+              reject(new TxFailed(tx, error.txhash, error.message, null));
+            } else if (error instanceof WebExtensionTxUnspecifiedError) {
+              reject(new TxUnspecifiedError(tx, error.message));
+            } else {
+              reject(
+                new TxUnspecifiedError(
+                  tx,
+                  error instanceof Error ? error.message : String(error),
+                ),
+              );
+            }
+            subscription.unsubscribe();
+          },
         });
+      });
     }
 
-    throw new Error(`sign() method only available on chrome extension`);
-    // TODO implements sign() to other connect types
+    throw new Error(`sign() method only available on extension`);
   };
 
-  /** @see Wallet#signBytes */
-  signBytes = async (
-    bytes: Buffer,
-    // TODO not work at this time. for the future extension
-    txTarget: { terraAddress?: string } = {},
-  ): Promise<SignBytesResult> => {
-    interface SignBytesResultRaw {
-      bytes: string;
-      result: {
-        public_key: string | PublicKey.Data;
-        recid: string;
-        signature: string;
-      };
-      success: boolean;
-    }
-
-    if (this.disableChromeExtension) {
-      if (!this.chromeExtension) {
-        throw new Error(`chromeExtension instance not created!`);
-      }
-
-      return this.chromeExtension
-        .signBytes<SignBytesResultRaw>(bytes)
-        .then(({ payload }) => {
-          const publicKey: PublicKey.Data =
-            typeof payload.result.public_key === 'string'
-              ? {
-                  '@type': '/cosmos.crypto.secp256k1.PubKey',
-                  'key': payload.result.public_key,
-                }
-              : payload.result.public_key;
-
-          const signBytesResult: SignBytesResult['result'] = {
-            ...payload.result,
-            public_key: publicKey,
-          };
-
-          return {
-            ...payload,
-            result: signBytesResult,
-            encryptedBytes: payload.bytes,
-          };
-        });
-      //.catch((error) => {
-      //  // TODO more detailed errors
-      //  if (error instanceof ChromeExtensionCreateTxFailed) {
-      //    throw new CreateTxFailed({} as any, error.message);
-      //  } else if (error instanceof ChromeExtensionTxFailed) {
-      //    throw new TxFailed({} as any, error.txhash, error.message, null);
-      //  } else if (error instanceof ChromeExtensionUnspecifiedError) {
-      //    throw new TxUnspecifiedError({} as any, error.message);
-      //  }
-      //  // UserDenied - chrome extension will sent original UserDenied error type
-      //  // All unspecified errors...
-      //  throw error;
-      //});
-    }
-
-    throw new Error(`signBytes() method only available on chrome extension`);
-    // TODO implements signBytes() to other connect types
-  };
+  ///** @see Wallet#signBytes */
+  //signBytes = async (
+  //  bytes: Buffer,
+  //  // TODO not work at this time. for the future extension
+  //  txTarget: { terraAddress?: string } = {},
+  //): Promise<SignBytesResult> => {
+  //  interface SignBytesResultRaw {
+  //    bytes: string;
+  //    result: {
+  //      public_key: string | PublicKey.Data;
+  //      recid: string;
+  //      signature: string;
+  //    };
+  //    success: boolean;
+  //  }
+  //
+  //  if (this.disableExtension) {
+  //    if (!this.chromeExtension) {
+  //      throw new Error(`chromeExtension instance not created!`);
+  //    }
+  //
+  //    return this.chromeExtension
+  //      .signBytes<SignBytesResultRaw>(bytes)
+  //      .then(({ payload }) => {
+  //        const publicKey: PublicKey.Data =
+  //          typeof payload.result.public_key === 'string'
+  //            ? {
+  //                '@type': '/cosmos.crypto.secp256k1.PubKey',
+  //                'key': payload.result.public_key,
+  //              }
+  //            : payload.result.public_key;
+  //
+  //        const signBytesResult: SignBytesResult['result'] = {
+  //          ...payload.result,
+  //          public_key: publicKey,
+  //        };
+  //
+  //        return {
+  //          ...payload,
+  //          result: signBytesResult,
+  //          encryptedBytes: payload.bytes,
+  //        };
+  //      });
+  //    //.catch((error) => {
+  //    //  // TODO more detailed errors
+  //    //  if (error instanceof ChromeExtensionCreateTxFailed) {
+  //    //    throw new CreateTxFailed({} as any, error.message);
+  //    //  } else if (error instanceof ChromeExtensionTxFailed) {
+  //    //    throw new TxFailed({} as any, error.txhash, error.message, null);
+  //    //  } else if (error instanceof ChromeExtensionUnspecifiedError) {
+  //    //    throw new TxUnspecifiedError({} as any, error.message);
+  //    //  }
+  //    //  // UserDenied - chrome extension will sent original UserDenied error type
+  //    //  // All unspecified errors...
+  //    //  throw error;
+  //    //});
+  //  }
+  //
+  //  throw new Error(`signBytes() method only available on chrome extension`);
+  //  // TODO implements signBytes() to other connect types
+  //};
 
   // ================================================================
   // internal
@@ -792,8 +645,7 @@ export class WalletController {
 
   private enableReadonlyWallet = (readonlyWallet: ReadonlyWalletController) => {
     this.disableWalletConnect?.();
-    this.disableChromeExtension?.();
-    this.disableWebExtension?.();
+    this.disableExtension?.();
 
     if (
       this.readonlyWallet === readonlyWallet ||
@@ -828,105 +680,28 @@ export class WalletController {
     };
   };
 
-  private enableWebExtension = () => {
+  private enableExtension = () => {
     this.disableReadonlyWallet?.();
     this.disableWalletConnect?.();
-    this.disableChromeExtension?.();
 
-    if (this.disableWebExtension || !this.webConnector) {
+    if (this.disableExtension || !this.extension) {
       return;
     }
 
-    const extensionSubscription = combineLatest([
-      this.webConnector.status(),
-      this.webConnector.states(),
-    ]).subscribe(([status, states]) => {
-      if (!states) {
-        return;
-      }
-
-      localStorage.setItem(WEB_EXTENSION_CONNECTED_KEY, 'true');
-
-      if (status.type === WebConnectorStatusType.READY) {
-        if (states.wallets.length > 0) {
-          const focusedWallet = states.focusedWalletAddress
-            ? states.wallets.find(
-                (itemWallet) =>
-                  itemWallet.terraAddress === states.focusedWalletAddress,
-              ) ?? states.wallets[0]
-            : states.wallets[0];
-
-          this.updateStates({
-            status: WalletStatus.WALLET_CONNECTED,
-            network: states.network,
-            wallets: [
-              {
-                connectType: ConnectType.WEB_CONNECT,
-                terraAddress: focusedWallet.terraAddress,
-                design: focusedWallet.design,
-              },
-            ],
-          });
-        } else {
-          console.warn(
-            `[WalletController] There are no wallets (wallets.length is 0), will change states to NOT_CONNECTED`,
-          );
-          this.updateStates(this._notConnected);
-        }
-      } else if (status.type === WebConnectorStatusType.NO_AVAILABLE) {
-        localStorage.removeItem(WEB_EXTENSION_CONNECTED_KEY);
-        this.updateStates(this._notConnected);
-
-        if (!status.isApproved && this.disableWebExtension) {
-          this.disableWebExtension();
-        }
-      }
-    });
-
-    const lastExtensionStatus = this.webConnector.getLastStatus();
-
-    if (
-      lastExtensionStatus.type === WebConnectorStatusType.NO_AVAILABLE &&
-      lastExtensionStatus.isApproved === false
-    ) {
-      this.webConnector.requestApproval();
-    }
-
-    this.disableWebExtension = () => {
-      localStorage.removeItem(WEB_EXTENSION_CONNECTED_KEY);
-      extensionSubscription.unsubscribe();
-      this.disableWebExtension = null;
-    };
-  };
-
-  private enableChromeExtension = () => {
-    this.disableReadonlyWallet?.();
-    this.disableWalletConnect?.();
-    this.disableWebExtension?.();
-
-    if (this.disableChromeExtension || !this.chromeExtension) {
-      return;
-    }
-
-    const extensionSubscription = combineLatest([
-      this.chromeExtension.status(),
-      this.chromeExtension.networkInfo(),
-      this.chromeExtension.terraAddress(),
-    ]).subscribe({
-      next: ([status, networkInfo, terraAddress]) => {
+    const extensionSubscription = this.extension.states().subscribe({
+      next: (extensionStates) => {
         if (
-          status === ChromeExtensionStatus.WALLET_CONNECTED &&
-          typeof terraAddress === 'string' &&
-          AccAddress.validate(terraAddress)
+          extensionStates.type === ExtensionRouterStatus.WALLET_CONNECTED &&
+          AccAddress.validate(extensionStates.wallet.terraAddress)
         ) {
           this.updateStates({
             status: WalletStatus.WALLET_CONNECTED,
-            network: networkInfo,
+            network: extensionStates.network,
             wallets: [
               {
-                connectType: ConnectType.CHROME_EXTENSION,
-                terraAddress,
-                design: 'extension',
+                connectType: ConnectType.EXTENSION,
+                terraAddress: extensionStates.wallet.terraAddress,
+                design: extensionStates.wallet.design,
               },
             ],
           });
@@ -936,17 +711,16 @@ export class WalletController {
       },
     });
 
-    this.disableChromeExtension = () => {
-      this.chromeExtension?.disconnect();
+    this.disableExtension = () => {
+      this.extension?.disconnect();
       extensionSubscription.unsubscribe();
-      this.disableChromeExtension = null;
+      this.disableExtension = null;
     };
   };
 
   private enableWalletConnect = (walletConnect: WalletConnectController) => {
     this.disableReadonlyWallet?.();
-    this.disableChromeExtension?.();
-    this.disableWebExtension?.();
+    this.disableExtension?.();
 
     if (this.walletConnect === walletConnect) {
       return;
