@@ -1,22 +1,14 @@
 import {
-  WebExtensionCreateTxFailed,
-  WebExtensionTxFailed,
+  TerraWebExtensionFeatures,
   WebExtensionTxStatus,
-  WebExtensionTxUnspecifiedError,
-  WebExtensionUserDenied,
 } from '@terra-dev/web-extension-interface';
 import { AccAddress, CreateTxOptions, Tx } from '@terra-money/terra.js';
 import {
   Connection,
   ConnectType,
-  CreateTxFailed,
   NetworkInfo,
   SignResult,
-  Timeout,
-  TxFailed,
   TxResult,
-  TxUnspecifiedError,
-  UserDenied,
   WalletStates,
   WalletStatus,
 } from '@terra-money/use-wallet';
@@ -27,6 +19,8 @@ import {
   CHROME_EXTENSION_INSTALL_URL,
   DEFAULT_CHROME_EXTENSION_COMPATIBLE_BROWSER_CHECK,
 } from './env';
+import { mapExtensionError } from './exception/mapExtensionError';
+import { mapWalletConnectError } from './exception/mapWalletConnectError';
 import {
   ExtensionRouter,
   ExtensionRouterStatus,
@@ -47,12 +41,7 @@ import {
   connectIfSessionExists as wcConnectIfSessionExists,
   WalletConnectController,
   WalletConnectControllerOptions,
-  WalletConnectCreateTxFailed,
   WalletConnectSessionStatus,
-  WalletConnectTimeout,
-  WalletConnectTxFailed,
-  WalletConnectTxUnspecifiedError,
-  WalletConnectUserDenied,
 } from './modules/walletconnect';
 import { isDesktopChrome } from './utils/browser-check';
 import { checkExtensionReady } from './utils/checkExtensionReady';
@@ -107,7 +96,7 @@ export interface WalletControllerOptions
   ) => Promise<ReadonlyWalletSession | null>;
 
   /**
-   * run at executing the `connect(ConnectType.CHROME_EXTENSION)`
+   * run at executing the `connect(ConnectType.EXTENSION)`
    * if user installed multiple wallets
    */
   selectExtension?: (
@@ -149,7 +138,11 @@ const CONNECTIONS = {
   } as Connection,
 } as const;
 
-const defaultWaitingChromeExtensionInstallCheck = 1000 * 3;
+const DEFAULT_WAITING_CHROME_EXTENSION_INSTALL_CHECK = 1000 * 3;
+const WALLETCONNECT_SUPPORT_FEATURES = new Set<TerraWebExtensionFeatures>([
+  'post',
+]);
+const EMPTY_SUPPORT_FEATURES = new Set<TerraWebExtensionFeatures>();
 
 export class WalletController {
   private extension: ExtensionRouter | null = null;
@@ -193,7 +186,7 @@ export class WalletController {
     // 0. check if extension wallet session is exists
     checkExtensionReady(
       options.waitingChromeExtensionInstallCheck ??
-        defaultWaitingChromeExtensionInstallCheck,
+        DEFAULT_WAITING_CHROME_EXTENSION_INSTALL_CHECK,
       this.isChromeExtensionCompatibleBrowser(),
     ).then((ready: boolean) => {
       if (ready) {
@@ -433,24 +426,7 @@ export class WalletController {
             }
           },
           error: (error) => {
-            if (error instanceof UserDenied || error instanceof Timeout) {
-              reject(error);
-            } else if (error instanceof WebExtensionUserDenied) {
-              reject(new UserDenied());
-            } else if (error instanceof WebExtensionCreateTxFailed) {
-              reject(new CreateTxFailed(tx, error.message));
-            } else if (error instanceof WebExtensionTxFailed) {
-              reject(new TxFailed(tx, error.txhash, error.message, null));
-            } else if (error instanceof WebExtensionTxUnspecifiedError) {
-              reject(new TxUnspecifiedError(tx, error.message));
-            } else {
-              reject(
-                new TxUnspecifiedError(
-                  tx,
-                  error instanceof Error ? error.message : String(error),
-                ),
-              );
-            }
+            reject(mapExtensionError(tx, error));
             subscription.unsubscribe();
           },
         });
@@ -471,33 +447,7 @@ export class WalletController {
             } as TxResult),
         )
         .catch((error) => {
-          let throwError = error;
-
-          try {
-            if (error instanceof WalletConnectUserDenied) {
-              throwError = new UserDenied();
-            } else if (error instanceof WalletConnectCreateTxFailed) {
-              throwError = new CreateTxFailed(tx, error.message);
-            } else if (error instanceof WalletConnectTxFailed) {
-              throwError = new TxFailed(
-                tx,
-                error.txhash,
-                error.message,
-                error.raw_message,
-              );
-            } else if (error instanceof WalletConnectTimeout) {
-              throwError = new Timeout(error.message);
-            } else if (error instanceof WalletConnectTxUnspecifiedError) {
-              throwError = new TxUnspecifiedError(tx, error.message);
-            }
-          } catch {
-            throwError = new TxUnspecifiedError(
-              tx,
-              'message' in error ? error.message : String(error),
-            );
-          }
-
-          throw throwError;
+          throw mapWalletConnectError(tx, error);
         });
     } else {
       throw new Error(`There are no connections that can be posting tx!`);
@@ -532,24 +482,7 @@ export class WalletController {
             }
           },
           error: (error) => {
-            if (error instanceof UserDenied || error instanceof Timeout) {
-              reject(error);
-            } else if (error instanceof WebExtensionUserDenied) {
-              reject(new UserDenied());
-            } else if (error instanceof WebExtensionCreateTxFailed) {
-              reject(new CreateTxFailed(tx, error.message));
-            } else if (error instanceof WebExtensionTxFailed) {
-              reject(new TxFailed(tx, error.txhash, error.message, null));
-            } else if (error instanceof WebExtensionTxUnspecifiedError) {
-              reject(new TxUnspecifiedError(tx, error.message));
-            } else {
-              reject(
-                new TxUnspecifiedError(
-                  tx,
-                  error instanceof Error ? error.message : String(error),
-                ),
-              );
-            }
+            reject(mapExtensionError(tx, error));
             subscription.unsubscribe();
           },
         });
@@ -621,10 +554,77 @@ export class WalletController {
   //  // TODO implements signBytes() to other connect types
   //};
 
+  /**
+   * @see Wallet#hasCW20Tokens
+   * @param chainID
+   * @param tokenAddrs Token addresses
+   */
+  hasCW20Tokens = async (
+    chainID: string,
+    ...tokenAddrs: string[]
+  ): Promise<{ [tokenAddr: string]: boolean }> => {
+    if (this.availableExtensionFeature('cw20-token')) {
+      return this.extension!.hasCW20Tokens(chainID, ...tokenAddrs);
+    }
+
+    throw new Error(`Does not support hasCW20Tokens() on this connection`);
+  };
+
+  /**
+   * @see Wallet#addCW20Tokens
+   * @param chainID
+   * @param tokenAddrs Token addresses
+   */
+  addCW20Tokens = async (
+    chainID: string,
+    ...tokenAddrs: string[]
+  ): Promise<{ [tokenAddr: string]: boolean }> => {
+    if (this.availableExtensionFeature('cw20-token')) {
+      return this.extension!.addCW20Tokens(chainID, ...tokenAddrs);
+    }
+
+    throw new Error(`Does not support addCW20Tokens() on this connection`);
+  };
+
+  /**
+   * @see Wallet#hasNetwork
+   * @param network
+   */
+  hasNetwork = (network: Omit<NetworkInfo, 'name'>): Promise<boolean> => {
+    if (this.availableExtensionFeature('network')) {
+      return this.extension!.hasNetwork(network);
+    }
+
+    throw new Error(`Does not support hasNetwork() on this connection`);
+  };
+
+  /**
+   * @see Wallet#hasNetwork
+   * @param network
+   */
+  addNetwork = (network: NetworkInfo): Promise<boolean> => {
+    if (this.availableExtensionFeature('network')) {
+      return this.extension!.addNetwork(network);
+    }
+
+    throw new Error(`Does not support addNetwork() on this connection`);
+  };
+
   // ================================================================
   // internal
   // connect type changing
   // ================================================================
+  private availableExtensionFeature = (feature: TerraWebExtensionFeatures) => {
+    if (this.disableExtension && this.extension) {
+      const states = this.extension.getLastStates();
+
+      return (
+        states.type === ExtensionRouterStatus.WALLET_CONNECTED &&
+        states.supportFeatures.has(feature)
+      );
+    }
+  };
+
   private updateStates = (next: WalletStates) => {
     const prev = this._states.getValue();
 
@@ -671,6 +671,7 @@ export class WalletController {
           design: 'readonly',
         },
       ],
+      supportFeatures: EMPTY_SUPPORT_FEATURES,
     });
 
     this.disableReadonlyWallet = () => {
@@ -704,6 +705,7 @@ export class WalletController {
                 design: extensionStates.wallet.design,
               },
             ],
+            supportFeatures: extensionStates.supportFeatures,
           });
         } else {
           this.updateStates(this._notConnected);
@@ -751,6 +753,7 @@ export class WalletController {
                     design: 'walletconnect',
                   },
                 ],
+                supportFeatures: WALLETCONNECT_SUPPORT_FEATURES,
               });
               break;
             default:

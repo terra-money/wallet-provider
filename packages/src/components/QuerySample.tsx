@@ -20,7 +20,7 @@ export function QuerySample() {
 
   useEffect(() => {
     if (connectedWallet && lcd) {
-      // FIXME the return data of LCDClient.bank.balance() is changed
+      // FIXME (terra.js 2.x → terra.js 3.x) the return data of LCDClient.bank.balance() is changed
       //lcd.bank.balance(connectedWallet.walletAddress).then((coins) => {
       lcd.bank.balance(connectedWallet.walletAddress).then(([coins]) => {
         setBank(coins.toString());

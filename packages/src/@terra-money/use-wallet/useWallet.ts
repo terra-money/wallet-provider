@@ -1,3 +1,4 @@
+import { TerraWebExtensionFeatures } from '@terra-dev/web-extension-interface';
 import { CreateTxOptions } from '@terra-money/terra.js';
 import { Context, createContext, useContext } from 'react';
 import {
@@ -20,7 +21,7 @@ export interface Wallet {
    * WALLET_NOT_CONNECTED = there is no connected wallet (show the connect and install options to users)
    * WALLET_CONNECTED = there is aconnected wallet (show the wallet info and disconnect button to users)
    *
-   * @see Wallet#recheckStatus
+   * @see Wallet#refetchStates
    * @see WalletController#status
    */
   status: WalletStatus;
@@ -74,8 +75,8 @@ export interface Wallet {
    * const { status, availableConnectTypes, connect } = useWallet()
    *
    * return status === WalletStatus.WALLET_NOT_CONNECTED &&
-   *        availableConnectTypes.includs(ConnectType.CHROME_EXTENSION) &&
-   *  <button onClick={() => connect(ConnectType.CHROME_EXTENSION)}>
+   *        availableConnectTypes.includs(ConnectType.EXTENSION) &&
+   *  <button onClick={() => connect(ConnectType.EXTENSION)}>
    *    Connct Chrome Extension
    *  </button>
    * ```
@@ -95,7 +96,7 @@ export interface Wallet {
   /**
    * available install types on the browser
    *
-   * in this time, this only contains [ConnectType.CHROME_EXTENSION]
+   * in this time, this only contains [ConnectType.EXTENSION]
    *
    * @see Wallet#install
    * @see WalletController#availableInstallTypes
@@ -110,9 +111,9 @@ export interface Wallet {
    * const { status, availableInstallTypes } = useWallet()
    *
    * return status === WalletStatus.WALLET_NOT_CONNECTED &&
-   *        availableInstallTypes.includes(ConnectType.CHROME_EXTENSION) &&
-   *  <button onClick={() => install(ConnectType.CHROME_EXTENSION)}>
-   *    Install Chrome Extension
+   *        availableInstallTypes.includes(ConnectType.EXTENSION) &&
+   *  <button onClick={() => install(ConnectType.EXTENSION)}>
+   *    Install Extension
    *  </button>
    * ```
    *
@@ -151,9 +152,39 @@ export interface Wallet {
   /**
    * reload the connected wallet states
    *
-   * in this time, this only work on the chrome extension connection
+   * in this time, this only work on the ConnectType.EXTENSION
+   *
+   * @see WalletController#refetchStates
    */
   refetchStates: () => void;
+
+  /**
+   * @deprecated please use refetchStates(). this function will remove on next major update
+   */
+  recheckStatus: () => void;
+
+  /**
+   * support features of this connection
+   *
+   * @example
+   * ```
+   * const { supportFeatures } = useWallet()
+   *
+   * return (
+   *  <div>
+   *    {
+   *      supportFeatures.has('post') &&
+   *      <button onClick={post}>post</button>
+   *    }
+   *    {
+   *      supportFeatures.has('cw20-token') &&
+   *      <button onClick={addCW20Token}>add cw20 token</button>
+   *    }
+   *  </div>
+   * )
+   * ```
+   */
+  supportFeatures: Set<TerraWebExtensionFeatures>;
 
   /**
    * post transaction
@@ -203,23 +234,14 @@ export interface Wallet {
    *    const result: SignResult = await sign({...CreateTxOptions})
    *
    *    // Broadcast SignResult
-   *    const { signature, public_key, stdSignMsgData } = result.result
-   *
-   *    const sig = StdSignature.fromData({
-   *      signature,
-   *      pub_key: public_key,
-   *    })
-   *
-   *    const stdSignMsg = StdSignMsg.fromData(stdSignMsgData)
+   *    const tx = result.result
    *
    *    const lcd = new LCDClient({
    *      chainID: connectedWallet.network.chainID,
    *      URL: connectedWallet.network.lcd,
    *    })
    *
-   *    const txResult = await lcd.tx.broadcastSync(
-   *      new StdTx(stdSignMsg.msgs, stdSignMsg.fee, [sig], stdSignMsg.memo),
-   *    )
+   *    const txResult = await lcd.tx.broadcastSync(tx)
    *
    *    // DO SOMETHING...
    *   } catch (error) {
@@ -255,6 +277,58 @@ export interface Wallet {
   //  bytes: Buffer,
   //  txTarget?: { terraAddress?: string },
   //) => Promise<SignBytesResult>;
+
+  /**
+   * check if tokens are added on the extension
+   *
+   * @param chainID
+   * @param tokenAddrs cw20 token addresses
+   *
+   * @return token exists
+   *
+   * @see WalletController#hasCW20Tokens
+   */
+  hasCW20Tokens: (
+    chainID: string,
+    ...tokenAddrs: string[]
+  ) => Promise<{ [tokenAddr: string]: boolean }>;
+
+  /**
+   * request add token addresses to browser extension
+   *
+   * @param chainID
+   * @param tokenAddrs cw20 token addresses
+   *
+   * @return token exists
+   *
+   * @see WalletController#addCW20Tokens
+   */
+  addCW20Tokens: (
+    chainID: string,
+    ...tokenAddrs: string[]
+  ) => Promise<{ [tokenAddr: string]: boolean }>;
+
+  /**
+   * check if network is added on the extension
+   *
+   * @param network
+   *
+   * @return network exists
+   *
+   * @see WalletController#hasNetwork
+   */
+  hasNetwork: (network: Omit<NetworkInfo, 'name'>) => Promise<boolean>;
+
+  /**
+   * request add network to browser extension
+   *
+   * @param network
+   *
+   * @return network exists
+   *
+   * @see WalletController#addNetwork
+   */
+  addNetwork: (network: NetworkInfo) => Promise<boolean>;
 
   /**
    * Some mobile wallet emulates the behavior of chrome extension.

@@ -3289,14 +3289,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@terra-dev/web-extension-interface@npm:^0.12.0":
-  version: 0.12.0
-  resolution: "@terra-dev/web-extension-interface@npm:0.12.0"
+"@terra-dev/web-extension-interface@npm:^0.13.0":
+  version: 0.13.0
+  resolution: "@terra-dev/web-extension-interface@npm:0.13.0"
   dependencies:
     rxjs: ^7.4.0
   peerDependencies:
     "@terra-money/terra.js": ^3.0.0
-  checksum: 0b5cc02a9ad827d3272fbbe59e2df677a0a5d27690d80607b92cbe256abac7ffe5cea54a430f2526c78bde9811e21e7909a32aa447240d7601a9eafad5348611
+  checksum: fc2d7f250b4a6522c6a14ff449f4b7da19d2ea3bab444fd57533cddc54a611d9da34ec06c823c40e0e074b35ab08a4cbbdd353fb94d028bee47a22bca9a49ff5
   languageName: node
   linkType: hard
 
@@ -14228,7 +14228,7 @@ fsevents@^1.2.7:
   dependencies:
     "@sentry/browser": ^6.14.1
     "@sentry/tracing": ^6.14.1
-    "@terra-dev/web-extension-interface": ^0.12.0
+    "@terra-dev/web-extension-interface": ^0.13.0
     "@terra-money/terra.js": ^3.0.0
     "@testing-library/jest-dom": ^5.15.0
     "@types/jest": ^27.0.2

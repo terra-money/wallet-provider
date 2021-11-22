@@ -1,10 +1,11 @@
-import { CreateTxOptions, Extension, Tx } from '@terra-money/terra.js';
-import { NetworkInfo, UserDenied } from '@terra-money/use-wallet';
 import {
-  ChromeExtensionCreateTxFailed,
-  ChromeExtensionTxFailed,
-  ChromeExtensionUnspecifiedError,
-} from './errors';
+  WebExtensionCreateTxFailed,
+  WebExtensionTxFailed,
+  WebExtensionTxUnspecifiedError,
+  WebExtensionUserDenied,
+} from '@terra-dev/web-extension-interface';
+import { CreateTxOptions, Extension, Tx } from '@terra-money/terra.js';
+import { NetworkInfo } from '@terra-money/use-wallet';
 
 type ConnectResponse = { address?: string };
 type PostResponse = {
@@ -21,8 +22,6 @@ type SignBytesResponse = any;
 type InfoResponse = NetworkInfo;
 
 export interface FixedExtension {
-  ///** @deprecated do not use extension.isAvailable just use window.isTerraExtensionAvailable... */
-  //isAvailable: () => boolean;
   post: (data: CreateTxOptions) => Promise<PostResponse>;
   sign: (data: CreateTxOptions) => Promise<SignResponse>;
   signBytes: (bytes: Buffer) => Promise<SignBytesResponse>;
@@ -37,23 +36,23 @@ function toExplicitError(error: any) {
     switch (error.code) {
       // @see https://github.com/terra-project/station/blob/main/src/extension/Confirm.tsx#L182
       case 1:
-        return new UserDenied();
+        return new WebExtensionUserDenied();
       // @see https://github.com/terra-project/station/blob/main/src/extension/Confirm.tsx#L137
       case 2:
         if (error.data) {
           const { txhash } = error.data;
-          return new ChromeExtensionTxFailed(txhash, error.message);
+          return new WebExtensionTxFailed(txhash, error.message, null);
         } else {
-          return new ChromeExtensionTxFailed(undefined, error.message);
+          return new WebExtensionTxFailed(undefined, error.message, null);
         }
       // @see https://github.com/terra-project/station/blob/main/src/extension/Confirm.tsx#L153
       case 3:
-        return new ChromeExtensionCreateTxFailed(error.message);
+        return new WebExtensionCreateTxFailed(error.message);
       default:
-        return new ChromeExtensionUnspecifiedError(error.message);
+        return new WebExtensionTxUnspecifiedError(error.message);
     }
   } else {
-    return new ChromeExtensionUnspecifiedError();
+    return new WebExtensionTxUnspecifiedError(String(error));
   }
 }
 
@@ -114,8 +113,6 @@ export function createFixedExtension(identifier: string): FixedExtension {
   });
 
   extension.on('onSign', (result) => {
-    console.log('extensionFixer.ts..()', result);
-
     if (!result) return;
 
     const { error, ...payload } = result;
@@ -280,10 +277,6 @@ export function createFixedExtension(identifier: string): FixedExtension {
     signBytesResolvers.clear();
   }
 
-  //function isAvailable() {
-  //  return extension.isAvailable;
-  //}
-
   function inTransactionProgress() {
     return _inTransactionProgress;
   }
@@ -294,7 +287,6 @@ export function createFixedExtension(identifier: string): FixedExtension {
     signBytes,
     connect,
     info,
-    //isAvailable,
     disconnect,
     inTransactionProgress,
   };

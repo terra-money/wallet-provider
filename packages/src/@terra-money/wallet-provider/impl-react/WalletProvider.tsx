@@ -1,3 +1,4 @@
+import { TerraWebExtensionFeatures } from '@terra-dev/web-extension-interface';
 import {
   Connection,
   ConnectType,
@@ -15,6 +16,7 @@ export interface WalletProviderProps extends WalletControllerOptions {
 }
 
 const EMPTY_ARRAY: WalletInfo[] = [];
+const EMPTY_SUPPORT_FEATURES = new Set<TerraWebExtensionFeatures>();
 
 export function WalletProvider({
   children,
@@ -112,10 +114,19 @@ export function WalletProvider({
       connect: controller.connect,
       connectReadonly: controller.connectReadonly,
       disconnect: controller.disconnect,
+      supportFeatures:
+        states.status === WalletStatus.WALLET_CONNECTED
+          ? states.supportFeatures
+          : EMPTY_SUPPORT_FEATURES,
       post: controller.post,
       sign: controller.sign,
       //signBytes: controller.signBytes,
+      hasCW20Tokens: controller.hasCW20Tokens,
+      addCW20Tokens: controller.addCW20Tokens,
+      hasNetwork: controller.hasNetwork,
+      addNetwork: controller.addNetwork,
       refetchStates: controller.refetchStates,
+      recheckStatus: controller.refetchStates,
       isChromeExtensionCompatibleBrowser:
         controller.isChromeExtensionCompatibleBrowser,
     };
@@ -123,14 +134,7 @@ export function WalletProvider({
     availableConnectTypes,
     availableInstallTypes,
     availableConnections,
-    controller.connect,
-    controller.connectReadonly,
-    controller.disconnect,
-    controller.install,
-    controller.post,
-    controller.sign,
-    controller.refetchStates,
-    controller.isChromeExtensionCompatibleBrowser,
+    controller,
     states,
   ]);
 

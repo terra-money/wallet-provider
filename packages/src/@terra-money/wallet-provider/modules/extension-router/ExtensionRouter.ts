@@ -11,7 +11,7 @@ import { CreateTxOptions } from '@terra-money/terra.js';
 import { NetworkInfo } from '@terra-money/use-wallet';
 import { BehaviorSubject, Subscribable } from 'rxjs';
 import { isDesktopChrome } from '../../utils/browser-check';
-import { ChromeExtensionConnector } from '../chrome-extension/ChromeExtensionConnector';
+import { LegacyExtensionConnector } from '../legacy-extension';
 import { defaultSelectModal } from './defaultSelectModal';
 import { ExtensionInfo, getTerraExtensions } from './multiChannel';
 import { clearSession, getStoredSession, storeSession } from './session';
@@ -220,7 +220,7 @@ export class ExtensionRouter {
   ): Promise<{ [tokenAddr: string]: boolean }> => {
     if (!this._connector) {
       throw new Error('[ExtensionRouter] No connector');
-    } else if (this._connector instanceof ChromeExtensionConnector) {
+    } else if (this._connector instanceof LegacyExtensionConnector) {
       throw new Error(
         '[ExtensionRouter] Legacy extension does not support hasCW20Tokens() ',
       );
@@ -235,7 +235,7 @@ export class ExtensionRouter {
   ): Promise<{ [tokenAddr: string]: boolean }> => {
     if (!this._connector) {
       throw new Error('[ExtensionRouter] No connector');
-    } else if (this._connector instanceof ChromeExtensionConnector) {
+    } else if (this._connector instanceof LegacyExtensionConnector) {
       throw new Error(
         '[ExtensionRouter] Legacy extension does not support addCW20Tokens() ',
       );
@@ -249,7 +249,7 @@ export class ExtensionRouter {
   ): Promise<boolean> => {
     if (!this._connector) {
       throw new Error('[ExtensionRouter] No connector');
-    } else if (this._connector instanceof ChromeExtensionConnector) {
+    } else if (this._connector instanceof LegacyExtensionConnector) {
       throw new Error(
         '[ExtensionRouter] Legacy extension does not support hasNetwork() ',
       );
@@ -261,7 +261,7 @@ export class ExtensionRouter {
   addNetwork = (network: WebExtensionNetworkInfo): Promise<boolean> => {
     if (!this._connector) {
       throw new Error('[ExtensionRouter] No connector');
-    } else if (this._connector instanceof ChromeExtensionConnector) {
+    } else if (this._connector instanceof LegacyExtensionConnector) {
       throw new Error(
         '[ExtensionRouter] Legacy extension does not support addNetwork() ',
       );
@@ -286,14 +286,12 @@ export class ExtensionRouter {
       extensionInfo.connector
         ? Promise.resolve(extensionInfo.connector())
         : Promise.resolve(
-            new ChromeExtensionConnector(extensionInfo.identifier),
+            new LegacyExtensionConnector(extensionInfo.identifier),
           );
 
     connectorPromise.then((connector) => {
       connector.open(this.options.hostWindow ?? window, {
         next: (nextStates: WebExtensionStates) => {
-          console.log('ExtensionRouter.ts..next()', nextStates);
-
           if (nextStates.type === WebExtensionStatus.INITIALIZING) {
             this._states.next({
               type: ExtensionRouterStatus.INITIALIZING,
@@ -323,9 +321,10 @@ export class ExtensionRouter {
                   ) ?? nextStates.wallets[0]
                 : nextStates.wallets[0],
               connectorType:
-                connector instanceof ChromeExtensionConnector
+                connector instanceof LegacyExtensionConnector
                   ? ExtensionRouterConnectorType.LEGACY
                   : ExtensionRouterConnectorType.WEB_EXTENSION,
+              supportFeatures: new Set(connector.supportFeatures()),
             });
           }
         },

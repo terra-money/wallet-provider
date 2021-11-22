@@ -1,31 +1,30 @@
 import {
   TerraWebExtensionConnector,
-  WebExtensionCreateTxFailed,
+  TerraWebExtensionFeatures,
   WebExtensionPostPayload,
   WebExtensionSignPayload,
   WebExtensionStates,
   WebExtensionStatus,
-  WebExtensionTxFailed,
   WebExtensionTxResult,
   WebExtensionTxStatus,
-  WebExtensionTxUnspecifiedError,
 } from '@terra-dev/web-extension-interface';
 import { AccAddress, CreateTxOptions } from '@terra-money/terra.js';
 import { NetworkInfo } from '@terra-money/use-wallet';
 import { BehaviorSubject, Observer, Subscribable, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { createFixedExtension, FixedExtension } from './createFixedExtension';
-import {
-  ChromeExtensionCreateTxFailed,
-  ChromeExtensionTxFailed,
-  ChromeExtensionUnspecifiedError,
-} from './errors';
 
-export class ChromeExtensionConnector implements TerraWebExtensionConnector {
+const supportFeatures: TerraWebExtensionFeatures[] = ['post', 'sign'];
+
+export class LegacyExtensionConnector implements TerraWebExtensionConnector {
   private _states: BehaviorSubject<WebExtensionStates>;
   private _extension: FixedExtension;
   private hostWindow: Window | null = null;
   private statesSubscription: Subscription | null = null;
+
+  supportFeatures() {
+    return supportFeatures;
+  }
 
   constructor(private identifier: string) {
     this._states = new BehaviorSubject<WebExtensionStates>({
@@ -80,20 +79,7 @@ export class ChromeExtensionConnector implements TerraWebExtensionConnector {
         });
         subject.complete();
       })
-      .catch((error) => {
-        if (error instanceof ChromeExtensionCreateTxFailed) {
-          subject.error(new WebExtensionCreateTxFailed(error.message));
-        } else if (error instanceof ChromeExtensionTxFailed) {
-          subject.error(
-            new WebExtensionTxFailed(error.txhash, error.message, null),
-          );
-        } else if (error instanceof ChromeExtensionUnspecifiedError) {
-          subject.error(new WebExtensionTxUnspecifiedError(error.message));
-        }
-        // UserDenied - chrome extension will sent original UserDenied error type
-        // All unspecified errors...
-        subject.error(error);
-      });
+      .catch((error) => subject.error(error));
 
     return subject.asObservable();
   };
@@ -117,20 +103,7 @@ export class ChromeExtensionConnector implements TerraWebExtensionConnector {
         });
         subject.complete();
       })
-      .catch((error) => {
-        if (error instanceof ChromeExtensionCreateTxFailed) {
-          subject.error(new WebExtensionCreateTxFailed(error.message));
-        } else if (error instanceof ChromeExtensionTxFailed) {
-          subject.error(
-            new WebExtensionTxFailed(error.txhash, error.message, null),
-          );
-        } else if (error instanceof ChromeExtensionUnspecifiedError) {
-          subject.error(new WebExtensionTxUnspecifiedError(error.message));
-        }
-        // UserDenied - chrome extension will sent original UserDenied error type
-        // All unspecified errors...
-        subject.error(error);
-      });
+      .catch((error) => subject.error(error));
 
     return subject.asObservable();
   };

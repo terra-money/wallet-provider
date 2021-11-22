@@ -27,7 +27,7 @@ export interface ConnectedWallet {
 }
 
 export function useConnectedWallet(): ConnectedWallet | undefined {
-  const { status, network, wallets, post, sign } = useWallet();
+  const { status, network, wallets, post, sign, supportFeatures } = useWallet();
 
   const value = useMemo<ConnectedWallet | undefined>(() => {
     try {
@@ -52,10 +52,8 @@ export function useConnectedWallet(): ConnectedWallet | undefined {
           //signBytes: (bytes: Buffer) => {
           //  return signBytes(bytes, { terraAddress });
           //},
-          availablePost:
-            connectType === ConnectType.EXTENSION ||
-            connectType === ConnectType.WALLETCONNECT,
-          availableSign: connectType === ConnectType.EXTENSION,
+          availablePost: supportFeatures.has('post'),
+          availableSign: supportFeatures.has('sign'),
           //availableSignBytes: connectType === ConnectType.CHROME_EXTENSION,
           connectType,
         };
@@ -65,7 +63,7 @@ export function useConnectedWallet(): ConnectedWallet | undefined {
     } catch {
       return undefined;
     }
-  }, [network, post, sign, status, wallets]);
+  }, [network, post, sign, status, supportFeatures, wallets]);
 
   return value;
 }

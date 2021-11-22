@@ -1,3 +1,4 @@
+import { TerraWebExtensionFeatures } from '@terra-dev/web-extension-interface';
 import { CreateTxOptions, PublicKey, Tx } from '@terra-money/terra.js';
 
 export interface NetworkInfo {
@@ -28,9 +29,9 @@ export interface SignResult extends CreateTxOptions {
 export interface SignBytesResult {
   encryptedBytes: string;
   result: {
-    public_key: PublicKey.Data;
     recid: string;
     signature: string;
+    public_key: PublicKey.Data;
   };
   success: boolean;
 }
@@ -42,10 +43,10 @@ export enum WalletStatus {
 }
 
 export enum ConnectType {
-  /** Terra Station Chrome Extension */
+  /** Terra Station Extension or compatible browser extensions */
   EXTENSION = 'EXTENSION',
 
-  /** Terra Station Mobile */
+  /** Terra Station Mobile or compatible mobile wallets */
   WALLETCONNECT = 'WALLETCONNECT',
 
   /** Read only mode - View an address */
@@ -79,4 +80,5 @@ export type WalletStates =
       status: WalletStatus.WALLET_CONNECTED;
       network: NetworkInfo;
       wallets: WalletInfo[];
+      supportFeatures: Set<TerraWebExtensionFeatures>;
     };

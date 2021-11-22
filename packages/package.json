@@ -41,7 +41,7 @@
     ]
   },
   "dependencies": {
-    "@terra-dev/web-extension-interface": "^0.12.0",
+    "@terra-dev/web-extension-interface": "^0.13.0",
     "@terra-money/terra.js": "^3.0.0",
     "@walletconnect/core": "^1.6.6",
     "@walletconnect/iso-crypto": "^1.6.6",

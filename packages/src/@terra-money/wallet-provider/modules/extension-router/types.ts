@@ -1,4 +1,5 @@
 import {
+  TerraWebExtensionFeatures,
   WebExtensionNetworkInfo,
   WebExtensionWalletInfo,
 } from '@terra-dev/web-extension-interface';
@@ -37,6 +38,7 @@ export interface ExtensionRouterWalletConnected {
   network: WebExtensionNetworkInfo;
   wallet: WebExtensionWalletInfo;
   connectorType: ExtensionRouterConnectorType;
+  supportFeatures: Set<TerraWebExtensionFeatures>;
 }
 
 export type ExtensionRouterStates =

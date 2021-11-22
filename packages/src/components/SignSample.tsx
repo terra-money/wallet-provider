@@ -39,6 +39,7 @@ export function SignSample() {
     connectedWallet
       .sign({
         fee: new Fee(1000000, '200000uusd'),
+        // FIXME (terra.js 2.x → terra.js 3.x)
         //fee: new StdFee(1000000, '200000uusd'),
         msgs: [
           new MsgSend(connectedWallet.walletAddress, toAddress, {
@@ -49,7 +50,7 @@ export function SignSample() {
       .then((nextSignResult: SignResult) => {
         setSignResult(nextSignResult);
 
-        // FIXME API changed please refer this comments
+        // FIXME (terra.js 2.x → terra.js 3.x) API changed please refer this comments
         // TODO remove after a month
         //const { signature, public_key, stdSignMsgData } = nextSignResult.result;
         //
@@ -68,6 +69,7 @@ export function SignSample() {
           URL: connectedWallet.network.lcd,
         });
 
+        // FIXME (terra.js 2.x → terra.js 3.x)
         //return lcd.tx.broadcastSync(
         //  new StdTx(stdSignMsg.msgs, stdSignMsg.fee, [sig], stdSignMsg.memo),
         //);

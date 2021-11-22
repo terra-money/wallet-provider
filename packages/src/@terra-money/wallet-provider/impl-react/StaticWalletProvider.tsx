@@ -1,3 +1,4 @@
+import { TerraWebExtensionFeatures } from '@terra-dev/web-extension-interface';
 import {
   Connection,
   ConnectType,
@@ -17,6 +18,7 @@ export interface StaticWalletProviderProps {
   availableInstallTypes?: ConnectType[];
   availableConnections?: Connection[];
   wallets?: WalletInfo[];
+  supportFeatures?: Set<TerraWebExtensionFeatures>;
 }
 
 export function StaticWalletProvider({
@@ -27,6 +29,7 @@ export function StaticWalletProvider({
   availableInstallTypes = [],
   availableConnections = [],
   wallets = [],
+  supportFeatures = new Set(),
 }: StaticWalletProviderProps) {
   const state = useMemo<Wallet>(() => {
     return {
@@ -36,6 +39,7 @@ export function StaticWalletProvider({
       status,
       network: defaultNetwork,
       wallets,
+      supportFeatures,
       install: () => {
         throw new Error('not implemented!');
       },
@@ -60,7 +64,22 @@ export function StaticWalletProvider({
       refetchStates: () => {
         throw new Error('not implemented!');
       },
+      recheckStatus: () => {
+        throw new Error('not implemented!');
+      },
       isChromeExtensionCompatibleBrowser: () => {
+        throw new Error('not implemented!');
+      },
+      hasCW20Tokens: () => {
+        throw new Error('not implemented!');
+      },
+      addCW20Tokens: () => {
+        throw new Error('not implemented!');
+      },
+      hasNetwork: () => {
+        throw new Error('not implemented!');
+      },
+      addNetwork: () => {
         throw new Error('not implemented!');
       },
     };
@@ -68,9 +87,10 @@ export function StaticWalletProvider({
     availableConnectTypes,
     availableInstallTypes,
     availableConnections,
-    defaultNetwork,
     status,
+    defaultNetwork,
     wallets,
+    supportFeatures,
   ]);
 
   return (
