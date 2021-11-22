@@ -72,10 +72,10 @@ export class LegacyExtensionConnector implements TerraWebExtensionConnector {
 
     this._extension
       .post(tx)
-      .then(({ result }) => {
+      .then(({ payload }) => {
         subject.next({
           status: WebExtensionTxStatus.SUCCEED,
-          payload: result,
+          payload: payload.result,
         });
         subject.complete();
       })
@@ -96,10 +96,10 @@ export class LegacyExtensionConnector implements TerraWebExtensionConnector {
 
     this._extension
       .sign(tx)
-      .then(({ result }) => {
+      .then(({ payload }) => {
         subject.next({
           status: WebExtensionTxStatus.SUCCEED,
-          payload: result,
+          payload: payload.result,
         });
         subject.complete();
       })

@@ -9,14 +9,18 @@ import { NetworkInfo } from '@terra-money/use-wallet';
 
 type ConnectResponse = { address?: string };
 type PostResponse = {
-  result: {
-    height: number;
-    raw_log: string;
-    txhash: string;
+  payload: {
+    result: {
+      height: number;
+      raw_log: string;
+      txhash: string;
+    };
   };
 };
 type SignResponse = {
-  result: Tx.Data;
+  payload: {
+    result: Tx.Data;
+  };
 };
 type SignBytesResponse = any;
 type InfoResponse = NetworkInfo;
