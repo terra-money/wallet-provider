@@ -10,7 +10,7 @@ export function CW20TokensSample() {
       {supportFeatures.has('cw20-token') ? (
         <Component />
       ) : status === WalletStatus.WALLET_CONNECTED ? (
-        <p>Does not support CW20 commands on this connection!</p>
+        <p>This connection does not support CW20 commands</p>
       ) : (
         <p>Wallet not connected!</p>
       )}

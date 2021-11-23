@@ -3289,20 +3289,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@terra-dev/web-extension-interface@npm:^0.13.0":
-  version: 0.13.0
-  resolution: "@terra-dev/web-extension-interface@npm:0.13.0"
+"@terra-dev/web-extension-interface@npm:^0.14.0":
+  version: 0.14.0
+  resolution: "@terra-dev/web-extension-interface@npm:0.14.0"
   dependencies:
     rxjs: ^7.4.0
   peerDependencies:
     "@terra-money/terra.js": ^3.0.0
-  checksum: fc2d7f250b4a6522c6a14ff449f4b7da19d2ea3bab444fd57533cddc54a611d9da34ec06c823c40e0e074b35ab08a4cbbdd353fb94d028bee47a22bca9a49ff5
+  checksum: 7ceb2c8d6a24653ed54c547e505a7646e76bb098e64bb401388a0b629af7f024a6c1bc47166583cae72b74e06ba244c61e681be943a321c5fa613f6353ca6493
   languageName: node
   linkType: hard
 
-"@terra-money/terra.js@npm:3.0.0":
-  version: 3.0.0
-  resolution: "@terra-money/terra.js@npm:3.0.0"
+"@terra-money/terra.js@npm:3.0.1":
+  version: 3.0.1
+  resolution: "@terra-money/terra.js@npm:3.0.1"
   dependencies:
     "@terra-money/terra.proto": ^0.1.7
     axios: ^0.24.0
@@ -3317,7 +3317,7 @@ __metadata:
     tmp: ^0.2.1
     utf-8-validate: ^5.0.5
     ws: ^7.5.5
-  checksum: a42849835f767da1053a1492c1c2c1b516e61e1c030ad968074d293ed7472194681423a332616b0380233dbd0a098537e9c5f71e9760eadbd8e8cfe7bbbf8adb
+  checksum: 2bf6f53eec2772665e247c27ecfd766eb1e991c6239bdf3854ee7bcfeafbe5b60cd3b5232cb0ca91000fbcfa09116f40914faa008a2ba9b99dfc5feb9c529658
   languageName: node
   linkType: hard
 
@@ -3780,6 +3780,15 @@ __metadata:
   version: 0.16.1
   resolution: "@types/scheduler@npm:0.16.1"
   checksum: 2ff8034df029a6cbb3623b05fa895cac4fc504806a8e948ebe29675a1edfa5ac04faac7611016076b3ffefc2037bbe344ad1978304059b2d4c78e513ec43c7bf
+  languageName: node
+  linkType: hard
+
+"@types/secp256k1@npm:^4.0.3":
+  version: 4.0.3
+  resolution: "@types/secp256k1@npm:4.0.3"
+  dependencies:
+    "@types/node": "*"
+  checksum: 1bd10b9afa724084b655dc81b7b315def3d2d0e272014ef16009fa76e17537411c07c0695fdea412bc7b36d2a02687f5fea33522d55b8ef29eda42992f812913
   languageName: node
   linkType: hard
 
@@ -14228,8 +14237,8 @@ fsevents@^1.2.7:
   dependencies:
     "@sentry/browser": ^6.14.1
     "@sentry/tracing": ^6.14.1
-    "@terra-dev/web-extension-interface": ^0.13.0
-    "@terra-money/terra.js": ^3.0.0
+    "@terra-dev/web-extension-interface": ^0.14.0
+    "@terra-money/terra.js": ^3.0.1
     "@testing-library/jest-dom": ^5.15.0
     "@types/jest": ^27.0.2
     "@types/puppeteer": ^5.4.4
@@ -14237,6 +14246,7 @@ fsevents@^1.2.7:
     "@types/react": ^17.0.34
     "@types/react-dom": ^17.0.11
     "@types/react-router-dom": ^5.3.2
+    "@types/secp256k1": ^4.0.3
     "@types/styled-components": ^5.1.15
     "@types/testing-library__jest-dom": ^5.14.1
     "@types/webpack-env": ^1.16.3
@@ -14259,6 +14269,7 @@ fsevents@^1.2.7:
     react-scripts: 4.0.3
     rocket-punch: ^3.0.2
     rxjs: ^7.4.0
+    secp256k1: ^4.0.2
     styled-components: ^5.3.3
     terra-web-extension: ^0.11.4
     ts-node: ^10.4.0

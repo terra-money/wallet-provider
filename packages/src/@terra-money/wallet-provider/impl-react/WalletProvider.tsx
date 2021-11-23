@@ -120,7 +120,7 @@ export function WalletProvider({
           : EMPTY_SUPPORT_FEATURES,
       post: controller.post,
       sign: controller.sign,
-      //signBytes: controller.signBytes,
+      signBytes: controller.signBytes,
       hasCW20Tokens: controller.hasCW20Tokens,
       addCW20Tokens: controller.addCW20Tokens,
       hasNetwork: controller.hasNetwork,

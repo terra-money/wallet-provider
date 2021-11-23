@@ -2,14 +2,6 @@
 
 Library to make React dApps easier using Terra Station Extension or Terra Station Mobile.
 
-# Version `3.0` update warning
-
-`@terra-money/terra.js@3.x.x` contains many breaking changes. `wallet-provider`, which relies on terra.js, also includes breaking changes.
-
-In most cases, there won't be a big problem, and if you're using TypeScript, you'll be able to track the API that's causing the problem through TypeScript Error. (And, I wrote a comment on the API corresponding to the breaking change.)
-
-If you are using `wallet-provider` as Javascript, please refer to the [sample codes](https://github.com/terra-money/wallet-provider/tree/main/packages/src/components).
-
 # Quick Start
 
 Use templates to get your projects started quickly
@@ -190,102 +182,347 @@ ReactDOM.render(
 This is a React Hook that can receive all the information. (Other hooks are functions for the convenience of Wrapping
 this `useWallet()`)
 
-```jsx
-import { useWallet } from '@terra-money/wallet-provider';
+<!-- source packages/src/@terra-money/use-wallet/useWallet.ts --pick "Wallet" -->
 
-const {
-  // Can receive the Connect Types available in the user's current Browser environment.
-  //
-  // It's basically [ConnectType.WALLETCONNECT, READONLY].
-  //
-  // If Chrome Extension is installed,
-  // it will be [ConnectType.CHROME_EXTENSION, ConnectType.WALLETCONNECT, ConnectType.READONLY].
-  //
-  // Available when configuring a UI that determines which Connect Type to connect to.
-  availableConnectTypes,
+[packages/src/@terra-money/use-wallet/useWallet.ts](packages/src/@terra-money/use-wallet/useWallet.ts)
 
-  // It can be used instead of available ConnectTypes.
-  //
-  // If user have multiple extensions installed in its browser,
-  // it can get more detailed information than available ConnectTypes.
-  availableConnections,
+````ts
+export interface Wallet {
+  /**
+   * current client status
+   *
+   * this will be one of WalletStatus.INITIALIZING | WalletStatus.WALLET_NOT_CONNECTED | WalletStatus.WALLET_CONNECTED
+   *
+   * INITIALIZING = checking that the session and the chrome extension installation. (show the loading to users)
+   * WALLET_NOT_CONNECTED = there is no connected wallet (show the connect and install options to users)
+   * WALLET_CONNECTED = there is aconnected wallet (show the wallet info and disconnect button to users)
+   *
+   * @see Wallet#refetchStates
+   * @see WalletController#status
+   */
+  status: WalletStatus;
+  /**
+   * current selected network
+   *
+   * - if status is INITIALIZING or WALLET_NOT_CONNECTED = this will be the defaultNetwork
+   * - if status is WALLET_CONNECTED = this depends on the connected environment
+   *
+   * @see WalletProviderProps#defaultNetwork
+   * @see WalletController#network
+   */
+  network: NetworkInfo;
+  /**
+   * available connect types on the browser
+   *
+   * @see Wallet#connect
+   * @see WalletController#availableConnectTypes
+   */
+  availableConnectTypes: ConnectType[];
+  /**
+   * available connections includes identifier, name, icon
+   *
+   * @example
+   * ```
+   * const { availableConnections, connect } = useWallet()
+   *
+   * return (
+   *  <div>
+   *    {
+   *      availableConnections.map(({type, identifier, name, icon}) => (
+   *        <butotn key={`${type}:${identifier}`} onClick={() => connect(type, identifier)}>
+   *          <img src={icon} /> {name}
+   *        </button>
+   *      ))
+   *    }
+   *  </div>
+   * )
+   * ```
+   */
+  availableConnections: Connection[];
+  /**
+   * connect to wallet
+   *
+   * @example
+   * ```
+   * const { status, availableConnectTypes, connect } = useWallet()
+   *
+   * return status === WalletStatus.WALLET_NOT_CONNECTED &&
+   *        availableConnectTypes.includs(ConnectType.EXTENSION) &&
+   *  <button onClick={() => connect(ConnectType.EXTENSION)}>
+   *    Connct Chrome Extension
+   *  </button>
+   * ```
+   *
+   * @see Wallet#availableConnectTypes
+   * @see WalletController#connect
+   */
+  connect: (type: ConnectType, identifier?: string) => void;
+  /**
+   * manual connect to read only session
+   *
+   * @see Wallet#connectReadonly
+   */
+  connectReadonly: (terraAddress: string, network: NetworkInfo) => void;
+  /**
+   * available install types on the browser
+   *
+   * in this time, this only contains [ConnectType.EXTENSION]
+   *
+   * @see Wallet#install
+   * @see WalletController#availableInstallTypes
+   */
+  availableInstallTypes: ConnectType[];
+  /**
+   * install for the connect type
+   *
+   * @example
+   * ```
+   * const { status, availableInstallTypes } = useWallet()
+   *
+   * return status === WalletStatus.WALLET_NOT_CONNECTED &&
+   *        availableInstallTypes.includes(ConnectType.EXTENSION) &&
+   *  <button onClick={() => install(ConnectType.EXTENSION)}>
+   *    Install Extension
+   *  </button>
+   * ```
+   *
+   * @see Wallet#availableInstallTypes
+   * @see WalletController#install
+   */
+  install: (type: ConnectType) => void;
+  /**
+   * connected wallets
+   *
+   * this will be like
+   * `[{ connectType: ConnectType.WALLETCONNECT, terraAddress: 'XXXXXXXXX' }]`
+   *
+   * in this time, you can get only one wallet. `wallets[0]`
+   *
+   * @see WalletController#wallets
+   */
+  wallets: WalletInfo[];
+  /**
+   * disconnect
+   *
+   * @example
+   * ```
+   * const { status, disconnect } = useWallet()
+   *
+   * return status === WalletStatus.WALLET_CONNECTED &&
+   *  <button onClick={() => disconnect()}>
+   *    Disconnect
+   *  </button>
+   * ```
+   */
+  disconnect: () => void;
+  /**
+   * reload the connected wallet states
+   *
+   * in this time, this only work on the ConnectType.EXTENSION
+   *
+   * @see WalletController#refetchStates
+   */
+  refetchStates: () => void;
+  /**
+   * @deprecated please use refetchStates(). this function will remove on next major update
+   */
+  recheckStatus: () => void;
+  /**
+   * support features of this connection
+   *
+   * @example
+   * ```
+   * const { supportFeatures } = useWallet()
+   *
+   * return (
+   *  <div>
+   *    {
+   *      supportFeatures.has('post') &&
+   *      <button onClick={post}>post</button>
+   *    }
+   *    {
+   *      supportFeatures.has('cw20-token') &&
+   *      <button onClick={addCW20Token}>add cw20 token</button>
+   *    }
+   *  </div>
+   * )
+   * ```
+   */
+  supportFeatures: Set<TerraWebExtensionFeatures>;
+  /**
+   * post transaction
+   *
+   * @example
+   * ```
+   * const { post } = useWallet()
+   *
+   * const callback = useCallback(async () => {
+   *   try {
+   *    const result: TxResult = await post({...CreateTxOptions})
+   *    // DO SOMETHING...
+   *   } catch (error) {
+   *     if (error instanceof UserDenied) {
+   *       // DO SOMETHING...
+   *     } else {
+   *       // DO SOMETHING...
+   *     }
+   *   }
+   * }, [])
+   * ```
+   *
+   * @param { CreateTxOptions } tx transaction data
+   * @param terraAddress - does not work at this time. for the future extension
+   *
+   * @return { Promise<TxResult> }
+   *
+   * @throws { UserDenied } user denied the tx
+   * @throws { CreateTxFailed } did not create txhash (error dose not broadcasted)
+   * @throws { TxFailed } created txhash (error broadcated)
+   * @throws { Timeout } user does not act anything in specific time
+   * @throws { TxUnspecifiedError } unknown error
+   *
+   * @see WalletController#post
+   */
+  post: (tx: CreateTxOptions, terraAddress?: string) => Promise<TxResult>;
+  /**
+   * sign transaction
+   *
+   * @example
+   * ```
+   * const { sign } = useWallet()
+   *
+   * const callback = useCallback(async () => {
+   *   try {
+   *    const result: SignResult = await sign({...CreateTxOptions})
+   *
+   *    // Broadcast SignResult
+   *    const tx = result.result
+   *
+   *    const lcd = new LCDClient({
+   *      chainID: connectedWallet.network.chainID,
+   *      URL: connectedWallet.network.lcd,
+   *    })
+   *
+   *    const txResult = await lcd.tx.broadcastSync(tx)
+   *
+   *    // DO SOMETHING...
+   *   } catch (error) {
+   *     if (error instanceof UserDenied) {
+   *       // DO SOMETHING...
+   *     } else {
+   *       // DO SOMETHING...
+   *     }
+   *   }
+   * }, [])
+   * ```
+   *
+   * @param { CreateTxOptions } tx transaction data
+   * @param terraAddress - does not work at this time. for the future extension
+   *
+   * @return { Promise<SignResult> }
+   *
+   * @throws { UserDenied } user denied the tx
+   * @throws { CreateTxFailed } did not create txhash (error dose not broadcasted)
+   * @throws { TxFailed } created txhash (error broadcated)
+   * @throws { Timeout } user does not act anything in specific time
+   * @throws { TxUnspecifiedError } unknown error
+   *
+   * @see WalletController#sign
+   */
+  sign: (tx: CreateTxOptions, terraAddress?: string) => Promise<SignResult>;
+  /**
+   * sign any bytes
+   *
+   * @example
+   * ```
+   * const { signBytes } = useWallet()
+   *
+   * const BYTES = Buffer.from('hello world')
+   *
+   * const callback = useCallback(async () => {
+   *   try {
+   *     const { result }: SignBytesResult = await signBytes(BYTES)
+   *
+   *     console.log(result.recid)
+   *     console.log(result.signature)
+   *     console.log(result.public_key)
+   *
+   *     const verified: boolean = verifyBytes(BYTES, result)
+   *   } catch (error) {
+   *     if (error instanceof UserDenied) {
+   *       // DO SOMETHING...
+   *     } else {
+   *       // DO SOMETHING...
+   *     }
+   *   }
+   * }, [])
+   * ```
+   *
+   * @param bytes
+   */
+  signBytes: (bytes: Buffer, terraAddress?: string) => Promise<SignBytesResult>;
+  /**
+   * check if tokens are added on the extension
+   *
+   * @param chainID
+   * @param tokenAddrs cw20 token addresses
+   *
+   * @return token exists
+   *
+   * @see WalletController#hasCW20Tokens
+   */
+  hasCW20Tokens: (
+    chainID: string,
+    ...tokenAddrs: string[]
+  ) => Promise<{
+    [tokenAddr: string]: boolean;
+  }>;
+  /**
+   * request add token addresses to browser extension
+   *
+   * @param chainID
+   * @param tokenAddrs cw20 token addresses
+   *
+   * @return token exists
+   *
+   * @see WalletController#addCW20Tokens
+   */
+  addCW20Tokens: (
+    chainID: string,
+    ...tokenAddrs: string[]
+  ) => Promise<{
+    [tokenAddr: string]: boolean;
+  }>;
+  /**
+   * check if network is added on the extension
+   *
+   * @param network
+   *
+   * @return network exists
+   *
+   * @see WalletController#hasNetwork
+   */
+  hasNetwork: (network: Omit<NetworkInfo, 'name'>) => Promise<boolean>;
+  /**
+   * request add network to browser extension
+   *
+   * @param network
+   *
+   * @return network exists
+   *
+   * @see WalletController#addNetwork
+   */
+  addNetwork: (network: NetworkInfo) => Promise<boolean>;
+  /**
+   * Some mobile wallet emulates the behavior of chrome extension.
+   * It confirms that the current connection environment is such a wallet.
+   * (If you are running connect() by checking availableConnectType, you do not need to use this API.)
+   */
+  isChromeExtensionCompatibleBrowser: () => boolean;
+}
+````
 
-  // Can receive the Connect Types that are currently available for installation.
-  //
-  // If the Browser is Desktop Chrome and does not have Chrome Extension installed,
-  // it becomes [ConnectType.CHROME_EXTENSION]
-  //
-  // Other cases
-  // it becomes an Empty Array.
-  availableInstallTypes,
-
-  // Can receive the current status of the Client
-  //
-  // WalletStatus.INITIALIZING | WalletStatus.WALLET_NOT_CONNECTED | WalletStatus.WALLET_CONNECTED
-  // A value of one of the three will come in.
-  //
-  // INITIALIZING = Session initialization and extension installation verification are in progress (please indicate Loading).
-  // WALLET_CONNECTED = This means that there is a Wallet connected (Show the UI and Disconnect Button to view Wallet information).
-  // WALLET_NOT_CONNECTED = This means there are no connected Wallets (Mark Connect Button).
-  status,
-
-  // Receive information from the currently selected network
-  // Gets in the same form as { name: 'mainnet', chainID: 'columnbus-4', lcd }
-  network,
-
-  // Can receive information from linked Wallet
-  //
-  // [{ connectType: WALLETCONNECT, terraAddress: 'XXXXXXXXX' }]
-  // It comes in the same form as.
-  //
-  // In subsequent updates, it is arranged to implement a structure that connects multiple wallets simultaneously.
-  // No wallet connected for empty array [] at this time (status = WALLET_NOT_CONNECTED)
-  // Connected if 1 data exists as shown in [{}] (status = WALLET_CONNECTED)
-  wallets,
-
-  // Connect to Wallet
-  //
-  // connect(ConnectType.WALLETCONNECT)
-  // connect(ConnectType.CHROME_EXTENSION)
-  // connect(ConnectType.READONLY)
-  //
-  // If called above, progress will be made according to each connection.
-  //
-  // Use only the ConnectType given in { availableConnectType }
-  connect,
-
-  // Install the Extension required for Wallet connection
-  //
-  // Currently, only ConnectType.CHROME_EXTENSION is supported.
-  // When install(ConnectType.CHROME_EXTENSION) is run, the Chrome Extension Store appears.
-  //
-  // Use only the ConnectType given in { availableInstallType }
-  install,
-
-  // Disconnect Wallet
-  disconnect,
-
-  // Features for ChromeExtension.
-  //
-  // Currently, ChromeExtension does not notify you of changes to Network / Wallet through WebApp.
-  // You can use it when you want to update the changed information.
-  recheckStatus,
-
-  // Used to send Tx
-  //
-  // It has an interface like this
-  // post(CreateTxOptions): Promise<TxResult>
-  //
-  // CreateTxOptions is the terra.js's CreateTxOptions Type
-  //
-  // TxResult is the type below.
-  // interface TxResult extends CreateTxOptions {
-  //   result: { height: number, raw_log: string, txhash: string },
-  //   success: boolean
-  // }
-  post,
-} = useWallet();
-```
+<!-- /source -->
 
 </details>
 

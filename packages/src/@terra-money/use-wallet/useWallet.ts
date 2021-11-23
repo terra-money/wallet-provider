@@ -5,6 +5,7 @@ import {
   Connection,
   ConnectType,
   NetworkInfo,
+  SignBytesResult,
   SignResult,
   TxResult,
   WalletInfo,
@@ -269,14 +270,37 @@ export interface Wallet {
    */
   sign: (tx: CreateTxOptions, terraAddress?: string) => Promise<SignResult>;
 
-  ///**
-  // * TODO
-  // * @param bytes
-  // */
-  //signBytes: (
-  //  bytes: Buffer,
-  //  txTarget?: { terraAddress?: string },
-  //) => Promise<SignBytesResult>;
+  /**
+   * sign any bytes
+   *
+   * @example
+   * ```
+   * const { signBytes } = useWallet()
+   *
+   * const BYTES = Buffer.from('hello world')
+   *
+   * const callback = useCallback(async () => {
+   *   try {
+   *     const { result }: SignBytesResult = await signBytes(BYTES)
+   *
+   *     console.log(result.recid)
+   *     console.log(result.signature)
+   *     console.log(result.public_key)
+   *
+   *     const verified: boolean = verifyBytes(BYTES, result)
+   *   } catch (error) {
+   *     if (error instanceof UserDenied) {
+   *       // DO SOMETHING...
+   *     } else {
+   *       // DO SOMETHING...
+   *     }
+   *   }
+   * }, [])
+   * ```
+   *
+   * @param bytes
+   */
+  signBytes: (bytes: Buffer, terraAddress?: string) => Promise<SignBytesResult>;
 
   /**
    * check if tokens are added on the extension

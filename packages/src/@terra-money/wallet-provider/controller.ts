@@ -2,11 +2,17 @@ import {
   TerraWebExtensionFeatures,
   WebExtensionTxStatus,
 } from '@terra-dev/web-extension-interface';
-import { AccAddress, CreateTxOptions, Tx } from '@terra-money/terra.js';
+import {
+  AccAddress,
+  CreateTxOptions,
+  PublicKey,
+  Tx,
+} from '@terra-money/terra.js';
 import {
   Connection,
   ConnectType,
   NetworkInfo,
+  SignBytesResult,
   SignResult,
   TxResult,
   WalletStates,
@@ -19,7 +25,10 @@ import {
   CHROME_EXTENSION_INSTALL_URL,
   DEFAULT_CHROME_EXTENSION_COMPATIBLE_BROWSER_CHECK,
 } from './env';
-import { mapExtensionError } from './exception/mapExtensionError';
+import {
+  mapExtensionSignBytesError,
+  mapExtensionTxError,
+} from './exception/mapExtensionTxError';
 import { mapWalletConnectError } from './exception/mapWalletConnectError';
 import {
   ExtensionRouter,
@@ -426,7 +435,7 @@ export class WalletController {
             }
           },
           error: (error) => {
-            reject(mapExtensionError(tx, error));
+            reject(mapExtensionTxError(tx, error));
             subscription.unsubscribe();
           },
         });
@@ -482,7 +491,7 @@ export class WalletController {
             }
           },
           error: (error) => {
-            reject(mapExtensionError(tx, error));
+            reject(mapExtensionTxError(tx, error));
             subscription.unsubscribe();
           },
         });
@@ -492,67 +501,53 @@ export class WalletController {
     throw new Error(`sign() method only available on extension`);
   };
 
-  ///** @see Wallet#signBytes */
-  //signBytes = async (
-  //  bytes: Buffer,
-  //  // TODO not work at this time. for the future extension
-  //  txTarget: { terraAddress?: string } = {},
-  //): Promise<SignBytesResult> => {
-  //  interface SignBytesResultRaw {
-  //    bytes: string;
-  //    result: {
-  //      public_key: string | PublicKey.Data;
-  //      recid: string;
-  //      signature: string;
-  //    };
-  //    success: boolean;
-  //  }
-  //
-  //  if (this.disableExtension) {
-  //    if (!this.chromeExtension) {
-  //      throw new Error(`chromeExtension instance not created!`);
-  //    }
-  //
-  //    return this.chromeExtension
-  //      .signBytes<SignBytesResultRaw>(bytes)
-  //      .then(({ payload }) => {
-  //        const publicKey: PublicKey.Data =
-  //          typeof payload.result.public_key === 'string'
-  //            ? {
-  //                '@type': '/cosmos.crypto.secp256k1.PubKey',
-  //                'key': payload.result.public_key,
-  //              }
-  //            : payload.result.public_key;
-  //
-  //        const signBytesResult: SignBytesResult['result'] = {
-  //          ...payload.result,
-  //          public_key: publicKey,
-  //        };
-  //
-  //        return {
-  //          ...payload,
-  //          result: signBytesResult,
-  //          encryptedBytes: payload.bytes,
-  //        };
-  //      });
-  //    //.catch((error) => {
-  //    //  // TODO more detailed errors
-  //    //  if (error instanceof ChromeExtensionCreateTxFailed) {
-  //    //    throw new CreateTxFailed({} as any, error.message);
-  //    //  } else if (error instanceof ChromeExtensionTxFailed) {
-  //    //    throw new TxFailed({} as any, error.txhash, error.message, null);
-  //    //  } else if (error instanceof ChromeExtensionUnspecifiedError) {
-  //    //    throw new TxUnspecifiedError({} as any, error.message);
-  //    //  }
-  //    //  // UserDenied - chrome extension will sent original UserDenied error type
-  //    //  // All unspecified errors...
-  //    //  throw error;
-  //    //});
-  //  }
-  //
-  //  throw new Error(`signBytes() method only available on chrome extension`);
-  //  // TODO implements signBytes() to other connect types
-  //};
+  /**
+   * @see Wallet#signBytes
+   * @param bytes
+   * @param terraAddress only available new extension
+   */
+  signBytes = async (
+    bytes: Buffer,
+    terraAddress?: string,
+  ): Promise<SignBytesResult> => {
+    if (this.disableExtension) {
+      return new Promise<SignBytesResult>((resolve, reject) => {
+        if (!this.extension) {
+          reject(new Error(`extension instance is not created!`));
+          return;
+        }
+
+        const subscription = this.extension
+          .signBytes(bytes, terraAddress)
+          .subscribe({
+            next: (txResult) => {
+              if (txResult.status === WebExtensionTxStatus.SUCCEED) {
+                resolve({
+                  result: {
+                    recid: txResult.payload.recid,
+                    signature: Uint8Array.from(
+                      Buffer.from(txResult.payload.signature, 'base64'),
+                    ),
+                    public_key: txResult.payload.public_key
+                      ? PublicKey.fromData(txResult.payload.public_key)
+                      : undefined,
+                  },
+                  success: true,
+                });
+                subscription.unsubscribe();
+              }
+            },
+            error: (error) => {
+              reject(mapExtensionSignBytesError(bytes, error));
+              subscription.unsubscribe();
+            },
+          });
+      });
+    }
+
+    throw new Error(`signBytes() method only available on extension`);
+    // TODO implements signBytes() to other connect types
+  };
 
   /**
    * @see Wallet#hasCW20Tokens

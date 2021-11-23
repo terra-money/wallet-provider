@@ -10,7 +10,7 @@ export function NetworkSample() {
       {supportFeatures.has('network') ? (
         <Component />
       ) : status === WalletStatus.WALLET_CONNECTED ? (
-        <p>Does not support Network commands on this connection!</p>
+        <p>This connection does not support Network commands</p>
       ) : (
         <p>Wallet not connected!</p>
       )}

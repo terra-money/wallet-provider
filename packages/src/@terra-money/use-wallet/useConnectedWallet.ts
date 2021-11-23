@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import {
   ConnectType,
   NetworkInfo,
+  SignBytesResult,
   SignResult,
   TxResult,
   WalletStatus,
@@ -19,15 +20,16 @@ export interface ConnectedWallet {
   design?: string;
   post: (tx: CreateTxOptions) => Promise<TxResult>;
   sign: (tx: CreateTxOptions) => Promise<SignResult>;
-  //signBytes: (bytes: Buffer) => Promise<SignBytesResult>;
+  signBytes: (bytes: Buffer) => Promise<SignBytesResult>;
   availablePost: boolean;
   availableSign: boolean;
-  //availableSignBytes: boolean;
+  availableSignBytes: boolean;
   connectType: ConnectType;
 }
 
 export function useConnectedWallet(): ConnectedWallet | undefined {
-  const { status, network, wallets, post, sign, supportFeatures } = useWallet();
+  const { status, network, wallets, post, sign, signBytes, supportFeatures } =
+    useWallet();
 
   const value = useMemo<ConnectedWallet | undefined>(() => {
     try {
@@ -49,12 +51,12 @@ export function useConnectedWallet(): ConnectedWallet | undefined {
           sign: (tx: CreateTxOptions) => {
             return sign(tx, terraAddress);
           },
-          //signBytes: (bytes: Buffer) => {
-          //  return signBytes(bytes, { terraAddress });
-          //},
+          signBytes: (bytes: Buffer) => {
+            return signBytes(bytes, terraAddress);
+          },
           availablePost: supportFeatures.has('post'),
           availableSign: supportFeatures.has('sign'),
-          //availableSignBytes: connectType === ConnectType.CHROME_EXTENSION,
+          availableSignBytes: supportFeatures.has('sign-bytes'),
           connectType,
         };
       } else {
@@ -63,7 +65,7 @@ export function useConnectedWallet(): ConnectedWallet | undefined {
     } catch {
       return undefined;
     }
-  }, [network, post, sign, status, supportFeatures, wallets]);
+  }, [network, post, sign, signBytes, status, supportFeatures, wallets]);
 
   return value;
 }

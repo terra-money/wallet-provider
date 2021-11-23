@@ -2,6 +2,7 @@ import {
   TerraWebExtensionConnector,
   WebExtensionNetworkInfo,
   WebExtensionPostPayload,
+  WebExtensionSignBytesPayload,
   WebExtensionSignPayload,
   WebExtensionStates,
   WebExtensionStatus,
@@ -211,6 +212,26 @@ export class ExtensionRouter {
     return this._connector.sign(
       terraAddress ?? latestStates.wallet.terraAddress,
       tx,
+    );
+  };
+
+  signBytes = (
+    bytes: Buffer,
+    terraAddress?: string,
+  ): Subscribable<WebExtensionTxResult<WebExtensionSignBytesPayload>> => {
+    if (!this._connector) {
+      throw new Error('[ExtensionRouter] No connector');
+    }
+
+    const latestStates = this.getLastStates();
+
+    if (latestStates.type !== ExtensionRouterStatus.WALLET_CONNECTED) {
+      throw new Error(`[ExtensionRouter] Wallet is not connected`);
+    }
+
+    return this._connector.signBytes(
+      terraAddress ?? latestStates.wallet.terraAddress,
+      bytes,
     );
   };
 

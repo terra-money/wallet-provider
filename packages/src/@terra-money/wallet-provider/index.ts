@@ -4,3 +4,5 @@ export * from './impl-react';
 
 export * from '@terra-money/use-wallet';
 export type { ReadonlyWalletSession } from './modules/readonly-wallet';
+
+export * from './verifyBytes';

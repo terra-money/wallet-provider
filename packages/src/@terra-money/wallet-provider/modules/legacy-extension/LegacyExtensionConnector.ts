@@ -108,6 +108,10 @@ export class LegacyExtensionConnector implements TerraWebExtensionConnector {
     return subject.asObservable();
   };
 
+  signBytes = () => {
+    throw new Error('[LegacyExtensionConnector] does not support signBytes()');
+  };
+
   hasCW20Tokens = () => {
     throw new Error(
       '[LegacyExtensionConnector] does not support hasCW20Tokens()',

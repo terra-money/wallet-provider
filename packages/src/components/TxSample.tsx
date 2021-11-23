@@ -10,7 +10,7 @@ import {
 } from '@terra-money/wallet-provider';
 import React, { useCallback, useState } from 'react';
 
-const toAddress = 'terra12hnhh5vtyg5juqnzm43970nh4fw42pt27nw9g9';
+const TEST_TO_ADDRESS = 'terra12hnhh5vtyg5juqnzm43970nh4fw42pt27nw9g9';
 
 export function TxSample() {
   const [txResult, setTxResult] = useState<TxResult | null>(null);
@@ -18,7 +18,7 @@ export function TxSample() {
 
   const connectedWallet = useConnectedWallet();
 
-  const send = useCallback(() => {
+  const proceed = useCallback(() => {
     if (!connectedWallet) {
       return;
     }
@@ -29,12 +29,13 @@ export function TxSample() {
     }
 
     setTxResult(null);
+    setTxError(null);
 
     connectedWallet
       .post({
         fee: new Fee(1000000, '200000uusd'),
         msgs: [
-          new MsgSend(connectedWallet.walletAddress, toAddress, {
+          new MsgSend(connectedWallet.walletAddress, TEST_TO_ADDRESS, {
             uusd: 1000000,
           }),
         ],
@@ -66,33 +67,46 @@ export function TxSample() {
   return (
     <div>
       <h1>Tx Sample</h1>
+
       {connectedWallet?.availablePost && !txResult && !txError && (
-        <button onClick={send}>Send 1USD to {toAddress}</button>
+        <button onClick={proceed}>Send 1USD to {TEST_TO_ADDRESS}</button>
       )}
+
       {txResult && (
         <>
           <pre>{JSON.stringify(txResult, null, 2)}</pre>
+
           {connectedWallet && txResult && (
-            <a
-              href={`https://finder.terra.money/${connectedWallet.network.chainID}/tx/${txResult.result.txhash}`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Open Tx Result in Terra Finder
-            </a>
+            <div>
+              <a
+                href={`https://finder.terra.money/${connectedWallet.network.chainID}/tx/${txResult.result.txhash}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Open Tx Result in Terra Finder
+              </a>
+            </div>
           )}
-          <button onClick={() => setTxResult(null)}>Clear Tx Result</button>
         </>
       )}
-      {txError && (
-        <>
-          <pre>{txError}</pre>
-          <button onClick={() => setTxError(null)}>Clear Tx Error</button>
-        </>
+
+      {txError && <pre>{txError}</pre>}
+
+      {(!!txResult || !!txError) && (
+        <button
+          onClick={() => {
+            setTxResult(null);
+            setTxError(null);
+          }}
+        >
+          Clear result
+        </button>
       )}
+
       {!connectedWallet && <p>Wallet not connected!</p>}
+
       {connectedWallet && !connectedWallet.availablePost && (
-        <p>Can not post Tx</p>
+        <p>This connection does not support post()</p>
       )}
     </div>
   );

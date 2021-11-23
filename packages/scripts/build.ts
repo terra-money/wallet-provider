@@ -18,22 +18,22 @@ build({
 
     if ('react' in dependencies) {
       delete dependencies['react'];
-      peerDependencies['react'] = '^17.0.0';
+      peerDependencies['react'] = '>=17.0.0';
     }
 
     if ('react-dom' in dependencies) {
       delete dependencies['react-dom'];
-      peerDependencies['react-dom'] = '^17.0.0';
+      peerDependencies['react-dom'] = '>=17.0.0';
     }
 
     if ('react-router-dom' in dependencies) {
       delete dependencies['react-router-dom'];
-      peerDependencies['react-router-dom'] = '^5.0.0';
+      peerDependencies['react-router-dom'] = '>=5.0.0';
     }
     
     if ('styled-components' in dependencies) {
       delete dependencies['styled-components'];
-      peerDependencies['styled-components'] = '^5.0.0';
+      peerDependencies['styled-components'] = '>=5.0.0';
     }
     
     if ('@terra-money/terra.js' in dependencies) {

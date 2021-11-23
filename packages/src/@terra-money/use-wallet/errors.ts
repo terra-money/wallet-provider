@@ -1,4 +1,5 @@
 import { CreateTxOptions } from '@terra-money/terra.js';
+import * as Buffer from 'buffer';
 
 /** User denied the request */
 export class UserDenied extends Error {
@@ -9,6 +10,30 @@ export class UserDenied extends Error {
 
   toString = () => {
     return `[${this.name}]`;
+  };
+}
+
+/** the user did not complete the action during a specific time */
+export class Timeout extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'Timeout';
+  }
+
+  toString = () => {
+    return `[${this.name} message="${this.message}"]`;
+  };
+}
+
+/** failed on signBytes() */
+export class SignBytesFailed extends Error {
+  constructor(public readonly bytes: Buffer, message: string) {
+    super(message);
+    this.name = 'SignBytesFailed';
+  }
+
+  toString = () => {
+    return `[${this.name} message="${this.message}"]`;
   };
 }
 
@@ -48,18 +73,6 @@ export class TxFailed extends Error {
       null,
       2,
     )}`;
-  };
-}
-
-/** the user did not complete the action during a specific time */
-export class Timeout extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'Timeout';
-  }
-
-  toString = () => {
-    return `[${this.name} message="${this.message}"]`;
   };
 }
 

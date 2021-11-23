@@ -27,11 +27,11 @@ export interface SignResult extends CreateTxOptions {
 }
 
 export interface SignBytesResult {
-  encryptedBytes: string;
+  //encryptedBytes: string;
   result: {
-    recid: string;
-    signature: string;
-    public_key: PublicKey.Data;
+    recid: number;
+    signature: Uint8Array;
+    public_key?: PublicKey;
   };
   success: boolean;
 }
