@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "app:dev": "vite --open",
+    "dev": "vite",
     "start": "multiplerun dev",
     "build": "tsc --noEmit && vite build",
     "test": "react-scripts test --colors",
