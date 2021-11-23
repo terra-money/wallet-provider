@@ -15,7 +15,7 @@ import {
 } from '@terra-money/wallet-provider';
 import React, { useCallback, useState } from 'react';
 
-const toAddress = 'terra12hnhh5vtyg5juqnzm43970nh4fw42pt27nw9g9';
+const TEST_TO_ADDRESS = 'terra12hnhh5vtyg5juqnzm43970nh4fw42pt27nw9g9';
 
 export default function SignSample() {
   const [signResult, setSignResult] = useState<SignResult | null>(null);
@@ -35,12 +35,14 @@ export default function SignSample() {
     }
 
     setSignResult(null);
+    setTxResult(null);
+    setTxError(null);
 
     connectedWallet
       .sign({
         fee: new Fee(1000000, '200000uusd'),
         msgs: [
-          new MsgSend(connectedWallet.walletAddress, toAddress, {
+          new MsgSend(connectedWallet.walletAddress, TEST_TO_ADDRESS, {
             uusd: 1000000,
           }),
         ],
@@ -49,7 +51,7 @@ export default function SignSample() {
         setSignResult(nextSignResult);
 
         // broadcast
-        const { tx } = nextSignResult.result;
+        const tx = nextSignResult.result;
 
         const lcd = new LCDClient({
           chainID: connectedWallet.network.chainID,
@@ -84,13 +86,19 @@ export default function SignSample() {
   return (
     <div>
       <h1>Sign Sample</h1>
-      {connectedWallet?.availableSign && !signResult && !txError && (
-        <button onClick={() => send()}>Send 1USD to {toAddress}</button>
+
+      {connectedWallet?.availableSign &&
+        !signResult &&
+        !txResult &&
+        !txError && (
+          <button onClick={() => send()}>Send 1USD to {TEST_TO_ADDRESS}</button>
       )}
-      {signResult && (
+
+      {signResult && <pre>{JSON.stringify(signResult, null, 2)}</pre>}
+
+      {txResult && (
         <>
-          <pre>{JSON.stringify(signResult, null, 2)}</pre>
-          {txResult && <pre>{JSON.stringify(txResult, null, 2)}</pre>}
+          <pre>{JSON.stringify(txResult, null, 2)}</pre>
           {connectedWallet && txResult && (
             <a
               href={`https://finder.terra.money/${connectedWallet.network.chainID}/tx/${txResult.txhash}`}
@@ -100,18 +108,25 @@ export default function SignSample() {
               Open Tx Result in Terra Finder
             </a>
           )}
-          <button onClick={() => setSignResult(null)}>Clear Result</button>
         </>
       )}
-      {txError && (
-        <>
-          <pre>{txError}</pre>
-          <button onClick={() => setTxError(null)}>Clear Error</button>
-        </>
+
+      {txError && <pre>{txError}</pre>}
+
+      {(!!signResult || !!txResult || !!txError) && (
+        <button
+          onClick={() => {
+            setSignResult(null);
+            setTxResult(null);
+            setTxError(null);
+          }}
+        >
+          Clear result
+        </button>
       )}
       {!connectedWallet && <p>Wallet not connected!</p>}
       {connectedWallet && !connectedWallet.availableSign && (
-        <p>Can not sign Tx</p>
+        <p>This connection does not support sign()</p>
       )}
     </div>
   );

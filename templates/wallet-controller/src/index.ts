@@ -20,7 +20,7 @@ import { combineLatest } from 'rxjs';
     ...chainOptions,
   });
 
-  const toAddress = 'terra12hnhh5vtyg5juqnzm43970nh4fw42pt27nw9g9';
+  const TO_ADDRESS = 'terra12hnhh5vtyg5juqnzm43970nh4fw42pt27nw9g9';
 
   combineLatest([
     controller.availableConnectTypes(),
@@ -128,7 +128,7 @@ import { combineLatest } from 'rxjs';
               .post({
                 fee: new Fee(1000000, '200000uusd'),
                 msgs: [
-                  new MsgSend(states.wallets[0].terraAddress, toAddress, {
+                  new MsgSend(states.wallets[0].terraAddress, TO_ADDRESS, {
                     uusd: 1000000,
                   }),
                 ],
@@ -156,7 +156,7 @@ import { combineLatest } from 'rxjs';
           };
 
           const button = document.createElement('button');
-          button.textContent = `Send 1USD to ${toAddress}`;
+          button.textContent = `Send 1USD to ${TO_ADDRESS}`;
           button.addEventListener('click', () => {
             send();
           });

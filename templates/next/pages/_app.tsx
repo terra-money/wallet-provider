@@ -21,6 +21,9 @@ export default function App({
         <Link href="/query-sample">Query Sample</Link>
         <Link href="/tx-sample">Tx Sample</Link>
         <Link href="/sign-sample">Sign Sample</Link>
+        <Link href="/sign-bytes-sample">Sign Bytes Sample</Link>
+        <Link href="/cw20-tokens-sample">CW20 Tokens Sample</Link>
+        <Link href="/network-sample">Network Sample</Link>
       </header>
 
       <Component />

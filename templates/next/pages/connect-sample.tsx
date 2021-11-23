@@ -9,6 +9,7 @@ export default function ConnectSample() {
     availableConnectTypes,
     availableInstallTypes,
     availableConnections,
+    supportFeatures,
     connect,
     install,
     disconnect,
@@ -24,6 +25,7 @@ export default function ConnectSample() {
               status,
               network,
               wallets,
+              supportFeatures: Array.from(supportFeatures),
               availableConnectTypes,
               availableInstallTypes,
             },
@@ -64,7 +66,7 @@ export default function ConnectSample() {
                     alt={name}
                     style={{ width: '1em', height: '1em' }}
                   />
-                  {name}
+                  {name} [{identifier}]
                 </button>
               ),
             )}
