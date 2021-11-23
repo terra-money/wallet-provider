@@ -47,6 +47,18 @@ yarn run dev
 
 # Basic Usage
 
+First, please add `<meta name="terra-wallet />` on your html page.
+
+Since then, browser extensions (e.g. Terra Station chrome extension) will not attempt to connect in a Web app where this `<meta name="terra-wallet">` tag is not found.
+
+```html
+<html lang="en">
+  <head>
+    <meta name="terra-wallet />
+  </head>
+</html>
+```
+
 If you have used `react-router-dom`'s `<BrowserRouter>`, `useLocation()`, you can easily understand it.
 
 ```jsx
