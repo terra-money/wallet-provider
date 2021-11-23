@@ -1,5 +1,6 @@
 {
   "infiniteLoopProtection": true,
   "hardReloadOnChange": false,
-  "view": "browser"
+  "view": "browser",
+  "template": "node"
 }
