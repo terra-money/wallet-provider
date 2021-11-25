@@ -252,6 +252,10 @@ export interface Wallet {
    */
   availableConnections: Connection[];
   /**
+   * current connected connection
+   */
+  connection: Connection | undefined;
+  /**
    * connect to wallet
    *
    * @example

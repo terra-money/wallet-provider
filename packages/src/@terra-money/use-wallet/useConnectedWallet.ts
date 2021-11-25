@@ -1,6 +1,7 @@
 import { AccAddress, CreateTxOptions } from '@terra-money/terra.js';
 import { useMemo } from 'react';
 import {
+  Connection,
   ConnectType,
   NetworkInfo,
   SignBytesResult,
@@ -25,18 +26,28 @@ export interface ConnectedWallet {
   availableSign: boolean;
   availableSignBytes: boolean;
   connectType: ConnectType;
+  connection: Connection;
 }
 
 export function useConnectedWallet(): ConnectedWallet | undefined {
-  const { status, network, wallets, post, sign, signBytes, supportFeatures } =
-    useWallet();
+  const {
+    status,
+    network,
+    wallets,
+    post,
+    sign,
+    signBytes,
+    supportFeatures,
+    connection,
+  } = useWallet();
 
   const value = useMemo<ConnectedWallet | undefined>(() => {
     try {
       if (
         status === WalletStatus.WALLET_CONNECTED &&
         wallets.length > 0 &&
-        AccAddress.validate(wallets[0].terraAddress)
+        AccAddress.validate(wallets[0].terraAddress) &&
+        !!connection
       ) {
         const { terraAddress, connectType, design } = wallets[0];
 
@@ -58,6 +69,7 @@ export function useConnectedWallet(): ConnectedWallet | undefined {
           availableSign: supportFeatures.has('sign'),
           availableSignBytes: supportFeatures.has('sign-bytes'),
           connectType,
+          connection,
         };
       } else {
         return undefined;
@@ -65,7 +77,16 @@ export function useConnectedWallet(): ConnectedWallet | undefined {
     } catch {
       return undefined;
     }
-  }, [network, post, sign, signBytes, status, supportFeatures, wallets]);
+  }, [
+    connection,
+    network,
+    post,
+    sign,
+    signBytes,
+    status,
+    supportFeatures,
+    wallets,
+  ]);
 
   return value;
 }

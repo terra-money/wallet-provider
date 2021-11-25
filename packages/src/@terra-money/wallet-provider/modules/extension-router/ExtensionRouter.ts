@@ -346,6 +346,7 @@ export class ExtensionRouter {
                   ? ExtensionRouterConnectorType.LEGACY
                   : ExtensionRouterConnectorType.WEB_EXTENSION,
               supportFeatures: new Set(connector.supportFeatures()),
+              extensionInfo,
             });
           }
         },

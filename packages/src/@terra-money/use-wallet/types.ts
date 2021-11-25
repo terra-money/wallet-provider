@@ -78,6 +78,7 @@ export type WalletStates =
     }
   | {
       status: WalletStatus.WALLET_CONNECTED;
+      connection: Connection;
       network: NetworkInfo;
       wallets: WalletInfo[];
       supportFeatures: Set<TerraWebExtensionFeatures>;

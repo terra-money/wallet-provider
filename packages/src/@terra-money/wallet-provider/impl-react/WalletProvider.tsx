@@ -114,6 +114,10 @@ export function WalletProvider({
       connect: controller.connect,
       connectReadonly: controller.connectReadonly,
       disconnect: controller.disconnect,
+      connection:
+        states.status === WalletStatus.WALLET_CONNECTED
+          ? states.connection
+          : undefined,
       supportFeatures:
         states.status === WalletStatus.WALLET_CONNECTED
           ? states.supportFeatures

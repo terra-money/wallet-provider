@@ -298,12 +298,14 @@ export class WalletController {
             const terraExtensions = getTerraExtensions();
 
             for (const terraExtension of terraExtensions) {
-              connections.push({
-                type: ConnectType.EXTENSION,
-                identifier: terraExtension.identifier,
-                name: terraExtension.name,
-                icon: terraExtension.icon,
-              });
+              connections.push(
+                memoConnection(
+                  ConnectType.EXTENSION,
+                  terraExtension.name,
+                  terraExtension.icon,
+                  terraExtension.identifier,
+                ),
+              );
             }
           } else {
             connections.push(CONNECTIONS[connectType]);
@@ -668,6 +670,7 @@ export class WalletController {
         },
       ],
       supportFeatures: EMPTY_SUPPORT_FEATURES,
+      connection: CONNECTIONS.READONLY,
     });
 
     this.disableReadonlyWallet = () => {
@@ -702,6 +705,12 @@ export class WalletController {
               },
             ],
             supportFeatures: extensionStates.supportFeatures,
+            connection: memoConnection(
+              ConnectType.EXTENSION,
+              extensionStates.extensionInfo.name,
+              extensionStates.extensionInfo.icon,
+              extensionStates.extensionInfo.identifier,
+            ),
           });
         } else {
           this.updateStates(this._notConnected);
@@ -750,6 +759,7 @@ export class WalletController {
                   },
                 ],
                 supportFeatures: WALLETCONNECT_SUPPORT_FEATURES,
+                connection: CONNECTIONS.WALLETCONNECT,
               });
               break;
             default:
@@ -770,4 +780,30 @@ export class WalletController {
       this.disableWalletConnect = null;
     };
   };
+}
+
+const memoizedConnections = new Map<string, Connection>();
+
+function memoConnection(
+  connectType: ConnectType,
+  name: string,
+  icon: string,
+  identifier: string | undefined = '',
+): Connection {
+  const key = [connectType, name, icon, identifier].join(';');
+
+  if (memoizedConnections.has(key)) {
+    return memoizedConnections.get(key)!;
+  }
+
+  const connection: Connection = {
+    type: connectType,
+    name,
+    icon,
+    identifier,
+  };
+
+  memoizedConnections.set(key, connection);
+
+  return connection;
 }

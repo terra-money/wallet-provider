@@ -19,6 +19,7 @@ export interface StaticWalletProviderProps {
   availableConnections?: Connection[];
   wallets?: WalletInfo[];
   supportFeatures?: Set<TerraWebExtensionFeatures>;
+  connection?: Connection | undefined;
 }
 
 export function StaticWalletProvider({
@@ -30,6 +31,7 @@ export function StaticWalletProvider({
   availableConnections = [],
   wallets = [],
   supportFeatures = new Set(),
+  connection = undefined,
 }: StaticWalletProviderProps) {
   const state = useMemo<Wallet>(() => {
     return {
@@ -40,6 +42,7 @@ export function StaticWalletProvider({
       network: defaultNetwork,
       wallets,
       supportFeatures,
+      connection,
       install: () => {
         throw new Error('not implemented!');
       },
@@ -91,6 +94,7 @@ export function StaticWalletProvider({
     defaultNetwork,
     wallets,
     supportFeatures,
+    connection,
   ]);
 
   return (

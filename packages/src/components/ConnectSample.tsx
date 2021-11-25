@@ -11,6 +11,7 @@ export function ConnectSample() {
     availableConnections,
     supportFeatures,
     connect,
+    connection,
     install,
     disconnect,
   } = useWallet();
@@ -23,6 +24,7 @@ export function ConnectSample() {
           {JSON.stringify(
             {
               status,
+              connection,
               network,
               wallets,
               supportFeatures: Array.from(supportFeatures),

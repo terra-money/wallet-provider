@@ -3,6 +3,7 @@ import {
   WebExtensionNetworkInfo,
   WebExtensionWalletInfo,
 } from '@terra-dev/web-extension-interface';
+import { ExtensionInfo } from './multiChannel';
 
 export enum ExtensionRouterConnectorType {
   LEGACY = 'LEGACY',
@@ -39,6 +40,7 @@ export interface ExtensionRouterWalletConnected {
   wallet: WebExtensionWalletInfo;
   connectorType: ExtensionRouterConnectorType;
   supportFeatures: Set<TerraWebExtensionFeatures>;
+  extensionInfo: ExtensionInfo;
 }
 
 export type ExtensionRouterStates =
