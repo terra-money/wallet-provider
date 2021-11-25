@@ -138,8 +138,7 @@ const CONNECTIONS = {
   [ConnectType.READONLY]: {
     type: ConnectType.READONLY,
     name: 'View an address',
-    // TODO change to readonly icon
-    icon: 'https://assets.terra.money/icon/wallet-provider/station.svg',
+    icon: 'https://assets.terra.money/icon/wallet-provider/readonly.svg',
   } as Connection,
   [ConnectType.WALLETCONNECT]: {
     type: ConnectType.WALLETCONNECT,
