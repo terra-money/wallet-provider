@@ -23,7 +23,7 @@ export function getTerraExtensions(): ExtensionInfo[] {
         {
           name: 'Terra Station',
           identifier: 'station',
-          icon: 'https://assets.terra.money/icon/station-extension/icon.png',
+          icon: 'https://assets.terra.money/icon/wallet-provider/station.svg',
         },
       ]
     : [];

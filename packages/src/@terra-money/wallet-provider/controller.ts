@@ -138,12 +138,13 @@ const CONNECTIONS = {
   [ConnectType.READONLY]: {
     type: ConnectType.READONLY,
     name: 'View an address',
-    icon: 'https://assets.terra.money/icon/station-extension/icon.png',
+    // TODO change to readonly icon
+    icon: 'https://assets.terra.money/icon/wallet-provider/station.svg',
   } as Connection,
   [ConnectType.WALLETCONNECT]: {
     type: ConnectType.WALLETCONNECT,
-    name: 'Terra Station Mobile',
-    icon: 'https://assets.terra.money/icon/station-extension/icon.png',
+    name: 'Wallet Connect',
+    icon: 'https://assets.terra.money/icon/wallet-provider/walletconnect.svg',
   } as Connection,
 } as const;
 
