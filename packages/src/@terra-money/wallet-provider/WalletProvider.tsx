@@ -8,8 +8,11 @@ import {
   WalletStates,
   WalletStatus,
 } from '@terra-money/use-wallet';
+import {
+  WalletController,
+  WalletControllerOptions,
+} from '@terra-money/wallet-controller';
 import React, { ReactNode, useEffect, useMemo, useState } from 'react';
-import { WalletController, WalletControllerOptions } from '../controller';
 
 export interface WalletProviderProps extends WalletControllerOptions {
   children: ReactNode;

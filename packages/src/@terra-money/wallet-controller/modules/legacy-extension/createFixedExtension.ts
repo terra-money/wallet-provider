@@ -1,3 +1,4 @@
+import { NetworkInfo } from '@terra-dev/wallet-types';
 import {
   WebExtensionCreateTxFailed,
   WebExtensionTxFailed,
@@ -5,7 +6,6 @@ import {
   WebExtensionUserDenied,
 } from '@terra-dev/web-extension-interface';
 import { CreateTxOptions, Extension, Tx } from '@terra-money/terra.js';
-import { NetworkInfo } from '@terra-money/use-wallet';
 
 type ConnectResponse = { address?: string };
 type PostResponse = {

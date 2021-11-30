@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
 import {
   getChainOptions,
   WalletControllerChainOptions,
-} from '../getChainOptions';
+} from '@terra-money/wallet-controller';
+import { useEffect, useState } from 'react';
 
 export function useChainOptions(): WalletControllerChainOptions | null {
   const [chainOptions, setChainOptions] =

@@ -1,4 +1,3 @@
-import { TerraWebExtensionFeatures } from '@terra-dev/web-extension-interface';
 import { CreateTxOptions, PublicKey, Tx } from '@terra-money/terra.js';
 
 export interface NetworkInfo {
@@ -81,5 +80,8 @@ export type WalletStates =
       connection: Connection;
       network: NetworkInfo;
       wallets: WalletInfo[];
-      supportFeatures: Set<TerraWebExtensionFeatures>;
+      /** This type is same as `import type { TerraWebExtensionFeatures } from '@terra-dev/web-extension-interface'` */
+      supportFeatures: Set<
+        'post' | 'sign' | 'sign-bytes' | 'cw20-token' | 'network'
+      >;
     };

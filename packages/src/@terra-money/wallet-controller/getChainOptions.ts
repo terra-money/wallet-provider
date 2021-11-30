@@ -1,4 +1,4 @@
-import { NetworkInfo } from '@terra-money/use-wallet';
+import { NetworkInfo } from '@terra-dev/wallet-types';
 import { WalletControllerOptions } from './controller';
 
 interface ChainInfo {

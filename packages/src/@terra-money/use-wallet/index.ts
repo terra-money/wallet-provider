@@ -1,5 +1,4 @@
-export * from './tx';
-export * from './types';
-export * from './errors';
+export * from '@terra-dev/wallet-types';
+
 export * from './useWallet';
 export * from './useConnectedWallet';

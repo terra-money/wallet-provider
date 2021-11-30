@@ -363,8 +363,12 @@ export interface Wallet {
    *  </div>
    * )
    * ```
+   *
+   * This type is same as `import type { TerraWebExtensionFeatures } from '@terra-dev/web-extension-interface'`
    */
-  supportFeatures: Set<TerraWebExtensionFeatures>;
+  supportFeatures: Set<
+    'post' | 'sign' | 'sign-bytes' | 'cw20-token' | 'network'
+  >;
   /**
    * post transaction
    *

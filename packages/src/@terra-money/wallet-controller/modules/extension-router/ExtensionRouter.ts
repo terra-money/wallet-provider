@@ -1,3 +1,4 @@
+import { NetworkInfo } from '@terra-dev/wallet-types';
 import {
   TerraWebExtensionConnector,
   WebExtensionNetworkInfo,
@@ -9,11 +10,10 @@ import {
   WebExtensionTxResult,
 } from '@terra-dev/web-extension-interface';
 import { CreateTxOptions } from '@terra-money/terra.js';
-import { NetworkInfo } from '@terra-money/use-wallet';
 import { BehaviorSubject, Subscribable } from 'rxjs';
 import { isDesktopChrome } from '../../utils/browser-check';
 import { LegacyExtensionConnector } from '../legacy-extension';
-import { defaultSelectModal } from './defaultSelectModal';
+import { selectModal } from './modal';
 import { ExtensionInfo, getTerraExtensions } from './multiChannel';
 import { clearSession, getStoredSession, storeSession } from './session';
 import {
@@ -134,7 +134,7 @@ export class ExtensionRouter {
     } else if (extensionInfos.length === 1) {
       extensionInfo = extensionInfos[0];
     } else {
-      const select = this.options.selectExtension ?? defaultSelectModal;
+      const select = this.options.selectExtension ?? selectModal;
       const selectedExtensionInfo = await select(extensionInfos);
 
       if (selectedExtensionInfo) {

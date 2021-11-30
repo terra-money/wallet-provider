@@ -1,4 +1,4 @@
-import { SignBytesResult } from '@terra-money/use-wallet';
+import { SignBytesResult } from '@terra-dev/wallet-types';
 import jscrypto from 'jscrypto';
 import secp256k1 from 'secp256k1';
 

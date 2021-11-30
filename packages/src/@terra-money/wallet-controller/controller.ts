@@ -17,7 +17,7 @@ import {
   TxResult,
   WalletStates,
   WalletStatus,
-} from '@terra-money/use-wallet';
+} from '@terra-dev/wallet-types';
 import deepEqual from 'fast-deep-equal';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';

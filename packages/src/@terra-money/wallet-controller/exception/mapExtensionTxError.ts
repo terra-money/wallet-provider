@@ -12,7 +12,7 @@ import {
   TxFailed,
   TxUnspecifiedError,
   UserDenied,
-} from '@terra-money/use-wallet';
+} from '@terra-dev/wallet-types';
 import * as Buffer from 'buffer';
 import { isError } from './isError';
 
