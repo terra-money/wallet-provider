@@ -2,11 +2,19 @@
   "name": "without-react-template",
   "version": "1.0.0",
   "scripts": {
-    "build": "react-scripts build",
-    "start": "react-scripts start",
+    "app:dev": "vite --open",
+    "dev": "vite",
+    "start": "multiplerun dev",
+    "build": "tsc --noEmit && vite build",
     "test": "react-scripts test --colors",
-    "coverage": "react-scripts test --coverage",
+    "coverage": "react-scripts test --colors --coverage",
     "precommit": "lint-staged"
+  },
+  "multiplerun": {
+    "dev": [
+      "yarn run tsc --watch --noEmit",
+      "yarn run app:dev"
+    ]
   },
   "lint-staged": {
     "src/{**/*,*}/*.{ts,tsx}": [
@@ -35,19 +43,19 @@
   },
   "dependencies": {
     "@terra-money/terra.js": "^3.0.1",
-    "@terra-money/wallet-provider": "^3.0.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "styled-components": "^5.3.3"
+    "@terra-money/wallet-controller": "^3.2.0",
+    "buffer": "^6.0.3",
+    "lit-html": "^2.0.2",
+    "vite-compatible-readable-stream": "^3.6.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.15.0",
-    "@types/jest": "^27.0.2",
-    "@types/react": "^17.0.34",
-    "@types/react-dom": "^17.0.11",
     "cross-env": "^7.0.3",
     "lint-staged": "^11.2.6",
+    "multiplerun": "^2.0.1",
     "react-scripts": "4.0.3",
-    "typescript": "^4.4.4"
+    "typescript": "^4.4.4",
+    "vite": "^2.6.14",
+    "vite-tsconfig-paths": "^3.3.17"
   }
 }
