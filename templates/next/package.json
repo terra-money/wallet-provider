@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "next --port 4300",
-    "build": "next build",
+    "build": "next build && next export",
     "start": "next start",
     "type-check": "tsc"
   },
   "dependencies": {
     "@terra-money/terra.js": "^3.0.1",
     "@terra-money/wallet-provider": "^3.2.0",
-    "next": "^11.1.2",
+    "next": "^12.0.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "styled-components": "^5.3.3"

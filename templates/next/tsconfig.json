@@ -21,7 +21,8 @@
     "noEmit": true,
     "watch": true,
     "jsx": "preserve",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "incremental": true
   },
   "include": [
     "next-env.d.ts",
