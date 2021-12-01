@@ -148,9 +148,11 @@ const CONNECTIONS = {
 } as const;
 
 const DEFAULT_WAITING_CHROME_EXTENSION_INSTALL_CHECK = 1000 * 3;
+
 const WALLETCONNECT_SUPPORT_FEATURES = new Set<TerraWebExtensionFeatures>([
   'post',
 ]);
+
 const EMPTY_SUPPORT_FEATURES = new Set<TerraWebExtensionFeatures>();
 
 export class WalletController {
@@ -273,7 +275,13 @@ export class WalletController {
     }
   }
 
-  /** @see Wallet#isChromeExtensionCompatibleBrowser */
+  /**
+   * Some mobile wallet emulates the behavior of chrome extension.
+   * It confirms that the current connection environment is such a wallet.
+   * (If you are running connect() by checking availableConnectType, you do not need to use this API.)
+   *
+   * @see Wallet#isChromeExtensionCompatibleBrowser
+   */
   isChromeExtensionCompatibleBrowser = (): boolean => {
     return (
       this.options.dangerously__chromeExtensionCompatibleBrowserCheck ??
@@ -281,12 +289,20 @@ export class WalletController {
     )(navigator.userAgent);
   };
 
-  /** @see Wallet#availableConnectTypes */
+  /**
+   * available connect types on the browser
+   *
+   * @see Wallet#availableConnectTypes
+   */
   availableConnectTypes = (): Observable<ConnectType[]> => {
     return this._availableConnectTypes.asObservable();
   };
 
-  /** @see Wallet#availableConnections */
+  /**
+   * available connections includes identifier, name, icon
+   *
+   * @see Wallet#availableConnections
+   */
   availableConnections = (): Observable<Connection[]> => {
     return this._availableConnectTypes.pipe(
       map((connectTypes) => {
@@ -316,7 +332,13 @@ export class WalletController {
     );
   };
 
-  /** @see Wallet#availableInstallTypes */
+  /**
+   * available install types on the browser
+   *
+   * in this time, this only contains [ConnectType.EXTENSION]
+   *
+   * @see Wallet#availableInstallTypes
+   */
   availableInstallTypes = (): Observable<ConnectType[]> => {
     return this._availableInstallTypes.asObservable();
   };
@@ -330,14 +352,24 @@ export class WalletController {
     return this._states.asObservable();
   };
 
-  /** @see Wallet#recheckStatus */
+  /**
+   * reload the connected wallet states
+   *
+   * in this time, this only work on the ConnectType.EXTENSION
+   *
+   * @see Wallet#recheckStatus
+   */
   refetchStates = () => {
     if (this.disableExtension) {
       this.extension?.refetchStates();
     }
   };
 
-  /** @see Wallet#install */
+  /**
+   * install for the connect type
+   *
+   * @see Wallet#install
+   */
   install = (type: ConnectType) => {
     if (type === ConnectType.EXTENSION) {
       // TODO separate install links by browser types
@@ -349,7 +381,11 @@ export class WalletController {
     }
   };
 
-  /** @see Wallet#connect */
+  /**
+   * connect to wallet
+   *
+   * @see Wallet#connect
+   */
   connect = (type: ConnectType, identifier?: string) => {
     switch (type) {
       case ConnectType.READONLY:
@@ -382,7 +418,11 @@ export class WalletController {
     }
   };
 
-  /** @see Wallet#connectReadonly */
+  /**
+   * manual connect to read only session
+   *
+   * @see Wallet#connectReadonly
+   */
   connectReadonly = (terraAddress: string, network: NetworkInfo) => {
     this.enableReadonlyWallet(
       reConnect({

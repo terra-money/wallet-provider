@@ -1,5 +1,4 @@
 import { CreateTxOptions } from '@terra-money/terra.js';
-import * as Buffer from 'buffer';
 
 /** User denied the request */
 export class UserDenied extends Error {

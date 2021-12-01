@@ -1,11 +1,4 @@
 import {
-  WebExtensionCreateTxFailed,
-  WebExtensionTxFailed,
-  WebExtensionTxUnspecifiedError,
-  WebExtensionUserDenied,
-} from '@terra-dev/web-extension-interface';
-import { CreateTxOptions } from '@terra-money/terra.js';
-import {
   CreateTxFailed,
   SignBytesFailed,
   Timeout,
@@ -13,7 +6,13 @@ import {
   TxUnspecifiedError,
   UserDenied,
 } from '@terra-dev/wallet-types';
-import * as Buffer from 'buffer';
+import {
+  WebExtensionCreateTxFailed,
+  WebExtensionTxFailed,
+  WebExtensionTxUnspecifiedError,
+  WebExtensionUserDenied,
+} from '@terra-dev/web-extension-interface';
+import { CreateTxOptions } from '@terra-money/terra.js';
 import { isError } from './isError';
 
 export function mapExtensionTxError(

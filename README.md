@@ -537,6 +537,8 @@ export interface Wallet {
    * Some mobile wallet emulates the behavior of chrome extension.
    * It confirms that the current connection environment is such a wallet.
    * (If you are running connect() by checking availableConnectType, you do not need to use this API.)
+   *
+   * @see WalletController#isChromeExtensionCompatibleBrowser
    */
   isChromeExtensionCompatibleBrowser: () => boolean;
 }

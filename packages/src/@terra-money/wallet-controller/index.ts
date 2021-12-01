@@ -1,3 +1,5 @@
+export * from '@terra-dev/wallet-types';
+
 export * from './getChainOptions';
 export * from './controller';
 export * from './verifyBytes';
