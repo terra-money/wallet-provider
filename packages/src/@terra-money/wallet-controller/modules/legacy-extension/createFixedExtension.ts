@@ -22,7 +22,15 @@ type SignResponse = {
     result: Tx.Data;
   };
 };
-type SignBytesResponse = any;
+type SignBytesResponse = {
+  payload: {
+    result: {
+      public_key: string;
+      recid: number;
+      signature: string;
+    };
+  };
+};
 type InfoResponse = NetworkInfo;
 
 export interface FixedExtension {
@@ -237,7 +245,7 @@ export function createFixedExtension(identifier: string): FixedExtension {
   }
 
   function signBytes(bytes: Buffer) {
-    return new Promise<SignResponse>((...resolver) => {
+    return new Promise<SignBytesResponse>((...resolver) => {
       _inTransactionProgress = true;
 
       const id = extension.signBytes({

@@ -3,6 +3,7 @@ import {
   TerraWebExtensionConnector,
   TerraWebExtensionFeatures,
   WebExtensionPostPayload,
+  WebExtensionSignBytesPayload,
   WebExtensionSignPayload,
   WebExtensionStates,
   WebExtensionStatus,
@@ -14,7 +15,11 @@ import { BehaviorSubject, Observer, Subscribable, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { createFixedExtension, FixedExtension } from './createFixedExtension';
 
-const supportFeatures: TerraWebExtensionFeatures[] = ['post', 'sign'];
+const supportFeatures: TerraWebExtensionFeatures[] = [
+  'post',
+  'sign',
+  'sign-bytes',
+];
 
 export class LegacyExtensionConnector implements TerraWebExtensionConnector {
   private _states: BehaviorSubject<WebExtensionStates>;
@@ -108,8 +113,34 @@ export class LegacyExtensionConnector implements TerraWebExtensionConnector {
     return subject.asObservable();
   };
 
-  signBytes = () => {
-    throw new Error('[LegacyExtensionConnector] does not support signBytes()');
+  signBytes = (
+    terraAddress: string,
+    bytes: Buffer,
+  ): Subscribable<WebExtensionTxResult<WebExtensionSignBytesPayload>> => {
+    const subject = new BehaviorSubject<
+      WebExtensionTxResult<WebExtensionSignBytesPayload>
+    >({
+      status: WebExtensionTxStatus.PROGRESS,
+    });
+
+    this._extension
+      .signBytes(bytes)
+      .then(({ payload }) => {
+        subject.next({
+          status: WebExtensionTxStatus.SUCCEED,
+          payload: {
+            recid: payload.result.recid,
+            signature: payload.result.signature,
+            public_key: {
+              '@type': '/cosmos.crypto.secp256k1.PubKey',
+              'key': payload.result.public_key,
+            },
+          },
+        });
+      })
+      .catch((error) => subject.error(error));
+
+    return subject.asObservable();
   };
 
   hasCW20Tokens = () => {
