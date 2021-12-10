@@ -27,7 +27,7 @@ export const modalStyle = `
   position: fixed;
   z-index: 100000;
 
-  color: #000000;
+  color: #212121;
 
   left: 0;
   top: 0;
@@ -52,7 +52,7 @@ export const modalStyle = `
 }
 
 .wallet-wc-modal > .wallet-wc-modal--content {
-  border-radius: 25px;
+  border-radius: 8px;
 
   background-color: #ffffff;
   box-shadow: 0 4px 18px 3px rgba(0, 0, 0, 0.43);
@@ -61,44 +61,48 @@ export const modalStyle = `
 }
 
 .wallet-wc-modal > .wallet-wc-modal--content button {
-  cursor: pointer;
-
   display: block;
+  
+  cursor: pointer;
   outline: none;
-  width: 100%;
-  height: 32px;
-  font-size: 13px;
-  letter-spacing: -0.2px;
-  border-radius: 18px;
   border: 0;
+  
+  width: 295px;
+  height: 48px;
+  border-radius: 30px;
+  
+  font-size: 14px;
+  font-weight: bold;
+  
   color: #ffffff;
-  background-color: #2c2c2c;
+  background-color: #2043b5;
 }
 
 .wallet-wc-modal > .wallet-wc-modal--content[data-device="desktop"] {
-  padding: 50px 60px;
+  padding: 40px 130px;
 }
 
 .wallet-wc-modal > .wallet-wc-modal--content[data-device="desktop"] h1 {
-  font-size: 27px;
-  font-weight: 500;
-
+  font-size: 20px;
+  font-family: sans-serif;
+  font-weight: bold;
+  
+  margin: 0 0 32px 0;
+  
   text-align: center;
-
-  margin-bottom: 24px;
 }
 
 .wallet-wc-modal > .wallet-wc-modal--content[data-device="mobile"] {
-  padding: 40px 30px;
-  min-width: 320px;
+  padding: 40px 20px;
 }
 
 .wallet-wc-modal > .wallet-wc-modal--content[data-device="mobile"] h1 {
-  font-size: 22px;
-  font-weight: 500;
+  font-size: 20px;
+  font-family: sans-serif;
+  font-weight: bold;
+  
+  margin: 0 0 32px 0;
 
   text-align: center;
-
-  margin-bottom: 30px;
 }
 `;

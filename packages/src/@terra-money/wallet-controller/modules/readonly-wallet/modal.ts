@@ -69,11 +69,21 @@ function createModalElement({
   title.textContent = 'View an Address';
   content.appendChild(title);
 
-  // label
-  const label = document.createElement('label');
-  content.appendChild(label);
+  // div
+  const selectContainer = document.createElement('div');
+  content.appendChild(selectContainer);
 
-  // label > select
+  // div > label
+  const selectLabel = document.createElement('label');
+  selectLabel.textContent = 'Network';
+  selectContainer.appendChild(selectLabel);
+
+  // div > .select-wrapper
+  const selectWrapper = document.createElement('div');
+  selectWrapper.setAttribute('class', 'select-wrapper');
+  selectContainer.appendChild(selectWrapper);
+
+  // div > .select-wrapper > select
   const select = document.createElement('select');
 
   for (const itemNetwork of networks) {
@@ -91,22 +101,33 @@ function createModalElement({
     select.appendChild(option);
   }
 
-  label.appendChild(select);
+  selectWrapper.appendChild(select);
 
-  // label > svg
-  const svg = document.createElement('svg');
-  svg.setAttribute('viewbox', '0 0 10 6');
+  // div > .select-wrapper > svg
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewbox', '0 0 24 24');
 
-  const polyline = document.createElement('polyline');
-  polyline.setAttribute('points', '1 1 5 5 9 1');
+  const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  arrow.setAttribute('d', 'M7 10l5 5 5-5z');
+  svg.appendChild(arrow);
 
-  label.appendChild(svg);
+  selectWrapper.appendChild(svg);
 
-  // input
+  // div
+  const inputContainer = document.createElement('div');
+  content.appendChild(inputContainer);
+
+  // div > label
+  const inputLabel = document.createElement('label');
+  inputLabel.textContent = 'Address';
+
+  inputContainer.appendChild(inputLabel);
+
+  // div > input
   const input = document.createElement('input');
   input.setAttribute('type', 'text');
 
-  content.appendChild(input);
+  inputContainer.appendChild(input);
 
   // button
   const button = document.createElement('button');

@@ -67,11 +67,9 @@ export class TerraWalletconnectQrcodeModal implements IQRCodeModal {
 
 function createModalElement({
   schemeUri,
-  className,
   onClose,
 }: {
   schemeUri: string;
-  className?: string;
   onClose: () => void;
 }): HTMLElement {
   const isMobile = isMobileBrowser();
@@ -119,11 +117,18 @@ function createModalElement({
     // qrcode
     const canvas = document.createElement('canvas');
     toCanvas(canvas, schemeUri, {
-      width: 240,
+      width: 220,
+      margin: 0,
+      color: {
+        dark: '#2043b5ff',
+      },
     });
 
     content.appendChild(canvas);
   }
+
+  // events
+  dim.addEventListener('click', onClose);
 
   return container;
 }

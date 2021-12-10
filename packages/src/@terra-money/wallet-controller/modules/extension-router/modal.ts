@@ -60,7 +60,7 @@ function createModalElement({
 
   // h1
   const title = document.createElement('h1');
-  title.textContent = 'Select a wallet';
+  title.textContent = 'Select a Wallet';
   content.appendChild(title);
 
   // ul
@@ -75,19 +75,41 @@ function createModalElement({
 
     item.appendChild(button);
 
-    const icon = document.createElement('img');
-    icon.setAttribute('src', extensionInfo.icon);
-    icon.setAttribute('alt', extensionInfo.name);
+    const icon = document.createElement('span');
+    icon.setAttribute('class', 'wallet-select-modal--icon');
 
     button.appendChild(icon);
 
+    const iconImg = document.createElement('img');
+    iconImg.setAttribute('src', extensionInfo.icon);
+    iconImg.setAttribute(
+      'alt',
+      `${extensionInfo.name} [${extensionInfo.identifier}]`,
+    );
+
+    icon.appendChild(iconImg);
+
     const description = document.createElement('span');
-    description.textContent = `${extensionInfo.name} [${extensionInfo.identifier}]`;
+    description.setAttribute('class', 'wallet-select-modal--description');
+    description.textContent = extensionInfo.name;
 
     button.appendChild(description);
 
+    const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    arrow.setAttribute('viewBox', '0 0 24 24');
+
+    button.appendChild(arrow);
+
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', 'M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z');
+
+    arrow.appendChild(path);
+
     list.appendChild(item);
   }
+
+  // events
+  dim.addEventListener('click', () => onComplete(null));
 
   return container;
 }

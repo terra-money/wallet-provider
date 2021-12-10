@@ -27,7 +27,8 @@ export const modalStyle = `
   position: fixed;
   z-index: 100000;
 
-  color: #000000;
+  color: #212121;
+  font-family: sans-serif;
 
   left: 0;
   top: 0;
@@ -52,90 +53,127 @@ export const modalStyle = `
 }
 
 .wallet-readonly-modal > .wallet-readonly-modal--content {
-  max-width: 80vw;
-  width: 450px;
+  box-sizing: border-box;
+  
+  max-width: 640px;
+  width: 100vw;
 
-  border-radius: 25px;
+  border-radius: 8px;
 
   background-color: #ffffff;
   box-shadow: 0 4px 18px 3px rgba(0, 0, 0, 0.43);
 
   animation: wallet-readonly-modal--content-enter 0.2s ease-in-out;
 
-  padding: 50px 60px;
-  }
+  padding: 40px;
+  
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 
 .wallet-readonly-modal > .wallet-readonly-modal--content h1 {
-  font-size: 27px;
-  font-weight: 500;
+  font-size: 20px;
+  font-weight: bold;
+  
+  margin: 0 0 12px 0;
 
   text-align: center;
-
-  margin-bottom: 24px;
 }
 
 .wallet-readonly-modal > .wallet-readonly-modal--content label {
+  display: block;
+
+  color: #2043b5;
+  font-size: 14px;
+  font-weight: 600;
+
+  margin-bottom: 8px;
+}
+
+.wallet-readonly-modal > .wallet-readonly-modal--content .select-wrapper {
   position: relative;
 }
 
-.wallet-readonly-modal > .wallet-readonly-modal--content label select {
-  -webkit-appearance: none;
-  outline: none;
-  padding: 10px 40px 10px 12px;
-  width: 100%;
-  border: 1px solid #2c2c2c;
-  border-radius: 10px;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 13px;
+.wallet-readonly-modal > .wallet-readonly-modal--content .select-wrapper svg {
+  position: absolute;
+  right: 10px;
+  top: 11px;
+  
+  width: 20px;
+  height: 20px;
 }
 
-.wallet-readonly-modal > .wallet-readonly-modal--content label svg {
-  position: absolute;
-  right: 12px;
-  top: calc(50%);
-  width: 10px;
-  height: 6px;
-  stroke-width: 2px;
-  stroke: #2c2c2c;
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  pointer-events: none;
+.wallet-readonly-modal > .wallet-readonly-modal--content .select-wrapper svg path {
+  color: #212121;
+}
+
+.wallet-readonly-modal > .wallet-readonly-modal--content .select-wrapper select {
+  outline: none;
+  appearance: none;
+
+  width: 100%;
+  height: 45px;
+
+  border: 1px solid #cfd8ea;
+  border-radius: 8px;
+
+  padding: 0 25px 0 15px;
+}
+
+.wallet-readonly-modal > .wallet-readonly-modal--content .select-wrapper select:focus {
+  border-color: #2043b5;
 }
 
 .wallet-readonly-modal > .wallet-readonly-modal--content input {
   box-sizing: border-box;
-  margin-top: 10px;
-
-  font-size: 13px;
   outline: none;
-  border-radius: 10px;
-  padding: 0 12px;
+
   width: 100%;
-  height: 37px;
-  border: 1px solid #2c2c2c;
+  height: 45px;
+
+  border: 1px solid #cfd8ea;
+  border-radius: 8px;
+
+  padding: 0 15px;
+}
+
+.wallet-readonly-modal > .wallet-readonly-modal--content input:focus {
+  border-color: #2043b5;
 }
 
 .wallet-readonly-modal > .wallet-readonly-modal--content button {
   margin-top: 20px;
-
-  cursor: pointer;
-
+  
   display: block;
+  
+  cursor: pointer;
   outline: none;
-  width: 100%;
-  height: 40px;
-  font-size: 13px;
-  letter-spacing: -0.2px;
-  border-radius: 18px;
   border: 0;
-
+  
+  width: 100%;
+  height: 48px;
+  border-radius: 30px;
+  
+  font-size: 14px;
+  font-weight: bold;
+  
   color: #ffffff;
-  background-color: #2c2c2c;
+  background-color: #2043b5;
 }
 
 .wallet-readonly-modal > .wallet-readonly-modal--content button:disabled {
   opacity: 0.4;
+}
+
+@media (max-width: 450px) {
+  .wallet-readonly-modal {
+    place-content: flex-end;
+  }
+  
+  .wallet-readonly-modal > .wallet-readonly-modal--content {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
 }
 `;
