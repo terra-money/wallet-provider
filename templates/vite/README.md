@@ -1,4 +1,4 @@
-# This template is what
+# This template is
 
 This is an example of performing basic Connect, Tx, and Query in the Web App using [wallet-provider](https://www.npmjs.com/package/@terra-money/wallet-provider).
 
