@@ -1,3 +1,7 @@
+# This template is what
+
+This is an example of performing basic Connect, Tx, and Query in the Web App using [wallet-controller](https://www.npmjs.com/package/@terra-money/wallet-controller).
+
 # Preview this template on the CodeSandbox
 
 <https://githubbox.com/terra-money/wallet-provider/tree/main/templates/wallet-controller>
