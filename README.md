@@ -21,7 +21,7 @@ And if you need to start your project from local computer, use the templates bel
 ### Create React App
 
 ```sh
-npx copy-github-directory https://github.com/terra-money/wallet-provider/tree/main/templates/create-react-app your-app-name
+npx terra-templates get wallet-provider:create-react-app your-app-name
 cd your-app-name
 yarn install
 yarn start
@@ -32,7 +32,7 @@ yarn start
 ### Next.js
 
 ```sh
-npx copy-github-directory https://github.com/terra-money/wallet-provider/tree/main/templates/next your-app-name
+npx terra-templates get wallet-provider:next your-app-name
 cd your-app-name
 yarn install
 yarn run dev
