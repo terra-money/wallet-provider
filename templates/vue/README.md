@@ -4,7 +4,7 @@ This is an example of performing basic Connect, Tx, and Query in the Web App usi
 
 # Preview this template on the CodeSandbox
 
-<https://githubbox.com/terra-money/wallet-provider/tree/main/templates/lit>
+<https://githubbox.com/terra-money/wallet-provider/tree/main/templates/vue>
 
 # How to use this template
 
