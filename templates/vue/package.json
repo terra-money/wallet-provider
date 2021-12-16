@@ -1,0 +1,34 @@
+{
+  "name": "vue-template",
+  "version": "1.0.0",
+  "scripts": {
+    "app:dev": "vite --open",
+    "dev": "vite",
+    "start": "multiplerun dev",
+    "build": "tsc --noEmit && vite build",
+    "precommit": "lint-staged"
+  },
+  "multiplerun": {
+    "dev": [
+      "yarn run tsc --watch --noEmit",
+      "yarn run app:dev"
+    ]
+  },
+  "dependencies": {
+    "@terra-money/terra.js": "^3.0.1",
+    "@terra-money/wallet-controller": "^3.4.0",
+    "buffer": "^6.0.3",
+    "rxjs": "^7.4.0",
+    "vite-compatible-readable-stream": "^3.6.0",
+    "vue": "^3.2.25"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^2.0.1",
+    "cross-env": "^7.0.3",
+    "multiplerun": "^2.0.1",
+    "typescript": "^4.4.4",
+    "vite": "^2.6.14",
+    "vite-tsconfig-paths": "^3.3.17",
+    "vue-tsc": "^0.29.8"
+  }
+}

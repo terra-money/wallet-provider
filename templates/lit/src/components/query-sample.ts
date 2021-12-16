@@ -8,12 +8,15 @@ import { Subscription } from 'rxjs';
 @customElement('query-sample')
 export class QuerySample extends LitElement {
   @state()
+  connected: boolean = false;
+
+  @state()
   balance: Coins | null = null;
 
   subscription: Subscription | null = null;
 
   render() {
-    if (!this.balance) {
+    if (!this.connected) {
       return html`
         <h1>Query Sample</h1>
         <p>Wallet not connected!</p>
@@ -22,7 +25,7 @@ export class QuerySample extends LitElement {
 
     return html`
       <h1>Query Sample</h1>
-      <pre>${this.balance.toString()}</pre>
+      <pre>${this.balance?.toString()}</pre>
     `;
   }
 
@@ -33,6 +36,8 @@ export class QuerySample extends LitElement {
 
     this.subscription = controller.states().subscribe((states) => {
       if (states.status === WalletStatus.WALLET_CONNECTED) {
+        this.connected = true;
+
         const lcd = new LCDClient({
           URL: states.network.lcd,
           chainID: states.network.chainID,
@@ -42,6 +47,7 @@ export class QuerySample extends LitElement {
           this.balance = coins;
         });
       } else {
+        this.connected = false;
         this.balance = null;
       }
     });
