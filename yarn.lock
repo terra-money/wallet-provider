@@ -2350,6 +2350,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@lit/reactive-element@npm:^1.0.0":
+  version: 1.0.2
+  resolution: "@lit/reactive-element@npm:1.0.2"
+  checksum: 105fd68b5fb23dec75ea0e273ebbe94272639db4f8a41a4764eef7c9c172ac498c6c4a658d8e9b20006dc543f86a7d0061267f84096dbf980c300b79bd5adcf2
+  languageName: node
+  linkType: hard
+
 "@napi-rs/triples@npm:1.0.3":
   version: 1.0.3
   resolution: "@napi-rs/triples@npm:1.0.3"
@@ -12580,12 +12587,50 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"lit-html@npm:^2.0.2":
+"lit-element@npm:^3.0.0":
+  version: 3.0.2
+  resolution: "lit-element@npm:3.0.2"
+  dependencies:
+    "@lit/reactive-element": ^1.0.0
+    lit-html: ^2.0.0
+  checksum: 7d7ffa7ce6f524eabd540181b52c2663686d53e9cc5593af0a3f72740f526091265d209779f4bae5f8da4d1850fe1ebf9e8d337cc54108d1a1c54feca6337c3c
+  languageName: node
+  linkType: hard
+
+"lit-html@npm:^2.0.0":
   version: 2.0.2
   resolution: "lit-html@npm:2.0.2"
   dependencies:
     "@types/trusted-types": ^2.0.2
   checksum: e709e863dabbfb2a21b773dc17a6071b0cfeb683b4fda0f78b979cb60038dfa7057ca4cb48314915e638f4d1eefce40a22de438518fbb71a0a08d6ef150830c9
+  languageName: node
+  linkType: hard
+
+"lit-template@workspace:templates/lit":
+  version: 0.0.0-use.local
+  resolution: "lit-template@workspace:templates/lit"
+  dependencies:
+    "@terra-money/terra.js": ^3.0.1
+    "@terra-money/wallet-controller": ^3.4.0
+    buffer: ^6.0.3
+    cross-env: ^7.0.3
+    lit: ^2.0.2
+    multiplerun: ^2.0.1
+    typescript: ^4.4.4
+    vite: ^2.6.14
+    vite-compatible-readable-stream: ^3.6.0
+    vite-tsconfig-paths: ^3.3.17
+  languageName: unknown
+  linkType: soft
+
+"lit@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "lit@npm:2.0.2"
+  dependencies:
+    "@lit/reactive-element": ^1.0.0
+    lit-element: ^3.0.0
+    lit-html: ^2.0.0
+  checksum: 52a04b25164da1683c7295b305087794f175165cd1561e03f0c50ae998823f0e26101c82add05dea773e35472fbe3ed84486a4685294897f588d126fe8419e05
   languageName: node
   linkType: hard
 
@@ -20090,26 +20135,6 @@ resolve@^2.0.0-next.3:
   checksum: 8c3147ef98d56f394d66f0477f699fba7fc18dd0d1c2c5d0f8408be41acffed589fa82447d80eae5afc9a3cbd943bc3eebb337b9f114955adeaad02a244f4f9a
   languageName: node
   linkType: hard
-
-"without-react-template@workspace:templates/wallet-controller":
-  version: 0.0.0-use.local
-  resolution: "without-react-template@workspace:templates/wallet-controller"
-  dependencies:
-    "@terra-money/terra.js": ^3.0.1
-    "@terra-money/wallet-controller": ^3.4.0
-    "@testing-library/jest-dom": ^5.15.0
-    buffer: ^6.0.3
-    cross-env: ^7.0.3
-    lint-staged: ^11.2.6
-    lit-html: ^2.0.2
-    multiplerun: ^2.0.1
-    react-scripts: 4.0.3
-    typescript: ^4.4.4
-    vite: ^2.6.14
-    vite-compatible-readable-stream: ^3.6.0
-    vite-tsconfig-paths: ^3.3.17
-  languageName: unknown
-  linkType: soft
 
 "word-wrap@npm:^1.2.3, word-wrap@npm:~1.2.3":
   version: 1.2.3
