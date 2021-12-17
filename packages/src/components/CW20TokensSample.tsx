@@ -1,5 +1,5 @@
 import { useWallet, WalletStatus } from '@terra-money/use-wallet';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 export function CW20TokensSample() {
   const { status, supportFeatures } = useWallet();

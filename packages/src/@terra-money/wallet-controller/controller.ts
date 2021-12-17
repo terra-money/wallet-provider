@@ -6,6 +6,7 @@ import {
   SignBytesResult,
   SignResult,
   TxResult,
+  WalletLCDClientConfig,
   WalletStates,
   WalletStatus,
 } from '@terra-dev/wallet-types';
@@ -16,9 +17,11 @@ import {
 import {
   AccAddress,
   CreateTxOptions,
+  LCDClient,
   PublicKey,
   Tx,
 } from '@terra-money/terra.js';
+import { toLcdClient } from '@terra-money/wallet-controller/operators/toLcdClient';
 import deepEqual from 'fast-deep-equal';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
@@ -354,8 +357,16 @@ export class WalletController {
     return this._states.asObservable();
   };
 
+  /** get connectedWallet */
   connectedWallet = (): Observable<ConnectedWallet | undefined> => {
     return this._states.pipe(toConnectedWallet(this));
+  };
+
+  /** get lcdClient */
+  lcdClient = (
+    lcdClientConfig?: WalletLCDClientConfig,
+  ): Observable<LCDClient> => {
+    return this._states.pipe(toLcdClient(lcdClientConfig));
   };
 
   /**

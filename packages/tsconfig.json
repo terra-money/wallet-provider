@@ -20,7 +20,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "watch": true,
-    "jsx": "react-jsx",
+    "jsx": "react",
     "baseUrl": "src"
   },
   "include": [
