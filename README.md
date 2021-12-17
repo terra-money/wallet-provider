@@ -48,16 +48,22 @@ yarn run dev
 - [Wallet Controller + Vue.js](https://github.com/terra-money/wallet-provider/tree/main/templates/vue)
 - [Wallet Controller + Svelte](https://github.com/terra-money/wallet-provider/tree/main/templates/svelte)
 
+### Community templates (experimental)
+
+You can find more templates in <https://templates.terra.money>. (This is the beginning stage, so it may not be enough yet)
+
+If you make a different type of template, you can register [here](https://github.com/terra-money/templates).
+
 # Basic Usage
 
-First, please add `<meta name="terra-wallet />` on your html page.
+First, please add `<meta name="terra-wallet" />` on your html page.
 
 Since then, browser extensions (e.g. Terra Station chrome extension) will not attempt to connect in a Web app where this `<meta name="terra-wallet">` tag is not found.
 
 ```html
 <html lang="en">
   <head>
-    <meta name="terra-wallet />
+    <meta name="terra-wallet" />
   </head>
 </html>
 ```
