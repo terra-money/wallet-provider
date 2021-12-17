@@ -1,32 +1,31 @@
 <script lang="ts">
   import { Coins, LCDClient } from '@terra-money/terra.js';
-  import { WalletStatus } from '@terra-money/wallet-controller';
+  import { ConnectedWallet } from '@terra-money/wallet-controller';
   import { getController } from 'controller';
   import { Subscription } from 'rxjs';
   import { onDestroy, onMount } from 'svelte';
   
   const controller = getController()
   
-  let connected = false;
+  let connectedWallet: ConnectedWallet | undefined = undefined;
   let balance: Coins | null = null;
   
   let subscription: Subscription | null = null;
   
   onMount(() => {
-    subscription = controller.states().subscribe((states) => {
-      if (states.status === WalletStatus.WALLET_CONNECTED) {
-        connected = true;
-  
+    subscription = controller.connectedWallet().subscribe((_connectedWallet) => {
+      connectedWallet = _connectedWallet;
+      
+      if (_connectedWallet) {
         const lcd = new LCDClient({
-          URL: states.network.lcd,
-          chainID: states.network.chainID,
+          URL: _connectedWallet.network.lcd,
+          chainID: _connectedWallet.network.chainID,
         });
   
-        lcd.bank.balance(states.wallets[0].terraAddress).then(([coins]) => {
+        lcd.bank.balance(_connectedWallet.terraAddress).then(([coins]) => {
           balance = coins;
         });
       } else {
-        connected = false;
         balance = null;
       }
     });
@@ -34,6 +33,7 @@
   
   onDestroy(() => {
     subscription?.unsubscribe();
+    connectedWallet = undefined;
   });
 </script>
 
@@ -41,7 +41,7 @@
   Query Sample
 </h1>
 
-{#if !connected}
+{#if !connectedWallet}
   <p>Wallet not connected!</p>
 {:else if !!balance}
   <pre>{balance.toString()}</pre>

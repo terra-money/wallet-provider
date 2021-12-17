@@ -1,42 +1,38 @@
 <script setup lang="ts">
 import { Fee, MsgSend } from '@terra-money/terra.js';
 import {
+  ConnectedWallet,
   CreateTxFailed,
-  NetworkInfo,
   Timeout,
   TxFailed,
   TxResult,
   TxUnspecifiedError,
   UserDenied,
-  WalletController,
-  WalletInfo,
 } from '@terra-money/wallet-controller';
 import { ref, toRefs } from 'vue';
 
 const TEST_TO_ADDRESS = 'terra12hnhh5vtyg5juqnzm43970nh4fw42pt27nw9g9';
 
 const props = defineProps<{
-  controller: WalletController;
-  wallet: WalletInfo;
-  network: NetworkInfo;
+  connectedWallet: ConnectedWallet;
 }>();
 
-const { controller, wallet, network } = toRefs(props);
+const { connectedWallet } = toRefs(props);
 
 const txResult = ref<TxResult | null>(null);
 const txError = ref<string | null>(null);
 
 function proceed() {
-  if (network.value.chainID.startsWith('columbus')) {
+  if (connectedWallet.value.network.chainID.startsWith('columbus')) {
     alert(`Please only execute this example on Testnet`);
     return;
   }
 
-  controller.value
+  connectedWallet.value
     .post({
       fee: new Fee(1000000, '200000uusd'),
       msgs: [
-        new MsgSend(wallet.value.terraAddress, TEST_TO_ADDRESS, {
+        new MsgSend(connectedWallet.value.terraAddress, TEST_TO_ADDRESS, {
           uusd: 1000000,
         }),
       ],
@@ -75,7 +71,7 @@ function clearResult() {
     <pre>{{ JSON.stringify(txResult, null, 2) }}</pre>
     <div>
       <a
-        href="https://finder.terra.money/{{network.chainID}}/tx/{{txResult.result.txhash}}"
+        href="https://finder.terra.money/{{connectedWallet.network.chainID}}/tx/{{txResult.result.txhash}}"
         target="_blank"
         rel="noreferrer"
         >Open Tx Result in Terra Finder</a

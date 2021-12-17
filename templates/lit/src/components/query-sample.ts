@@ -1,5 +1,5 @@
-import { WalletStatus } from '@terra-dev/wallet-types';
 import { Coins, LCDClient } from '@terra-money/terra.js';
+import { ConnectedWallet } from '@terra-money/wallet-controller';
 import { getController } from 'controller';
 import { html, LitElement } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
 @customElement('query-sample')
 export class QuerySample extends LitElement {
   @state()
-  connected: boolean = false;
+  connectedWallet: ConnectedWallet | undefined;
 
   @state()
   balance: Coins | null = null;
@@ -16,7 +16,7 @@ export class QuerySample extends LitElement {
   subscription: Subscription | null = null;
 
   render() {
-    if (!this.connected) {
+    if (!this.connectedWallet) {
       return html`
         <h1>Query Sample</h1>
         <p>Wallet not connected!</p>
@@ -34,28 +34,30 @@ export class QuerySample extends LitElement {
 
     const controller = getController();
 
-    this.subscription = controller.states().subscribe((states) => {
-      if (states.status === WalletStatus.WALLET_CONNECTED) {
-        this.connected = true;
+    this.subscription = controller
+      .connectedWallet()
+      .subscribe((connectedWallet) => {
+        this.connectedWallet = connectedWallet;
 
-        const lcd = new LCDClient({
-          URL: states.network.lcd,
-          chainID: states.network.chainID,
-        });
+        if (connectedWallet) {
+          const lcd = new LCDClient({
+            URL: connectedWallet.network.lcd,
+            chainID: connectedWallet.network.chainID,
+          });
 
-        lcd.bank.balance(states.wallets[0].terraAddress).then(([coins]) => {
-          this.balance = coins;
-        });
-      } else {
-        this.connected = false;
-        this.balance = null;
-      }
-    });
+          lcd.bank.balance(connectedWallet.terraAddress).then(([coins]) => {
+            this.balance = coins;
+          });
+        } else {
+          this.balance = null;
+        }
+      });
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.subscription?.unsubscribe();
+    this.connectedWallet = undefined;
   }
 }
 

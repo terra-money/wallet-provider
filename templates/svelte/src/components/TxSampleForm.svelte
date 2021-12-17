@@ -1,34 +1,33 @@
 <script lang="ts">
   import { Fee, MsgSend } from '@terra-money/terra.js';
   import {
+    ConnectedWallet,
     CreateTxFailed,
-    NetworkInfo, Timeout, TxFailed,
-    TxResult, TxUnspecifiedError,
+    Timeout,
+    TxFailed,
+    TxResult,
+    TxUnspecifiedError,
     UserDenied,
-    WalletController,
-    WalletInfo,
   } from '@terra-money/wallet-controller';
   
   const TEST_TO_ADDRESS = 'terra12hnhh5vtyg5juqnzm43970nh4fw42pt27nw9g9';
 
-  export let controller: WalletController;
-  export let wallet: WalletInfo;
-  export let network: NetworkInfo;
+  export let connectedWallet: ConnectedWallet;
   
   let txResult: TxResult | null = null;
   let txError: string | null = null;
   
   function proceed() {
-    if (network.chainID.startsWith('columbus')) {
+    if (connectedWallet.network.chainID.startsWith('columbus')) {
       alert(`Please only execute this example on Testnet`);
       return;
     }
   
-    controller
+    connectedWallet
       .post({
         fee: new Fee(1000000, '200000uusd'),
         msgs: [
-          new MsgSend(wallet.terraAddress, TEST_TO_ADDRESS, {
+          new MsgSend(connectedWallet.terraAddress, TEST_TO_ADDRESS, {
             uusd: 1000000,
           }),
         ],

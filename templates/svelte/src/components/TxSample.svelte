@@ -1,28 +1,26 @@
 <script lang="ts">
-  import { NetworkInfo, WalletInfo, WalletStatus } from '@terra-money/wallet-controller';
+  import { ConnectedWallet } from '@terra-money/wallet-controller';
   import { getController } from 'controller';
   import { Subscription } from 'rxjs';
   import { onDestroy, onMount } from 'svelte';
   import TxSampleForm from './TxSampleForm.svelte';
-
+  
   let status: 'initializing' | 'not-connected' | 'can-not-post' | 'ready' = 'initializing';
   
-  const controller = getController();
-  
-  let network: NetworkInfo | null = null;
-  let wallet: WalletInfo | null;
-  
+  let connectedWallet: ConnectedWallet | undefined = undefined;
   let subscription: Subscription | null = null;
   
   onMount(() => {
-    subscription = controller.states().subscribe((states) => {
-      if (states.status === WalletStatus.WALLET_CONNECTED) {
-        if (!states.supportFeatures.has('post')) {
+    const controller = getController();
+    
+    subscription = controller.connectedWallet().subscribe((_connectedWallet) => {
+      connectedWallet = _connectedWallet;
+      
+      if (_connectedWallet) {
+        if (!_connectedWallet.availablePost) {
           status = 'can-not-post';
         } else {
           status = 'ready';
-          network = states.network;
-          wallet = states.wallets[0];
         }
       } else {
         status = 'not-connected';
@@ -32,6 +30,7 @@
   
   onDestroy(() => {
     subscription?.unsubscribe();
+    connectedWallet = undefined;
   });
 </script>
 
@@ -44,6 +43,6 @@
   <p>This connection does not support post()</p>
 {:else if status === 'not-connected'}
   <p>Wallet not connected!</p>
-{:else if !!controller && !!network && !!wallet}
-  <TxSampleForm controller={controller} wallet={wallet} network={network}/>
+{:else if !!connectedWallet}
+  <TxSampleForm connectedWallet={connectedWallet} />
 {/if}

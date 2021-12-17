@@ -1,32 +1,31 @@
 <script setup lang="ts">
 import { Coins, LCDClient } from '@terra-money/terra.js';
-import { WalletStatus } from '@terra-money/wallet-controller';
+import { ConnectedWallet } from '@terra-money/wallet-controller';
 import { getController } from 'controller';
 import { Subscription } from 'rxjs';
 import { onMounted, onUnmounted, ref } from 'vue';
 
 const controller = getController();
 
-const connected = ref<boolean>(false);
+const connectedWallet = ref<ConnectedWallet | undefined>(undefined);
 const balance = ref<Coins | null>(null);
 
 let subscription: Subscription | null = null;
 
 onMounted(() => {
-  subscription = controller.states().subscribe((states) => {
-    if (states.status === WalletStatus.WALLET_CONNECTED) {
-      connected.value = true;
+  subscription = controller.connectedWallet().subscribe((_connectedWallet) => {
+    connectedWallet.value = _connectedWallet;
 
+    if (_connectedWallet) {
       const lcd = new LCDClient({
-        URL: states.network.lcd,
-        chainID: states.network.chainID,
+        URL: _connectedWallet.network.lcd,
+        chainID: _connectedWallet.network.chainID,
       });
 
-      lcd.bank.balance(states.wallets[0].terraAddress).then(([coins]) => {
+      lcd.bank.balance(_connectedWallet.terraAddress).then(([coins]) => {
         balance.value = coins;
       });
     } else {
-      connected.value = false;
       balance.value = null;
     }
   });
@@ -34,11 +33,12 @@ onMounted(() => {
 
 onUnmounted(() => {
   subscription?.unsubscribe();
+  connectedWallet.value = undefined;
 });
 </script>
 
 <template>
   <h1>Query Sample</h1>
-  <p v-if="!connected">Wallet not connected!</p>
+  <p v-if="!connectedWallet">Wallet not connected!</p>
   <pre v-else-if="!!balance">{{ balance.toString() }}</pre>
 </template>
