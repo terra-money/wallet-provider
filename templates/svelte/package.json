@@ -1,0 +1,37 @@
+{
+  "name": "svelte-template",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "app:dev": "vite --open",
+    "dev": "vite",
+    "start": "multiplerun dev",
+    "build": "tsc --noEmit && vite build",
+    "precommit": "lint-staged"
+  },
+  "multiplerun": {
+    "dev": [
+      "yarn run tsc --watch --noEmit",
+      "yarn run app:dev"
+    ]
+  },
+  "dependencies": {
+    "@terra-money/terra.js": "^3.0.1",
+    "@terra-money/wallet-controller": "^3.4.0",
+    "buffer": "^6.0.3",
+    "rxjs": "^7.4.0",
+    "vite-compatible-readable-stream": "^3.6.0"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^1.0.0-next.30",
+    "@tsconfig/svelte": "^2.0.1",
+    "cross-env": "^7.0.3",
+    "multiplerun": "^2.0.1",
+    "svelte": "^3.44.0",
+    "svelte-check": "^2.2.7",
+    "svelte-preprocess": "^4.9.8",
+    "typescript": "^4.4.4",
+    "vite": "^2.6.14",
+    "vite-tsconfig-paths": "^3.3.17"
+  }
+}

@@ -15,6 +15,7 @@ If you want to test features quickly, you can simply run them on CodeSandbox wit
 - [Wallet Provider + Vite.js](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/vite)
 - [Wallet Controller + Lit](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/lit)
 - [Wallet Controller + Vue.js](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/vue)
+- [Wallet Controller + Svelte](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/svelte)
 
 And if you need to start your project from local computer, use the templates below. 👇
 
@@ -45,6 +46,7 @@ yarn run dev
 - [Wallet Provider + Vite.js](https://github.com/terra-money/wallet-provider/tree/main/templates/vite)
 - [Wallet Controller + Lit](https://github.com/terra-money/wallet-provider/tree/main/templates/lit)
 - [Wallet Controller + Vue.js](https://github.com/terra-money/wallet-provider/tree/main/templates/vue)
+- [Wallet Controller + Svelte](https://github.com/terra-money/wallet-provider/tree/main/templates/svelte)
 
 # Basic Usage
 

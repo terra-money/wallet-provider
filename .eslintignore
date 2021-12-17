@@ -4,3 +4,4 @@ out
 dev
 build
 src/**/public
+templates/svelte

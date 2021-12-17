@@ -27,13 +27,6 @@ const txResult = ref<TxResult | null>(null);
 const txError = ref<string | null>(null);
 
 function proceed() {
-  console.log(
-    'TxSampleForm.vue..proceed()',
-    controller.value,
-    wallet.value,
-    network.value,
-  );
-
   if (network.value.chainID.startsWith('columbus')) {
     alert(`Please only execute this example on Testnet`);
     return;
@@ -82,7 +75,7 @@ function clearResult() {
     <pre>{{ JSON.stringify(txResult, null, 2) }}</pre>
     <div>
       <a
-        href="https://finder.terra.money/${this.network.chainID}/tx/{{txResult.result.txhash}}"
+        href="https://finder.terra.money/{{network.chainID}}/tx/{{txResult.result.txhash}}"
         target="_blank"
         rel="noreferrer"
         >Open Tx Result in Terra Finder</a
