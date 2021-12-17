@@ -1,14 +1,5 @@
 import {
-  TerraWebExtensionFeatures,
-  WebExtensionTxStatus,
-} from '@terra-dev/web-extension-interface';
-import {
-  AccAddress,
-  CreateTxOptions,
-  PublicKey,
-  Tx,
-} from '@terra-money/terra.js';
-import {
+  ConnectedWallet,
   Connection,
   ConnectType,
   NetworkInfo,
@@ -18,6 +9,16 @@ import {
   WalletStates,
   WalletStatus,
 } from '@terra-dev/wallet-types';
+import {
+  TerraWebExtensionFeatures,
+  WebExtensionTxStatus,
+} from '@terra-dev/web-extension-interface';
+import {
+  AccAddress,
+  CreateTxOptions,
+  PublicKey,
+  Tx,
+} from '@terra-money/terra.js';
 import deepEqual from 'fast-deep-equal';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
@@ -52,6 +53,7 @@ import {
   WalletConnectControllerOptions,
   WalletConnectSessionStatus,
 } from './modules/walletconnect';
+import { toConnectedWallet } from './operators/toConnectedWallet';
 import { isDesktopChrome } from './utils/browser-check';
 import { checkExtensionReady } from './utils/checkExtensionReady';
 
@@ -350,6 +352,10 @@ export class WalletController {
    */
   states = (): Observable<WalletStates> => {
     return this._states.asObservable();
+  };
+
+  connectedWallet = (): Observable<ConnectedWallet | undefined> => {
+    return this._states.pipe(toConnectedWallet(this));
   };
 
   /**
