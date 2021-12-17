@@ -120,7 +120,7 @@ function Component() {
 }
 ```
 
-Afterwards, you can use React Hooks such as `useWallet()` and `useConnectedWallet()` anywhere in your app.
+Afterwards, you can use React Hooks such as `useWallet()`, `useConnectedWallet()` and `useLCDClient()` anywhere in your app.
 
 # API
 
@@ -582,6 +582,30 @@ function Component() {
       Post Tx
     </button>
   )
+}
+```
+
+</details>
+
+<details>
+
+<summary><code>useLCDClient()</code></summary>
+
+```jsx
+import { useLCDClient } from '@terra-money/wallet-provider';
+
+function Component() {
+  const lcd = useLCDClient();
+
+  const [result, setResult] = useState('');
+
+  useEffect(() => {
+    lcd.treasury.taxRate().then((taxRate) => {
+      setResult(taxRate.toString());
+    });
+  }, []);
+
+  return <div>Result: {result}</div>;
 }
 ```
 

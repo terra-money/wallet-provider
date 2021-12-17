@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import { Coins, LCDClient } from '@terra-money/terra.js';
-import { ConnectedWallet } from '@terra-money/wallet-controller';
+import { Coins } from '@terra-money/terra.js';
+import {
+  ConnectedWallet,
+  createLCDClient,
+} from '@terra-money/wallet-controller';
 import { getController } from 'controller';
 import { Subscription } from 'rxjs';
 import { onMounted, onUnmounted, ref } from 'vue';
@@ -17,10 +20,7 @@ onMounted(() => {
     connectedWallet.value = _connectedWallet;
 
     if (_connectedWallet) {
-      const lcd = new LCDClient({
-        URL: _connectedWallet.network.lcd,
-        chainID: _connectedWallet.network.chainID,
-      });
+      const lcd = createLCDClient({ network: _connectedWallet.network });
 
       lcd.bank.balance(_connectedWallet.terraAddress).then(([coins]) => {
         balance.value = coins;

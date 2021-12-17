@@ -1,10 +1,6 @@
+import { Fee, MsgSend, SyncTxBroadcastResult } from '@terra-money/terra.js';
 import {
-  Fee,
-  LCDClient,
-  MsgSend,
-  SyncTxBroadcastResult,
-} from '@terra-money/terra.js';
-import {
+  createLCDClient,
   CreateTxFailed,
   SignResult,
   Timeout,
@@ -66,10 +62,7 @@ export function SignSample() {
         // broadcast
         const tx = nextSignResult.result;
 
-        const lcd = new LCDClient({
-          chainID: connectedWallet.network.chainID,
-          URL: connectedWallet.network.lcd,
-        });
+        const lcd = createLCDClient({ network: connectedWallet.network });
 
         // FIXME (terra.js 2.x → terra.js 3.x)
         // TODO remove after a month

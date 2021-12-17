@@ -1,25 +1,14 @@
-import { LCDClient } from '@terra-money/terra.js';
-import { useConnectedWallet } from '@terra-money/wallet-provider';
-import React, { useEffect, useMemo, useState } from 'react';
+import { useConnectedWallet, useLCDClient } from '@terra-money/wallet-provider';
+import React, { useEffect, useState } from 'react';
 
 export default function QuerySample() {
+  const lcd = useLCDClient();
   const connectedWallet = useConnectedWallet();
 
   const [bank, setBank] = useState<null | string>();
 
-  const lcd = useMemo(() => {
-    if (!connectedWallet) {
-      return null;
-    }
-
-    return new LCDClient({
-      URL: connectedWallet.network.lcd,
-      chainID: connectedWallet.network.chainID,
-    });
-  }, [connectedWallet]);
-
   useEffect(() => {
-    if (connectedWallet && lcd) {
+    if (connectedWallet) {
       lcd.bank.balance(connectedWallet.walletAddress).then(([coins]) => {
         setBank(coins.toString());
       });

@@ -1,5 +1,8 @@
-import { Coins, LCDClient } from '@terra-money/terra.js';
-import { ConnectedWallet } from '@terra-money/wallet-controller';
+import { Coins } from '@terra-money/terra.js';
+import {
+  ConnectedWallet,
+  createLCDClient,
+} from '@terra-money/wallet-controller';
 import { getController } from 'controller';
 import { html, LitElement } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
@@ -40,10 +43,7 @@ export class QuerySample extends LitElement {
         this.connectedWallet = connectedWallet;
 
         if (connectedWallet) {
-          const lcd = new LCDClient({
-            URL: connectedWallet.network.lcd,
-            chainID: connectedWallet.network.chainID,
-          });
+          const lcd = createLCDClient({ network: connectedWallet.network });
 
           lcd.bank.balance(connectedWallet.terraAddress).then(([coins]) => {
             this.balance = coins;
