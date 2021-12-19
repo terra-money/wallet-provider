@@ -27,7 +27,6 @@ export async function checkExtensionReady(
       } else if (Date.now() > start + timeout) {
         resolve(false);
       } else {
-        console.log('checkExtensionReady.ts..check() ???');
         setTimeout(check, interval);
       }
     }

@@ -34,8 +34,6 @@ function createModalElement({
   extensionInfos: ExtensionInfo[];
   onComplete: (extensionInfo: ExtensionInfo | null) => void;
 }): HTMLElement {
-  console.log('modal.ts..createModalElement()', extensionInfos);
-
   // ---------------------------------------------
   // container
   // ---------------------------------------------
