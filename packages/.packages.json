@@ -5,7 +5,7 @@
     "tag": "latest"
   },
   "@terra-money/*": {
-    "version": "3.6.0",
+    "version": "3.6.1",
     "tag": "latest"
   }
 }

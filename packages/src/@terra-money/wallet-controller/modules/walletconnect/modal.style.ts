@@ -56,8 +56,29 @@ export const modalStyle = `
 
   background-color: #ffffff;
   box-shadow: 0 4px 18px 3px rgba(0, 0, 0, 0.43);
+  
+  text-align: center;
 
   animation: wallet-wc-modal--content-enter 0.2s ease-in-out;
+}
+
+.wallet-wc-modal > .wallet-wc-modal--content h1 {
+  color: #3b99fc;
+  
+  font-size: 20px;
+  font-family: sans-serif;
+  font-weight: bold;
+  
+  margin: 0 0 12px 0;
+}
+
+.wallet-wc-modal > .wallet-wc-modal--content p {
+  color: #212121;
+  
+  font-size: 14px;
+  font-family: sans-serif;
+  
+  margin: 0 0 32px 0;
 }
 
 .wallet-wc-modal > .wallet-wc-modal--content button {
@@ -79,17 +100,7 @@ export const modalStyle = `
 }
 
 .wallet-wc-modal > .wallet-wc-modal--content[data-device="desktop"] {
-  padding: 40px 130px;
-}
-
-.wallet-wc-modal > .wallet-wc-modal--content[data-device="desktop"] h1 {
-  font-size: 20px;
-  font-family: sans-serif;
-  font-weight: bold;
-  
-  margin: 0 0 32px 0;
-  
-  text-align: center;
+  padding: 40px 80px;
 }
 
 .wallet-wc-modal > .wallet-wc-modal--content[data-device="mobile"] {
@@ -97,12 +108,10 @@ export const modalStyle = `
 }
 
 .wallet-wc-modal > .wallet-wc-modal--content[data-device="mobile"] h1 {
-  font-size: 20px;
-  font-family: sans-serif;
-  font-weight: bold;
-  
-  margin: 0 0 32px 0;
+  margin-bottom: 32px;
+}
 
-  text-align: center;
+.wallet-wc-modal > .wallet-wc-modal--content[data-device="mobile"] p {
+  display: none;
 }
 `;

@@ -103,8 +103,29 @@ function createModalElement({
 
   // h1
   const title = document.createElement('h1');
-  title.textContent = 'Wallet Connect';
   content.appendChild(title);
+
+  const img = document.createElement('img');
+  img.setAttribute(
+    'src',
+    'https://assets.terra.money/icon/wallet-provider/walletconnect.svg',
+  );
+  img.setAttribute(
+    'style',
+    'width: 1em; margin-right: 10px; transform: scale(1.5) translateY(0.08em)',
+  );
+
+  const span = document.createElement('span');
+  span.textContent = 'Wallet Connect';
+
+  title.appendChild(img);
+  title.appendChild(span);
+
+  // p
+  const description = document.createElement('p');
+  description.textContent =
+    'Scan QR code with a WalletConnect-compatible wallet';
+  content.appendChild(description);
 
   if (isMobile) {
     // button
