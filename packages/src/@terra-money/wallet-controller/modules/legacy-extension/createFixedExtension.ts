@@ -43,6 +43,18 @@ export interface FixedExtension {
   disconnect: () => void;
 }
 
+function getErrorMessage(error: any): string {
+  try {
+    if (typeof error.message === 'string') {
+      return error.message;
+    } else {
+      return JSON.stringify(error);
+    }
+  } catch {
+    return String(error);
+  }
+}
+
 function toExplicitError(error: any) {
   if (error && 'code' in error) {
     switch (error.code) {
@@ -53,18 +65,22 @@ function toExplicitError(error: any) {
       case 2:
         if (error.data) {
           const { txhash } = error.data;
-          return new WebExtensionTxFailed(txhash, error.message, null);
+          return new WebExtensionTxFailed(txhash, getErrorMessage(error), null);
         } else {
-          return new WebExtensionTxFailed(undefined, error.message, null);
+          return new WebExtensionTxFailed(
+            undefined,
+            getErrorMessage(error),
+            null,
+          );
         }
       // @see https://github.com/terra-project/station/blob/main/src/extension/Confirm.tsx#L153
       case 3:
-        return new WebExtensionCreateTxFailed(error.message);
+        return new WebExtensionCreateTxFailed(getErrorMessage(error));
       default:
-        return new WebExtensionTxUnspecifiedError(error.message);
+        return new WebExtensionTxUnspecifiedError(getErrorMessage(error));
     }
   } else {
-    return new WebExtensionTxUnspecifiedError(String(error));
+    return new WebExtensionTxUnspecifiedError(getErrorMessage(error));
   }
 }
 
