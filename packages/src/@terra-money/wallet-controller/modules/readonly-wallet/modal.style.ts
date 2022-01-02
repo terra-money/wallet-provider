@@ -23,6 +23,18 @@ export const modalStyle = `
   }
 }
 
+@keyframes wallet-readonly-modal--content-slide {
+  0% {
+    opacity: 0;
+    transform: translateY(300px);
+  }
+  
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .wallet-readonly-modal {
   position: fixed;
   z-index: 100000;
@@ -174,6 +186,10 @@ export const modalStyle = `
   .wallet-readonly-modal > .wallet-readonly-modal--content {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
+    
+    padding-bottom: 100px;
+    
+    animation: wallet-readonly-modal--content-slide 0.2s ease-in-out;
   }
 }
 `;
