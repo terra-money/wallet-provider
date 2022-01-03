@@ -85,7 +85,7 @@ function toExplicitError(error: any) {
 }
 
 function isValidResult({ error, ...payload }: any): boolean {
-  if (payload.success !== 'boolean') {
+  if (typeof payload.success !== 'boolean') {
     return false;
   } else if (
     typeof payload.result === 'undefined' &&
