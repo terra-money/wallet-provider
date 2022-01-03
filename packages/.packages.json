@@ -4,8 +4,12 @@
     "version": "3.6.0",
     "tag": "latest"
   },
-  "@terra-money/*": {
+  "@terra-money/use-wallet": {
     "version": "3.6.3",
+    "tag": "latest"
+  },
+  "@terra-money/*": {
+    "version": "3.6.4",
     "tag": "latest"
   }
 }

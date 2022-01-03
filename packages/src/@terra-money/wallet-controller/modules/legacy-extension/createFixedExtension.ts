@@ -84,6 +84,18 @@ function toExplicitError(error: any) {
   }
 }
 
+function isValidResult({ error, ...payload }: any): boolean {
+  if (payload.success !== 'boolean') {
+    return false;
+  } else if (
+    typeof payload.result === 'undefined' &&
+    typeof error === 'undefined'
+  ) {
+    return false;
+  }
+  return true;
+}
+
 const pool = new Map<string, FixedExtension>();
 
 export function createFixedExtension(identifier: string): FixedExtension {
@@ -117,7 +129,9 @@ export function createFixedExtension(identifier: string): FixedExtension {
   >();
 
   extension.on('onPost', (result) => {
-    if (!result) return;
+    if (!result || !isValidResult(result)) {
+      return;
+    }
 
     const { error, ...payload } = result;
 
@@ -141,15 +155,13 @@ export function createFixedExtension(identifier: string): FixedExtension {
   });
 
   extension.on('onSign', (result) => {
-    if (!result) return;
+    if (!result || !isValidResult(result)) {
+      return;
+    }
 
     const { error, ...payload } = result;
 
     if (signResolvers.has(payload.id)) {
-      if (!signResolvers.has(payload.id)) {
-        return;
-      }
-
       const [resolve, reject] = signResolvers.get(payload.id)!;
 
       if (!payload.success) {
@@ -164,10 +176,6 @@ export function createFixedExtension(identifier: string): FixedExtension {
         _inTransactionProgress = false;
       }
     } else if (signBytesResolvers.has(payload.id)) {
-      if (!signBytesResolvers.has(payload.id)) {
-        return;
-      }
-
       const [resolve, reject] = signBytesResolvers.get(payload.id)!;
 
       if (!payload.success) {
