@@ -20,15 +20,16 @@
   },
   "devDependencies": {
     "@handbook/markdown-source-import": "^1.1.0",
-    "@ssen/eslint-config": "^2.0.1",
     "@ssen/prettier-config": "^2.0.1",
-    "eslint": "^7.32.0",
+    "eslint": "^8.6.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-react-app": "^7.0.0",
     "husky": "^7.0.4",
-    "jest": "^27.3.1",
-    "lint-staged": "^11.2.6",
-    "prettier": "^2.4.1"
+    "jest": "^27.4.7",
+    "lint-staged": "^12.1.5",
+    "prettier": "^2.5.1"
   },
   "resolutions": {
-    "@terra-money/terra.js": "3.0.1"
+    "@terra-money/terra.js": "3.0.2"
   }
 }

@@ -6,6 +6,8 @@
     "dev": "vite",
     "start": "multiplerun dev",
     "build": "tsc --noEmit && vite build",
+    "test": "vitest",
+    "coverage": "vitest --coverage",
     "precommit": "lint-staged"
   },
   "multiplerun": {
@@ -14,18 +16,25 @@
       "yarn run app:dev"
     ]
   },
+  "lint-staged": {
+    "src/{**/*,*}/*.{ts,tsx}": [
+      "cross-env CI=true vitest related"
+    ]
+  },
   "dependencies": {
-    "@terra-money/terra.js": "^3.0.1",
-    "@terra-money/wallet-controller": "^3.6.0",
+    "@terra-money/terra.js": "^3.0.2",
+    "@terra-money/wallet-provider": "^3.6.5",
     "buffer": "^6.0.3",
     "lit": "^2.0.2",
     "vite-compatible-readable-stream": "^3.6.0"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
+    "lint-staged": "^11.2.6",
     "multiplerun": "^2.0.1",
     "typescript": "^4.4.4",
     "vite": "^2.6.14",
-    "vite-tsconfig-paths": "^3.3.17"
+    "vite-tsconfig-paths": "^3.3.17",
+    "vitest": "^0.0.134"
   }
 }
