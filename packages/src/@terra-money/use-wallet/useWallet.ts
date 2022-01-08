@@ -1,6 +1,7 @@
 import {
   Connection,
   ConnectType,
+  Installation,
   NetworkInfo,
   SignBytesResult,
   SignResult,
@@ -109,6 +110,33 @@ export interface Wallet {
   availableInstallTypes: ConnectType[];
 
   /**
+   * available installations includes identifier, name, icon, url
+   *
+   * @example
+   * ```
+   * const { availableInstallations } = useWallet()
+   *
+   * return (
+   *  <div>
+   *    {
+   *      availableInstallations.map(({type, identifier, name, icon, url}) => (
+   *        <a key={`${type}:${identifier}`} href={url}>
+   *          <img src={icon} /> {name}
+   *        </a>
+   *      ))
+   *    }
+   *  </div>
+   * )
+   * ```
+   *
+   * @see Wallet#install
+   * @see WalletController#availableInstallations
+   */
+  availableInstallations: Installation[];
+
+  /**
+   * @deprecated Please use availableInstallations
+   *
    * install for the connect type
    *
    * @example

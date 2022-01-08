@@ -2,6 +2,7 @@ import { AccAddress, CreateTxOptions } from '@terra-money/terra.js';
 import {
   Connection,
   ConnectType,
+  Installation,
   NetworkInfo,
   SignBytesResult,
   SignResult,
@@ -28,7 +29,7 @@ export interface ConnectedWallet {
   connection: Connection;
 }
 
-interface Params {
+interface CreateConnectedWalletParams {
   status: WalletStatus;
   network: NetworkInfo;
   wallets: WalletInfo[];
@@ -50,7 +51,7 @@ export function createConnectedWallet({
   wallets,
   status,
   network,
-}: Params): ConnectedWallet | undefined {
+}: CreateConnectedWalletParams): ConnectedWallet | undefined {
   try {
     if (
       status === WalletStatus.WALLET_CONNECTED &&
@@ -86,4 +87,19 @@ export function createConnectedWallet({
   } catch {
     return undefined;
   }
+}
+
+interface CreateInstallableWallets {
+  status: WalletStatus;
+  installations: Installation[];
+}
+
+export function createInstallableWallets({
+  status,
+  installations,
+}: CreateInstallableWallets): Installation[] | undefined {
+  if (status === WalletStatus.WALLET_NOT_CONNECTED) {
+    return installations;
+  }
+  return undefined;
 }

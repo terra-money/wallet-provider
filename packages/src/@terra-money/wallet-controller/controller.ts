@@ -2,6 +2,7 @@ import {
   ConnectedWallet,
   Connection,
   ConnectType,
+  Installation,
   NetworkInfo,
   SignBytesResult,
   SignResult,
@@ -21,9 +22,8 @@ import {
   PublicKey,
   Tx,
 } from '@terra-money/terra.js';
-import { toLcdClient } from '@terra-money/wallet-controller/operators/toLcdClient';
 import deepEqual from 'fast-deep-equal';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import {
   CHROME_EXTENSION_INSTALL_URL,
@@ -56,7 +56,9 @@ import {
   WalletConnectControllerOptions,
   WalletConnectSessionStatus,
 } from './modules/walletconnect';
+import { getExtensions } from './operators/getExtensions';
 import { toConnectedWallet } from './operators/toConnectedWallet';
+import { toLcdClient } from './operators/toLcdClient';
 import { isDesktopChrome } from './utils/browser-check';
 import { checkExtensionReady } from './utils/checkExtensionReady';
 
@@ -349,6 +351,41 @@ export class WalletController {
   };
 
   /**
+   * available installations includes identifier, name, icon, url
+   *
+   * @see Wallet#availableInstallations
+   */
+  availableInstallations = (): Observable<Installation[]> => {
+    return combineLatest([this.availableConnections(), getExtensions()]).pipe(
+      map(([connections, extensions]) => {
+        const installedIdentifiers = new Set<string>(
+          connections
+            .filter(({ type, identifier }) => {
+              return type === ConnectType.EXTENSION && !!identifier;
+            })
+            .map(({ identifier }) => {
+              return identifier!;
+            }),
+        );
+
+        return extensions
+          .filter(({ identifier }) => {
+            return !installedIdentifiers.has(identifier);
+          })
+          .map(({ name, identifier, icon, url }) => {
+            return {
+              type: ConnectType.EXTENSION,
+              identifier,
+              name,
+              icon,
+              url,
+            };
+          });
+      }),
+    );
+  };
+
+  /**
    * @see Wallet#status
    * @see Wallet#network
    * @see Wallet#wallets
@@ -383,6 +420,8 @@ export class WalletController {
   };
 
   /**
+   * @deprecated Please use availableInstallations
+   *
    * install for the connect type
    *
    * @see Wallet#install

@@ -2,6 +2,7 @@ import { TerraWebExtensionFeatures } from '@terra-dev/web-extension-interface';
 import {
   Connection,
   ConnectType,
+  Installation,
   NetworkInfo,
   Wallet,
   WalletContext,
@@ -17,6 +18,7 @@ export interface StaticWalletProviderProps {
   availableConnectTypes?: ConnectType[];
   availableInstallTypes?: ConnectType[];
   availableConnections?: Connection[];
+  availableInstallations?: Installation[];
   wallets?: WalletInfo[];
   supportFeatures?: Set<TerraWebExtensionFeatures>;
   connection?: Connection | undefined;
@@ -29,6 +31,7 @@ export function StaticWalletProvider({
   availableConnectTypes = [],
   availableInstallTypes = [],
   availableConnections = [],
+  availableInstallations = [],
   wallets = [],
   supportFeatures = new Set(),
   connection = undefined,
@@ -38,6 +41,7 @@ export function StaticWalletProvider({
       availableConnectTypes,
       availableInstallTypes,
       availableConnections,
+      availableInstallations,
       status,
       network: defaultNetwork,
       wallets,
@@ -90,6 +94,7 @@ export function StaticWalletProvider({
     availableConnectTypes,
     availableInstallTypes,
     availableConnections,
+    availableInstallations,
     status,
     defaultNetwork,
     wallets,

@@ -9,6 +9,7 @@ export function ConnectSample() {
     availableConnectTypes,
     availableInstallTypes,
     availableConnections,
+    availableInstallations,
     supportFeatures,
     connect,
     connection,
@@ -30,6 +31,7 @@ export function ConnectSample() {
               supportFeatures: Array.from(supportFeatures),
               availableConnectTypes,
               availableInstallTypes,
+              availableInstallations,
             },
             null,
             2,
@@ -70,6 +72,24 @@ export function ConnectSample() {
                   />
                   {name} [{identifier}]
                 </button>
+              ),
+            )}
+            <br />
+            {availableInstallations.map(
+              ({ type, identifier, name, icon, url }) => (
+                <a
+                  key={'installation-' + type + identifier}
+                  href={url}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <img
+                    src={icon}
+                    alt={name}
+                    style={{ width: '1em', height: '1em' }}
+                  />
+                  Install {name} [{identifier}]
+                </a>
               ),
             )}
           </>

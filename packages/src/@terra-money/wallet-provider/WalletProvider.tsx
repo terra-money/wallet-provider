@@ -2,6 +2,7 @@ import { TerraWebExtensionFeatures } from '@terra-dev/web-extension-interface';
 import {
   Connection,
   ConnectType,
+  Installation,
   Wallet,
   WalletContext,
   WalletInfo,
@@ -58,6 +59,10 @@ export function WalletProvider({
     Connection[]
   >(() => []);
 
+  const [availableInstallations, setAvailableInstallations] = useState<
+    Installation[]
+  >(() => []);
+
   const [states, setStates] = useState<WalletStates>(() => ({
     status: WalletStatus.INITIALIZING,
     network: defaultNetwork,
@@ -88,6 +93,14 @@ export function WalletProvider({
         },
       });
 
+    const availableInstallationsSubscription = controller
+      .availableInstallations()
+      .subscribe({
+        next: (value) => {
+          setAvailableInstallations(value);
+        },
+      });
+
     const statesSubscription = controller.states().subscribe({
       next: (value) => {
         setStates(value);
@@ -98,6 +111,7 @@ export function WalletProvider({
       availableConnectTypesSubscription.unsubscribe();
       availableInstallTypesSubscription.unsubscribe();
       availableConnectionsSubscription.unsubscribe();
+      availableInstallationsSubscription.unsubscribe();
       statesSubscription.unsubscribe();
     };
   }, [controller]);
@@ -107,6 +121,7 @@ export function WalletProvider({
       availableConnectTypes,
       availableInstallTypes,
       availableConnections,
+      availableInstallations,
       status: states.status,
       network: states.network,
       wallets:
@@ -141,6 +156,7 @@ export function WalletProvider({
     availableConnectTypes,
     availableInstallTypes,
     availableConnections,
+    availableInstallations,
     controller,
     states,
   ]);

@@ -60,6 +60,15 @@ export interface Connection {
   icon: string;
 }
 
+export interface Installation {
+  type: ConnectType;
+  identifier: string;
+
+  name: string;
+  icon: string;
+  url: string;
+}
+
 export interface WalletInfo {
   connectType: ConnectType;
   terraAddress: string;
