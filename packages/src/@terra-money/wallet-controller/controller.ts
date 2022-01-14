@@ -61,6 +61,7 @@ import { toConnectedWallet } from './operators/toConnectedWallet';
 import { toLcdClient } from './operators/toLcdClient';
 import { isDesktopChrome } from './utils/browser-check';
 import { checkExtensionReady } from './utils/checkExtensionReady';
+import { sortConnections } from './utils/sortConnections';
 
 export interface WalletControllerOptions
   extends WalletConnectControllerOptions {
@@ -334,7 +335,7 @@ export class WalletController {
           }
         }
 
-        return connections;
+        return sortConnections(connections);
       }),
     );
   };
