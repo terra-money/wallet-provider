@@ -1,15 +1,15 @@
 {
   "$schema": "https://rocket-hangar.github.io/rocket-punch/schemas/packages.json",
   "@terra-dev/*": {
-    "version": "3.7.0",
-    "tag": "latest"
+    "version": "3.8.0-alpha.1",
+    "tag": "canary"
   },
   "@terra-money/use-wallet": {
-    "version": "3.7.0",
-    "tag": "latest"
+    "version": "3.8.0-alpha.1",
+    "tag": "canary"
   },
   "@terra-money/*": {
-    "version": "3.7.1",
-    "tag": "latest"
+    "version": "3.8.0-alpha.1",
+    "tag": "canary"
   }
 }
