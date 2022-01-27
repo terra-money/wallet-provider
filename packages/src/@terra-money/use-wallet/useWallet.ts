@@ -90,7 +90,7 @@ export interface Wallet {
    * @see Wallet#availableConnectTypes
    * @see WalletController#connect
    */
-  connect: (type: ConnectType, identifier?: string) => void;
+  connect: (type?: ConnectType, identifier?: string) => void;
 
   /**
    * manual connect to read only session

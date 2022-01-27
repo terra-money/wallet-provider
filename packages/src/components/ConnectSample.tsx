@@ -42,6 +42,8 @@ export function ConnectSample() {
       <footer>
         {status === WalletStatus.WALLET_NOT_CONNECTED && (
           <>
+            <button onClick={() => connect()}>Connect</button>
+            <br />
             {availableInstallTypes.map((connectType) => (
               <button
                 key={'install-' + connectType}
