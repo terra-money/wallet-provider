@@ -8,7 +8,7 @@ import {
   TxResult,
   WalletInfo,
   WalletStatus,
-} from '@terra-dev/wallet-types';
+} from '@terra-money/wallet-types';
 import { CreateTxOptions } from '@terra-money/terra.js';
 import { Context, createContext, useContext } from 'react';
 
@@ -217,7 +217,7 @@ export interface Wallet {
    * )
    * ```
    *
-   * This type is same as `import type { TerraWebExtensionFeatures } from '@terra-dev/web-extension-interface'`
+   * This type is same as `import type { TerraWebExtensionFeatures } from '@terra-money/web-extension-interface'`
    */
   supportFeatures: Set<
     'post' | 'sign' | 'sign-bytes' | 'cw20-token' | 'network'

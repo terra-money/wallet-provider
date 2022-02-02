@@ -17,11 +17,11 @@ import {
   WalletLCDClientConfig,
   WalletStates,
   WalletStatus,
-} from '@terra-dev/wallet-types';
+} from '@terra-money/wallet-types';
 import {
   TerraWebExtensionFeatures,
   WebExtensionTxStatus,
-} from '@terra-dev/web-extension-interface';
+} from '@terra-money/web-extension-interface';
 import deepEqual from 'fast-deep-equal';
 import {
   BehaviorSubject,

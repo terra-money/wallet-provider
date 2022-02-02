@@ -1,4 +1,4 @@
-import { NetworkInfo } from '@terra-dev/wallet-types';
+import { NetworkInfo } from '@terra-money/wallet-types';
 import { AccAddress } from '@terra-money/terra.js';
 import { modalStyle } from './modal.style';
 import { ReadonlyWalletSession } from './types';

@@ -1,4 +1,4 @@
-import { TerraWebExtensionFeatures } from '@terra-dev/web-extension-interface';
+import { TerraWebExtensionFeatures } from '@terra-money/web-extension-interface';
 import {
   Connection,
   ConnectType,

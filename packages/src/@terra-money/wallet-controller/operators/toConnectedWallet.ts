@@ -3,7 +3,7 @@ import {
   createConnectedWallet,
   WalletStates,
   WalletStatus,
-} from '@terra-dev/wallet-types';
+} from '@terra-money/wallet-types';
 import { OperatorFunction } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { WalletController } from '../controller';

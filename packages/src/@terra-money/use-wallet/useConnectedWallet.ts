@@ -1,7 +1,7 @@
 import {
   ConnectedWallet,
   createConnectedWallet,
-} from '@terra-dev/wallet-types';
+} from '@terra-money/wallet-types';
 import { useMemo } from 'react';
 import { useWallet } from './useWallet';
 

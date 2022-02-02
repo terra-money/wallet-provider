@@ -1,4 +1,4 @@
-import { Connection, ConnectType } from '@terra-dev/wallet-types';
+import { Connection, ConnectType } from '@terra-money/wallet-types';
 import { modalStyle } from './style';
 
 export function selectConnection(
