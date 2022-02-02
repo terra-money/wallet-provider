@@ -281,7 +281,7 @@ export interface Wallet {
    * @see Wallet#availableConnectTypes
    * @see WalletController#connect
    */
-  connect: (type: ConnectType, identifier?: string) => void;
+  connect: (type?: ConnectType, identifier?: string) => void;
   /**
    * manual connect to read only session
    *
@@ -399,7 +399,7 @@ export interface Wallet {
    * )
    * ```
    *
-   * This type is same as `import type { TerraWebExtensionFeatures } from '@terra-dev/web-extension-interface'`
+   * This type is same as `import type { TerraWebExtensionFeatures } from '@terra-money/web-extension-interface'`
    */
   supportFeatures: Set<
     'post' | 'sign' | 'sign-bytes' | 'cw20-token' | 'network'

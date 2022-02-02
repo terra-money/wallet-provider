@@ -5,13 +5,13 @@ import {
   TxFailed,
   TxUnspecifiedError,
   UserDenied,
-} from '@terra-dev/wallet-types';
+} from '@terra-money/wallet-types';
 import {
   WebExtensionCreateTxFailed,
   WebExtensionTxFailed,
   WebExtensionTxUnspecifiedError,
   WebExtensionUserDenied,
-} from '@terra-dev/web-extension-interface';
+} from '@terra-money/web-extension-interface';
 import { CreateTxOptions } from '@terra-money/terra.js';
 import { isError } from './isError';
 

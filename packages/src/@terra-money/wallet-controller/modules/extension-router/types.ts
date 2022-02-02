@@ -2,7 +2,7 @@ import {
   TerraWebExtensionFeatures,
   WebExtensionNetworkInfo,
   WebExtensionWalletInfo,
-} from '@terra-dev/web-extension-interface';
+} from '@terra-money/web-extension-interface';
 import { ExtensionInfo } from './multiChannel';
 
 export enum ExtensionRouterConnectorType {

@@ -51,6 +51,11 @@ export const modalStyle = `
   place-content: center;
 }
 
+.wallet-readonly-modal select, .wallet-readonly-modal input {
+  color: #212121;
+  background-color: #ffffff;
+}
+
 .wallet-readonly-modal > .wallet-readonly-modal--dim {
   position: fixed;
   z-index: -1;

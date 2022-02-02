@@ -1,4 +1,11 @@
 import {
+  AccAddress,
+  CreateTxOptions,
+  LCDClient,
+  PublicKey,
+  Tx,
+} from '@terra-money/terra.js';
+import {
   ConnectedWallet,
   Connection,
   ConnectType,
@@ -10,20 +17,19 @@ import {
   WalletLCDClientConfig,
   WalletStates,
   WalletStatus,
-} from '@terra-dev/wallet-types';
+} from '@terra-money/wallet-types';
 import {
   TerraWebExtensionFeatures,
   WebExtensionTxStatus,
-} from '@terra-dev/web-extension-interface';
-import {
-  AccAddress,
-  CreateTxOptions,
-  LCDClient,
-  PublicKey,
-  Tx,
-} from '@terra-money/terra.js';
+} from '@terra-money/web-extension-interface';
 import deepEqual from 'fast-deep-equal';
-import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  firstValueFrom,
+  Observable,
+  Subscription,
+} from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import {
   CHROME_EXTENSION_INSTALL_URL,
@@ -34,6 +40,7 @@ import {
   mapExtensionTxError,
 } from './exception/mapExtensionTxError';
 import { mapWalletConnectError } from './exception/mapWalletConnectError';
+import { selectConnection } from './modules/connect-modal';
 import {
   ExtensionRouter,
   ExtensionRouterStatus,
@@ -113,6 +120,13 @@ export interface WalletControllerOptions
   ) => Promise<ReadonlyWalletSession | null>;
 
   /**
+   * run at executing the `connect()` - only used when does not input ConnectType
+   */
+  selectConnection?: (
+    connections: Connection[],
+  ) => Promise<[type: ConnectType, identifier: string | undefined] | null>;
+
+  /**
    * run at executing the `connect(ConnectType.EXTENSION)`
    * if user installed multiple wallets
    */
@@ -163,6 +177,7 @@ const WALLETCONNECT_SUPPORT_FEATURES = new Set<TerraWebExtensionFeatures>([
 
 const EMPTY_SUPPORT_FEATURES = new Set<TerraWebExtensionFeatures>();
 
+//noinspection ES6MissingAwait
 export class WalletController {
   private extension: ExtensionRouter | null = null;
   private walletConnect: WalletConnectController | null = null;
@@ -443,7 +458,26 @@ export class WalletController {
    *
    * @see Wallet#connect
    */
-  connect = (type: ConnectType, identifier?: string) => {
+  connect = async (_type?: ConnectType, _identifier?: string) => {
+    let type: ConnectType;
+    let identifier: string | undefined;
+
+    if (!!_type) {
+      type = _type;
+      identifier = _identifier;
+    } else {
+      const connections = await firstValueFrom(this.availableConnections());
+      const selector = this.options.selectConnection ?? selectConnection;
+      const selected = await selector(connections);
+
+      if (!selected) {
+        return;
+      }
+
+      type = selected[0];
+      identifier = selected[1];
+    }
+
     switch (type) {
       case ConnectType.READONLY:
         const networks: NetworkInfo[] = Object.keys(
@@ -454,11 +488,11 @@ export class WalletController {
           this.options.createReadonlyWalletSession?.(networks) ??
           readonlyWalletModal({ networks });
 
-        createReadonlyWalletSession.then((readonlyWalletSession) => {
-          if (readonlyWalletSession) {
-            this.enableReadonlyWallet(reConnect(readonlyWalletSession));
-          }
-        });
+        const readonlyWalletSession = await createReadonlyWalletSession;
+
+        if (readonlyWalletSession) {
+          this.enableReadonlyWallet(reConnect(readonlyWalletSession));
+        }
         break;
       case ConnectType.WALLETCONNECT:
         this.enableWalletConnect(wcConnect(this.options));

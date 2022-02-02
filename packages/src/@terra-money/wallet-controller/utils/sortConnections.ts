@@ -1,4 +1,4 @@
-import { Connection } from '@terra-dev/wallet-types';
+import { Connection } from '@terra-money/wallet-types';
 
 export function sortConnections(connections: Connection[]): Connection[] {
   const stationIndex = connections.findIndex(

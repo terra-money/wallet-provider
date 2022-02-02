@@ -1,4 +1,4 @@
-import { TerraWebExtensionConnector } from '@terra-dev/web-extension-interface';
+import { TerraWebExtensionConnector } from '@terra-money/web-extension-interface';
 
 export interface ExtensionInfo {
   name: string;

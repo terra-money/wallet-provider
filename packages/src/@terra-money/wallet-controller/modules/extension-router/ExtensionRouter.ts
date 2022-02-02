@@ -1,4 +1,4 @@
-import { NetworkInfo } from '@terra-dev/wallet-types';
+import { NetworkInfo } from '@terra-money/wallet-types';
 import {
   TerraWebExtensionConnector,
   WebExtensionNetworkInfo,
@@ -8,7 +8,7 @@ import {
   WebExtensionStates,
   WebExtensionStatus,
   WebExtensionTxResult,
-} from '@terra-dev/web-extension-interface';
+} from '@terra-money/web-extension-interface';
 import { CreateTxOptions } from '@terra-money/terra.js';
 import { BehaviorSubject, Subscribable } from 'rxjs';
 import { isDesktopChrome } from '../../utils/browser-check';

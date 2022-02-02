@@ -1,4 +1,4 @@
-export * from '@terra-dev/wallet-types';
+export * from '@terra-money/wallet-types';
 
 export * from './getChainOptions';
 export * from './controller';

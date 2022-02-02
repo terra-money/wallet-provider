@@ -1,4 +1,4 @@
-import { NetworkInfo } from '@terra-dev/wallet-types';
+import { NetworkInfo } from '@terra-money/wallet-types';
 import {
   TerraWebExtensionConnector,
   TerraWebExtensionFeatures,
@@ -9,7 +9,7 @@ import {
   WebExtensionStatus,
   WebExtensionTxResult,
   WebExtensionTxStatus,
-} from '@terra-dev/web-extension-interface';
+} from '@terra-money/web-extension-interface';
 import { AccAddress, CreateTxOptions } from '@terra-money/terra.js';
 import { BehaviorSubject, Observer, Subscribable, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';

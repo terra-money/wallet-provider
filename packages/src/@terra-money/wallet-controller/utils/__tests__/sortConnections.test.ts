@@ -1,4 +1,4 @@
-import { ConnectType } from '@terra-dev/wallet-types';
+import { ConnectType } from '@terra-money/wallet-types';
 import { sortConnections } from '../sortConnections';
 import { describe, expect, test } from 'vitest';
 

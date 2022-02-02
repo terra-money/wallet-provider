@@ -2,7 +2,7 @@ import {
   createLCDClient,
   WalletLCDClientConfig,
   WalletStates,
-} from '@terra-dev/wallet-types';
+} from '@terra-money/wallet-types';
 import { LCDClient } from '@terra-money/terra.js';
 import { OperatorFunction } from 'rxjs';
 import { map } from 'rxjs/operators';
