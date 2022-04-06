@@ -7,6 +7,8 @@ module.exports = function override(config, env) {
     buffer: require.resolve('buffer'),
   };
 
+  config.ignoreWarnings = [/Failed to parse source map/];
+
   config.plugins.push(
     new ProvidePlugin({
       Buffer: ['buffer', 'Buffer'],
