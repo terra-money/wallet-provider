@@ -22,7 +22,7 @@
     ]
   },
   "dependencies": {
-    "@terra-money/terra.js": "^3.0.2",
+    "@terra-money/terra.js": "3.0.9",
     "@terra-money/wallet-provider": "^3.6.5",
     "buffer": "^6.0.3",
     "react": "^17.0.2",
