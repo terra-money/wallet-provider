@@ -17,12 +17,10 @@ npm start
 
 # This template is just for reference.
 
-This template is an example of how `WalletController` behaves underneath the React API.
+This template is an example of how `WalletController` interacts with `<WalletProvider>` under the React API.
 
-This example allows you to understand what happens under the `<WalletProvider>` React API.
+# ⚠️ This may not be the best example for your use case
 
-# ⚠️ This is may not a best example
+This is just a sample created to illustrate basic use.
 
-This is just a sample created for basic usage examples, and may not be the best example to deal with this framework.
-
-If you have a better way to improve, you can always send [PR](https://github.com/terra-money/wallet-provider).
+If you have suggestions for improvment you can always open a [PR](https://github.com/terra-money/wallet-provider).

@@ -1,6 +1,6 @@
-# This template is
+# What is this?
 
-This is an example of performing basic Connect, Tx, and Query in the Web App using [wallet-provider](https://www.npmjs.com/package/@terra-money/wallet-provider).
+This is an example of performing basic connect, tx, and query actions in a Next.js based web application using [wallet-provider](https://www.npmjs.com/package/@terra-money/wallet-provider).
 
 # Preview this template on the CodeSandbox
 

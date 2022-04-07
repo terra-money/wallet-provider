@@ -1,6 +1,6 @@
-# This template is
+# What is this?
 
-This is an example of performing basic Connect, Tx, and Query in the Web App using [wallet-provider](https://www.npmjs.com/package/@terra-money/wallet-provider).
+This is an example of performing basic connect, tx, and query actions in a Vite-based web application using [wallet-provider](https://www.npmjs.com/package/@terra-money/wallet-provider).
 
 # Preview this template on the CodeSandbox
 
@@ -19,6 +19,6 @@ npm start
 
 Vite.js provides more overwhelming Build / HMR speeds than Webpack (and tools such as CRA based on Webpack).
 
-However, many libraries in block-chain, including terra.js, rely on webpack's node polyfill, which will create many self-solving problems in your development based on Vite.js.
+However, many libraries in blockchain, including terra.js, rely on webpack's node polyfill, which will create many self-solving problems if your developmentis  based on Vite.js.
 
 This template provides basic polyfill settings for using terra.js. However, it will not be perfect and some problems may require a great deal of cost and effort to solve.
