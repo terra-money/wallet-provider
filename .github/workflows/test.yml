@@ -17,7 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         node: [16]
-        os: [ubuntu-latest]
+        os: [macos-latest]
 #        TODO: in a private repository, windows-latest is charged 2x times and macos-latest is charged 10x times
 #        node: [12, 14, 15]
 #        os: [ubuntu-latest, windows-latest, macos-latest]
