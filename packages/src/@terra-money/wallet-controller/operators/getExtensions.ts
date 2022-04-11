@@ -26,6 +26,10 @@ const FALLBACK: Extensions = {
           browser: 'chrome',
           url: 'https://chrome.google.com/webstore/detail/terra-station/aiifbnbfobpmeekipheeijimdpnlpgpp',
         },
+        {
+          browser: 'firefox',
+          url: 'https://addons.mozilla.org/en-US/firefox/addon/terra-station-wallet/',
+        },
       ],
     },
     {
