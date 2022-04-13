@@ -11,7 +11,6 @@ import {
 } from '@terra-money/web-extension-interface';
 import { CreateTxOptions } from '@terra-money/terra.js';
 import { BehaviorSubject, Subscribable } from 'rxjs';
-import { isDesktopChrome } from '../../utils/browser-check';
 import { LegacyExtensionConnector } from '../legacy-extension';
 import { selectModal } from './modal';
 import { ExtensionInfo, getTerraExtensions } from './multiChannel';
@@ -44,17 +43,7 @@ export class ExtensionRouter {
 
   private _connector: TerraWebExtensionConnector | null = null;
 
-  private readonly isDesktopChrome: boolean;
-
   constructor(private readonly options: ExtensionRouterOptions) {
-    this.isDesktopChrome =
-      typeof window !== 'undefined' &&
-      isDesktopChrome(
-        options.dangerously__chromeExtensionCompatibleBrowserCheck?.(
-          navigator.userAgent,
-        ) ?? false,
-      );
-
     this._states = new BehaviorSubject<ExtensionRouterStates>({
       type: ExtensionRouterStatus.INITIALIZING,
       network: options.defaultNetwork,
@@ -296,12 +285,6 @@ export class ExtensionRouter {
   // ---------------------------------------------
   private createConnector = (extensionInfo: ExtensionInfo) => {
     this._connector?.close();
-
-    if (!extensionInfo.connector) {
-      throw new Error(
-        `[ExtensionRouter] Legacy extension only support the desktop chrome and firefox`,
-      );
-    }
 
     const connectorPromise: Promise<TerraWebExtensionConnector> =
       extensionInfo.connector
