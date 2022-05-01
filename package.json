@@ -29,7 +29,7 @@
     "lint-staged": "^12.1.5",
     "prettier": "^2.5.1"
   },
-  "resolutions": {
+  "dependencies": {
     "@terra-money/terra.js": "3.0.2"
   }
 }
