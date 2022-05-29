@@ -1,11 +1,11 @@
 {
-  "author": "Ian <ian@terra.money>",
+  "author": "Terraform Labs PTE.LTD",
   "license": "Apache-2.0",
-  "repository": "github:terra-money/wallet-provider",
+  "repository": "git://github:terra-money/wallet-provider",
   "bugs": "https://github.com/terra-money/wallet-provider/issues",
   "homepage": "https://github.com/terra-money/wallet-provider/tree/main/packages/src/{name}",
   "engines": {
-    "node": ">=12"
+    "node": ">=16"
   },
   "publishConfig": {
     "cache": "~/.npm",
