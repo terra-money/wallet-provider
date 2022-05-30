@@ -6,6 +6,8 @@ interface ChainInfo {
   chainID: string;
   lcd: string;
   walletconnectID?: number;
+  api: string;
+  mantle: string;
 }
 
 export type WalletControllerChainOptions = Pick<

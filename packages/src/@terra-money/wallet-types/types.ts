@@ -9,6 +9,15 @@ export interface NetworkInfo {
 
   /** lcd endpoint (e.g. https://lcd.terra.dev) */
   lcd: string;
+
+  /** api endpoint (e.g. https://columbus-api.terra.dev) */
+  api: string;
+
+  /** mantle endpoint (e.g. https://columbus-mantle.terra.dev) */
+  mantle: string;
+
+  /** wallet connect ID (e.g. 2) */
+  walletconnectID: number;
 }
 
 export interface TxResult extends CreateTxOptions {
