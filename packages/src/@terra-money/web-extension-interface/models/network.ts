@@ -11,7 +11,7 @@ export interface WebExtensionNetworkInfo {
   name: string;
   chainID: string;
   lcd: string;
-  api: string;
-  mantle: string;
+  api?: string;
+  mantle?: string;
   walleconnectID: number;
 }

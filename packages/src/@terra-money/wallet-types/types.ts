@@ -11,10 +11,10 @@ export interface NetworkInfo {
   lcd: string;
 
   /** api endpoint (e.g. https://columbus-api.terra.dev) */
-  api: string;
+  api?: string;
 
   /** mantle endpoint (e.g. https://columbus-mantle.terra.dev) */
-  mantle: string;
+  mantle?: string;
 
   /** wallet connect ID (e.g. 2) */
   walletconnectID: number;
