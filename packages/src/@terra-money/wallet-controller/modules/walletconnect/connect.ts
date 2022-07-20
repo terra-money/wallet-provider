@@ -243,7 +243,7 @@ export function connect(
 
     const serializedTxOptions = {
       msgs: tx.msgs.map((msg) => msg.toJSON(isClassic)),
-      fee: tx.fee?.toJSON(),
+      fee: tx.fee?.toJSON(isClassic),
       memo: tx.memo,
       gas: tx.gas,
       gasPrices: tx.gasPrices?.toString(),
