@@ -238,9 +238,11 @@ export function connect(
     }
 
     const id = Date.now();
+    // @ts-ignore
+    const { isClassic } = tx;
 
     const serializedTxOptions = {
-      msgs: tx.msgs.map((msg) => msg.toJSON()),
+      msgs: tx.msgs.map((msg) => msg.toJSON(isClassic)),
       fee: tx.fee?.toJSON(),
       memo: tx.memo,
       gas: tx.gas,
