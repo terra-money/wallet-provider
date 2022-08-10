@@ -57,6 +57,10 @@ import {
   ReadonlyWalletSession,
 } from './modules/readonly-wallet';
 import {
+  WalletPlugin,
+  WalletPluginSession,
+} from './modules/wallet-plugin/types';
+import {
   connect as wcConnect,
   connectIfSessionExists as wcConnectIfSessionExists,
   WalletConnectController,
@@ -119,6 +123,8 @@ export interface WalletControllerOptions
     networks: NetworkInfo[],
   ) => Promise<ReadonlyWalletSession | null>;
 
+  plugins?: WalletPlugin[];
+
   /**
    * run at executing the `connect()` - only used when does not input ConnectType
    */
@@ -156,7 +162,11 @@ export interface WalletControllerOptions
   ) => boolean;
 }
 
-const CONNECTIONS = {
+type Connections = {
+  [Key: string]: Connection;
+};
+
+const CONNECTIONS: Connections = {
   [ConnectType.READONLY]: {
     type: ConnectType.READONLY,
     name: 'View an address',
@@ -167,7 +177,7 @@ const CONNECTIONS = {
     name: 'Wallet Connect',
     icon: 'https://assets.terra.money/icon/wallet-provider/walletconnect.svg',
   } as Connection,
-} as const;
+};
 
 const DEFAULT_WAITING_CHROME_EXTENSION_INSTALL_CHECK = 1000 * 3;
 
@@ -182,6 +192,7 @@ export class WalletController {
   private extension: ExtensionRouter | null = null;
   private walletConnect: WalletConnectController | null = null;
   private readonlyWallet: ReadonlyWalletController | null = null;
+  private plugin: WalletPluginSession | null = null;
 
   private _availableConnectTypes: BehaviorSubject<ConnectType[]>;
   private _availableInstallTypes: BehaviorSubject<ConnectType[]>;
@@ -190,6 +201,7 @@ export class WalletController {
   private disableReadonlyWallet: (() => void) | null = null;
   private disableExtension: (() => void) | null = null;
   private disableWalletConnect: (() => void) | null = null;
+  private disableWalletPlugin: (() => void) | null = null;
 
   private readonly _notConnected: WalletStates;
   private readonly _initializing: WalletStates;
@@ -205,10 +217,18 @@ export class WalletController {
       network: options.defaultNetwork,
     };
 
-    this._availableConnectTypes = new BehaviorSubject<ConnectType[]>([
+    const defaultConnectionTypes: ConnectType[] = [
       ConnectType.READONLY,
       ConnectType.WALLETCONNECT,
-    ]);
+    ];
+
+    if (this.options.plugins) {
+      defaultConnectionTypes.push(ConnectType.PLUGINS);
+    }
+
+    this._availableConnectTypes = new BehaviorSubject<ConnectType[]>(
+      defaultConnectionTypes,
+    );
 
     this._availableInstallTypes = new BehaviorSubject<ConnectType[]>([]);
 
@@ -226,8 +246,7 @@ export class WalletController {
       if (ready) {
         this._availableConnectTypes.next([
           ConnectType.EXTENSION,
-          ConnectType.WALLETCONNECT,
-          ConnectType.READONLY,
+          ...defaultConnectionTypes,
         ]);
 
         this.extension = new ExtensionRouter({
@@ -342,6 +361,20 @@ export class WalletController {
                   terraExtension.name,
                   terraExtension.icon,
                   terraExtension.identifier,
+                ),
+              );
+            }
+          } else if (
+            connectType === ConnectType.PLUGINS &&
+            this.options.plugins
+          ) {
+            for (const plugin of this.options.plugins) {
+              connections.push(
+                memoConnection(
+                  ConnectType.PLUGINS,
+                  plugin.name,
+                  plugin.icon,
+                  plugin.identifier,
                 ),
               );
             }
@@ -477,12 +510,12 @@ export class WalletController {
       type = selected[0];
       identifier = selected[1];
     }
-
+    let networks: NetworkInfo[];
     switch (type) {
       case ConnectType.READONLY:
-        const networks: NetworkInfo[] = Object.keys(
-          this.options.walletConnectChainIds,
-        ).map((chainId) => this.options.walletConnectChainIds[+chainId]);
+        networks = Object.keys(this.options.walletConnectChainIds).map(
+          (chainId) => this.options.walletConnectChainIds[+chainId],
+        );
 
         const createReadonlyWalletSession =
           this.options.createReadonlyWalletSession?.(networks) ??
@@ -503,6 +536,29 @@ export class WalletController {
         }
         this.extension.connect(identifier);
         this.enableExtension();
+        break;
+      case ConnectType.PLUGINS:
+        networks = Object.keys(this.options.walletConnectChainIds).map(
+          (chainId) => this.options.walletConnectChainIds[+chainId],
+        );
+        if (!this.options.plugins || this.options.plugins.length === 0) {
+          throw new Error(`not plugins found`);
+        }
+
+        let plugin = this.options.plugins?.find((p) => {
+          return p.identifier === identifier;
+        });
+
+        if (!plugin) {
+          plugin = this.options.plugins[0];
+        }
+
+        const session = await plugin.createSession(networks);
+        if (!session) {
+          throw new Error(`error getting web3session`);
+        }
+        await session.connect();
+        this.enableWalletPlugin(plugin, session);
         break;
       default:
         throw new Error(`Unknown ConnectType!`);
@@ -533,6 +589,9 @@ export class WalletController {
 
     this.disableWalletConnect?.();
     this.disableWalletConnect = null;
+
+    this.disableWalletPlugin?.();
+    this.disableWalletPlugin = null;
 
     this.updateStates(this._notConnected);
   };
@@ -591,6 +650,10 @@ export class WalletController {
         .catch((error) => {
           throw mapWalletConnectError(tx, error);
         });
+    } else if (this.plugin) {
+      return this.plugin.post(tx).catch((error) => {
+        throw mapExtensionSignBytesError(Buffer.from(''), error);
+      });
     } else {
       throw new Error(`There are no connections that can be posting tx!`);
     }
@@ -908,6 +971,34 @@ export class WalletController {
       this.walletConnect = null;
       walletConnectSessionSubscription.unsubscribe();
       this.disableWalletConnect = null;
+    };
+  };
+
+  private enableWalletPlugin = (
+    plugin: WalletPlugin,
+    session: WalletPluginSession,
+  ) => {
+    this.disableReadonlyWallet?.();
+    this.disableExtension?.();
+    this.disableWalletConnect?.();
+
+    this.plugin = session;
+    this.updateStates({
+      status: WalletStatus.WALLET_CONNECTED,
+      network: session.network!,
+      wallets: [
+        {
+          connectType: ConnectType.PLUGINS,
+          terraAddress: session.terraAddress || 'not created',
+        },
+      ],
+      supportFeatures: WALLETCONNECT_SUPPORT_FEATURES,
+      connection: memoConnection(ConnectType.PLUGINS, plugin.name, plugin.icon),
+    });
+    this.disableWalletPlugin = () => {
+      this.disableWalletPlugin = null;
+      this.plugin?.disconnect();
+      this.plugin = null;
     };
   };
 }

@@ -59,6 +59,9 @@ export enum ConnectType {
 
   /** Read only mode - View an address */
   READONLY = 'READONLY',
+
+  /** Plugins injected from app */
+  PLUGINS = 'PLUGINS',
 }
 
 export interface Connection {
