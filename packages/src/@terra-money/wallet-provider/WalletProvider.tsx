@@ -32,6 +32,7 @@ export function WalletProvider({
   selectExtension,
   waitingChromeExtensionInstallCheck,
   dangerously__chromeExtensionCompatibleBrowserCheck,
+  plugins,
 }: WalletProviderProps) {
   const [controller] = useState<WalletController>(
     () =>
@@ -44,6 +45,7 @@ export function WalletProvider({
         selectExtension,
         waitingChromeExtensionInstallCheck,
         dangerously__chromeExtensionCompatibleBrowserCheck,
+        plugins,
       }),
   );
 
