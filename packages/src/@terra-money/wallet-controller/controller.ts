@@ -162,11 +162,7 @@ export interface WalletControllerOptions
   ) => boolean;
 }
 
-type Connections = {
-  [Key: string]: Connection;
-};
-
-const CONNECTIONS: Connections = {
+const CONNECTIONS = {
   [ConnectType.READONLY]: {
     type: ConnectType.READONLY,
     name: 'View an address',
@@ -177,7 +173,7 @@ const CONNECTIONS: Connections = {
     name: 'Wallet Connect',
     icon: 'https://assets.terra.money/icon/wallet-provider/walletconnect.svg',
   } as Connection,
-};
+} as const;
 
 const DEFAULT_WAITING_CHROME_EXTENSION_INSTALL_CHECK = 1000 * 3;
 
@@ -364,11 +360,8 @@ export class WalletController {
                 ),
               );
             }
-          } else if (
-            connectType === ConnectType.PLUGINS &&
-            this.options.plugins
-          ) {
-            for (const plugin of this.options.plugins) {
+          } else if (connectType === ConnectType.PLUGINS) {
+            for (const plugin of this.options.plugins || []) {
               connections.push(
                 memoConnection(
                   ConnectType.PLUGINS,
