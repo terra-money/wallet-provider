@@ -1,6 +1,5 @@
 import { CreateTxOptions } from '@terra-money/terra.js';
 import { NetworkInfo, TxResult } from '@terra-money/wallet-types';
-import { TerraWebExtensionConnector } from '@terra-money/web-extension-interface';
 
 export interface WalletPlugin {
   name: string;
