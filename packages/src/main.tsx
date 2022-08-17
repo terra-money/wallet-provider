@@ -5,6 +5,7 @@ import { NetworkSample } from 'components/NetworkSample';
 import { QuerySample } from 'components/QuerySample';
 import { SignBytesSample } from 'components/SignBytesSample';
 import { SignSample } from 'components/SignSample';
+import { PostSample } from 'components/PostSample';
 import { TxSample } from 'components/TxSample';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -21,6 +22,7 @@ function App() {
     >
       <ConnectSample />
       <QuerySample />
+      <PostSample />
       <TxSample />
       <SignSample />
       <SignBytesSample />

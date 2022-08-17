@@ -17,8 +17,8 @@ export type WalletControllerChainOptions = Pick<
 
 const FALLBACK_MAINNET = {
   name: 'mainnet',
-  chainID: 'columbus-5',
-  lcd: 'https://lcd.terra.dev',
+  chainID: 'phoenix-1',
+  lcd: 'https://phoenix-lcd.terra.dev',
 };
 
 const FALLBACK: WalletControllerChainOptions = {
@@ -27,8 +27,13 @@ const FALLBACK: WalletControllerChainOptions = {
     1: FALLBACK_MAINNET,
     0: {
       name: 'testnet',
-      chainID: 'bombay-12',
-      lcd: 'https://bombay-lcd.terra.dev',
+      chainID: 'pisco-1',
+      lcd: 'https://pisco-lcd.terra.dev',
+    },
+    2: {
+      name: 'classic',
+      chainID: 'columbus-5',
+      lcd: 'https://columbus-lcd.terra.dev',
     },
   },
 };
@@ -47,6 +52,8 @@ export async function getChainOptions(): Promise<WalletControllerChainOptions> {
           result[1] = network;
         } else if (!result[0] && network.name === 'testnet') {
           result[0] = network;
+        } else if (!result[2] && network.name === 'classic') {
+          result[2] = network;
         }
         return result;
       }, {} as Record<number, NetworkInfo>);

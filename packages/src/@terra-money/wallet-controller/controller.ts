@@ -1,6 +1,6 @@
 import {
   AccAddress,
-  CreateTxOptions,
+  ExtensionOptions,
   LCDClient,
   PublicKey,
   Tx,
@@ -595,7 +595,7 @@ export class WalletController {
    * @param terraAddress only available new extension
    */
   post = async (
-    tx: CreateTxOptions,
+    tx: ExtensionOptions,
     terraAddress?: string,
   ): Promise<TxResult> => {
     // ---------------------------------------------
@@ -658,7 +658,7 @@ export class WalletController {
    * @param terraAddress only available new extension
    */
   sign = async (
-    tx: CreateTxOptions,
+    tx: ExtensionOptions,
     terraAddress?: string,
   ): Promise<SignResult> => {
     if (this.disableExtension) {

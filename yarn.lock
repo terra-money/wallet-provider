@@ -2947,13 +2947,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@terra-money/terra.js@npm:3.1.1":
-  version: 3.1.1
-  resolution: "@terra-money/terra.js@npm:3.1.1"
+"@terra-money/terra.js@npm:3.1.6":
+  version: 3.1.6
+  resolution: "@terra-money/terra.js@npm:3.1.6"
   dependencies:
     "@terra-money/legacy.proto": "npm:@terra-money/terra.proto@^0.1.7"
-    "@terra-money/terra.proto": ^0.2.0-beta.4
-    axios: ^0.26.1
+    "@terra-money/terra.proto": ^2.1.0
+    axios: ^0.27.2
     bech32: ^2.0.0
     bip32: ^2.0.6
     bip39: ^3.0.3
@@ -2964,20 +2964,20 @@ __metadata:
     secp256k1: ^4.0.2
     tmp: ^0.2.1
     utf-8-validate: ^5.0.5
-    ws: ^7.5.5
-  checksum: 12a700af08499c0012ed9b906a39a27f51ad7c77cea3a5d2fa39863979474e83d0bc8eac7bcc956eac2b541b586abd7b428fc0d9d1c11fc4accccca4c2a3ec2e
+    ws: ^7.5.9
+  checksum: 675ef98007c754651c2059a2d1ad5c0a776e0d50c6ae5204f59a4581f4954abc30e1fce96272b109838c65e2ad019077303ef89ff2a3b91fc1d1be2b05428648
   languageName: node
   linkType: hard
 
-"@terra-money/terra.proto@npm:^0.2.0-beta.4":
-  version: 0.2.0-beta.4
-  resolution: "@terra-money/terra.proto@npm:0.2.0-beta.4"
+"@terra-money/terra.proto@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@terra-money/terra.proto@npm:2.1.0"
   dependencies:
     "@improbable-eng/grpc-web": ^0.14.1
     google-protobuf: ^3.17.3
     long: ^4.0.0
     protobufjs: ~6.11.2
-  checksum: 37c42e29c846531f64f595a076378d415964f72181110f63b3cab72746c963706d64d71997af5a1eae28ce41a8e6c9f431c0d3597387cb48b91976836683ab1f
+  checksum: 545ff0b6fd664f16a88bebae4ad5d999197531868c5e2fcc3d76f6f712031e82d8ab7014923edb5bca90657568b8f71325964d78c2e1accff192d6cb933b9a94
   languageName: node
   linkType: hard
 
@@ -4927,12 +4927,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^0.26.1":
-  version: 0.26.1
-  resolution: "axios@npm:0.26.1"
+"axios@npm:^0.27.2":
+  version: 0.27.2
+  resolution: "axios@npm:0.27.2"
   dependencies:
-    follow-redirects: ^1.14.8
-  checksum: d9eb58ff4bc0b36a04783fc9ff760e9245c829a5a1052ee7ca6013410d427036b1d10d04e7380c02f3508c5eaf3485b1ae67bd2adbfec3683704745c8d7a6e1a
+    follow-redirects: ^1.14.9
+    form-data: ^4.0.0
+  checksum: 38cb7540465fe8c4102850c4368053c21683af85c5fdf0ea619f9628abbcb59415d1e22ebc8a6390d2bbc9b58a9806c874f139767389c862ec9b772235f06854
   languageName: node
   linkType: hard
 
@@ -6293,7 +6294,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "cra-template@workspace:templates/create-react-app"
   dependencies:
-    "@terra-money/terra.js": ^3.0.11
+    "@terra-money/terra.js": ^3.1.6
     "@terra-money/wallet-provider": ^3.6.5
     "@testing-library/jest-dom": ^5.15.0
     "@types/jest": ^27.0.2
@@ -8474,7 +8475,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.14.8":
+"follow-redirects@npm:^1.14.9":
   version: 1.15.1
   resolution: "follow-redirects@npm:1.15.1"
   peerDependenciesMeta:
@@ -8533,6 +8534,17 @@ __metadata:
     combined-stream: ^1.0.8
     mime-types: ^2.1.12
   checksum: b019e8d35c8afc14a2bd8a7a92fa4f525a4726b6d5a9740e8d2623c30e308fbb58dc8469f90415a856698933c8479b01646a9dff33c87cc4e76d72aedbbf860d
+  languageName: node
+  linkType: hard
+
+"form-data@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "form-data@npm:4.0.0"
+  dependencies:
+    asynckit: ^0.4.0
+    combined-stream: ^1.0.8
+    mime-types: ^2.1.12
+  checksum: 01135bf8675f9d5c61ff18e2e2932f719ca4de964e3be90ef4c36aacfc7b9cb2fceb5eca0b7e0190e3383fe51c5b37f4cb80b62ca06a99aaabfcfd6ac7c9328c
   languageName: node
   linkType: hard
 
@@ -10843,7 +10855,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "lit-template@workspace:templates/lit"
   dependencies:
-    "@terra-money/terra.js": ^3.0.11
+    "@terra-money/terra.js": ^3.1.6
     "@terra-money/wallet-provider": ^3.6.5
     buffer: ^6.0.3
     cross-env: ^7.0.3
@@ -11596,7 +11608,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "next-template@workspace:templates/next"
   dependencies:
-    "@terra-money/terra.js": ^3.0.11
+    "@terra-money/terra.js": ^3.1.6
     "@terra-money/wallet-provider": ^3.6.5
     "@types/react": ^17.0.34
     "@types/react-dom": ^17.0.11
@@ -12153,7 +12165,7 @@ __metadata:
   dependencies:
     "@sentry/browser": ^6.14.1
     "@sentry/tracing": ^6.14.1
-    "@terra-money/terra.js": ^3.1.1
+    "@terra-money/terra.js": ^3.1.6
     "@types/puppeteer": ^5.4.4
     "@types/qrcode": ^1.4.1
     "@types/qrcode.react": ^1.0.2
@@ -15621,7 +15633,7 @@ resolve@^2.0.0-next.3:
   resolution: "svelte-template@workspace:templates/svelte"
   dependencies:
     "@sveltejs/vite-plugin-svelte": ^1.0.0-next.30
-    "@terra-money/terra.js": ^3.0.11
+    "@terra-money/terra.js": ^3.1.6
     "@terra-money/wallet-provider": ^3.6.5
     "@tsconfig/svelte": ^2.0.1
     buffer: ^6.0.3
@@ -16548,7 +16560,7 @@ resolve@^2.0.0-next.3:
   version: 0.0.0-use.local
   resolution: "vite-template@workspace:templates/vite"
   dependencies:
-    "@terra-money/terra.js": ^3.0.11
+    "@terra-money/terra.js": ^3.1.6
     "@terra-money/wallet-provider": ^3.6.5
     "@types/node": ^16.11.7
     "@types/react": ^17.0.34
@@ -16818,7 +16830,7 @@ resolve@^2.0.0-next.3:
   version: 0.0.0-use.local
   resolution: "vue-template@workspace:templates/vue"
   dependencies:
-    "@terra-money/terra.js": ^3.0.11
+    "@terra-money/terra.js": ^3.1.6
     "@terra-money/wallet-provider": ^3.6.5
     "@vitejs/plugin-vue": ^2.0.1
     buffer: ^6.0.3
@@ -17528,6 +17540,21 @@ resolve@^2.0.0-next.3:
     utf-8-validate:
       optional: true
   checksum: bd2b437256012af526c69c03d6670a132e7ab0fe5853f3b7092826acea4203fad4ee2a8d0d9bd44834b2b968e747bf34f753ab535f4a3edf40d262da4b1d0805
+  languageName: node
+  linkType: hard
+
+"ws@npm:^7.5.9":
+  version: 7.5.9
+  resolution: "ws@npm:7.5.9"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ^5.0.2
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: c3c100a181b731f40b7f2fddf004aa023f79d64f489706a28bc23ff88e87f6a64b3c6651fbec3a84a53960b75159574d7a7385709847a62ddb7ad6af76f49138
   languageName: node
   linkType: hard
 
