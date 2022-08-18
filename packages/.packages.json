@@ -1,11 +1,11 @@
 {
   "$schema": "https://rocket-hangar.github.io/rocket-punch/schemas/packages.json",
   "@terra-money/use-wallet": {
-    "version": "3.10.0-alpha.1",
+    "version": "3.11.0",
     "tag": "latest"
   },
   "@terra-money/*": {
-    "version": "3.10.0-alpha.1",
+    "version": "3.11.0",
     "tag": "latest"
   }
 }

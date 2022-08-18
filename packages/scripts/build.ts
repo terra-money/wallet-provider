@@ -30,19 +30,19 @@ build({
       delete dependencies['react-router-dom'];
       peerDependencies['react-router-dom'] = '>=5.0.0';
     }
-    
+
     if ('styled-components' in dependencies) {
       delete dependencies['styled-components'];
       peerDependencies['styled-components'] = '>=5.0.0';
     }
-    
+
     if ('rxjs' in dependencies) {
       dependencies['rxjs'] = '^7.0.0';
     }
-    
+
     if ('@terra-money/terra.js' in dependencies) {
       delete dependencies['@terra-money/terra.js'];
-      peerDependencies['@terra-money/terra.js'] = '^3.0.0';
+      peerDependencies['@terra-money/terra.js'] = '^3.1.6';
     }
 
     //switch (packageName) {
