@@ -1,4 +1,4 @@
-import { CreateTxOptions } from '@terra-money/terra.js';
+import { ExtensionOptions } from '@terra-money/terra.js';
 import Connector from '@walletconnect/core';
 import * as cryptoLib from '@walletconnect/iso-crypto';
 import {
@@ -48,7 +48,7 @@ export interface WalletConnectControllerOptions {
 export interface WalletConnectController {
   session: () => Observable<WalletConnectSession>;
   getLatestSession: () => WalletConnectSession;
-  post: (tx: CreateTxOptions) => Promise<WalletConnectTxResult>;
+  post: (tx: ExtensionOptions) => Promise<WalletConnectTxResult>;
   disconnect: () => void;
 }
 
@@ -232,7 +232,7 @@ export function connect(
    * @throws { WalletConnectTimeout }
    * @throws { WalletConnectTxUnspecifiedError }
    */
-  function post(tx: CreateTxOptions): Promise<WalletConnectTxResult> {
+  function post(tx: ExtensionOptions): Promise<WalletConnectTxResult> {
     if (!connector || !connector.connected) {
       throw new Error(`WalletConnect is not connected!`);
     }
@@ -240,8 +240,8 @@ export function connect(
     const id = Date.now();
 
     const serializedTxOptions = {
-      msgs: tx.msgs.map((msg) => msg.toJSON()),
-      fee: tx.fee?.toJSON(),
+      msgs: tx.msgs.map((msg) => msg.toJSON(tx.isClassic)),
+      fee: tx.fee?.toJSON(tx.isClassic),
       memo: tx.memo,
       gas: tx.gas,
       gasPrices: tx.gasPrices?.toString(),

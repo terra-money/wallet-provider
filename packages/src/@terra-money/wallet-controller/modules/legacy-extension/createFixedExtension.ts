@@ -5,7 +5,7 @@ import {
   WebExtensionTxUnspecifiedError,
   WebExtensionUserDenied,
 } from '@terra-money/web-extension-interface';
-import { CreateTxOptions, Extension, Tx } from '@terra-money/terra.js';
+import { ExtensionOptions, Extension, Tx } from '@terra-money/terra.js';
 
 type ConnectResponse = { address?: string };
 type PostResponse = {
@@ -34,8 +34,8 @@ type SignBytesResponse = {
 type InfoResponse = NetworkInfo;
 
 export interface FixedExtension {
-  post: (data: CreateTxOptions) => Promise<PostResponse>;
-  sign: (data: CreateTxOptions) => Promise<SignResponse>;
+  post: (data: ExtensionOptions) => Promise<PostResponse>;
+  sign: (data: ExtensionOptions) => Promise<SignResponse>;
   signBytes: (bytes: Buffer) => Promise<SignBytesResponse>;
   info: () => Promise<InfoResponse>;
   connect: () => Promise<ConnectResponse>;
