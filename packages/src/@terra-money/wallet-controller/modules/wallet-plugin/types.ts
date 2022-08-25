@@ -16,6 +16,7 @@ export interface WalletPluginSession {
   terraAddress: string | null;
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
+  getMetadata: () => { [key: string]: any };
 
   post: (txn: CreateTxOptions) => Promise<TxResult>;
 }

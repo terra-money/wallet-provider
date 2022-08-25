@@ -85,6 +85,7 @@ export interface WalletInfo {
   connectType: ConnectType;
   terraAddress: string;
   design?: string;
+  metadata?: { [key: string]: any };
 }
 
 export type WalletStates =
