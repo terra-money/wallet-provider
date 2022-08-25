@@ -983,6 +983,7 @@ export class WalletController {
         {
           connectType: ConnectType.PLUGINS,
           terraAddress: session.terraAddress || 'not created',
+          metadata: session.getMetadata && session.getMetadata(),
         },
       ],
       supportFeatures: WALLETCONNECT_SUPPORT_FEATURES,
