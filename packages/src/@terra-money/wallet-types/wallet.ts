@@ -1,4 +1,4 @@
-import { AccAddress, CreateTxOptions } from '@terra-money/terra.js';
+import { AccAddress, ExtensionOptions } from '@terra-money/terra.js';
 import {
   Connection,
   ConnectType,
@@ -19,8 +19,8 @@ export interface ConnectedWallet {
   /** terraAddress is same as walletAddress */
   terraAddress: HumanAddr;
   design?: string;
-  post: (tx: CreateTxOptions) => Promise<TxResult>;
-  sign: (tx: CreateTxOptions) => Promise<SignResult>;
+  post: (tx: ExtensionOptions) => Promise<TxResult>;
+  sign: (tx: ExtensionOptions) => Promise<SignResult>;
   signBytes: (bytes: Buffer) => Promise<SignBytesResult>;
   availablePost: boolean;
   availableSign: boolean;
@@ -34,8 +34,8 @@ interface CreateConnectedWalletParams {
   network: NetworkInfo;
   wallets: WalletInfo[];
   connection: Connection | undefined;
-  post: (tx: CreateTxOptions, terraAddress?: string) => Promise<TxResult>;
-  sign: (tx: CreateTxOptions, terraAddress?: string) => Promise<SignResult>;
+  post: (tx: ExtensionOptions, terraAddress?: string) => Promise<TxResult>;
+  sign: (tx: ExtensionOptions, terraAddress?: string) => Promise<SignResult>;
   signBytes: (bytes: Buffer, terraAddress?: string) => Promise<SignBytesResult>;
   supportFeatures: Set<
     'post' | 'sign' | 'sign-bytes' | 'cw20-token' | 'network'
@@ -66,10 +66,10 @@ export function createConnectedWallet({
         terraAddress: terraAddress as HumanAddr,
         walletAddress: terraAddress as HumanAddr,
         design,
-        post: (tx: CreateTxOptions) => {
+        post: (tx: ExtensionOptions) => {
           return post(tx, terraAddress);
         },
-        sign: (tx: CreateTxOptions) => {
+        sign: (tx: ExtensionOptions) => {
           return sign(tx, terraAddress);
         },
         signBytes: (bytes: Buffer) => {
