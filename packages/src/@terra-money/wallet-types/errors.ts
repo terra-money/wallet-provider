@@ -90,3 +90,18 @@ export class TxUnspecifiedError extends Error {
     )}`;
   };
 }
+
+export class SignBytesUnspecifiedError extends Error {
+  constructor(public readonly bytes: Buffer, message: string) {
+    super(message);
+    this.name = 'SignBytesUnspecifiedError';
+  }
+
+  toString = () => {
+    return `[${this.name} message="${this.message}"]\n${JSON.stringify(
+      this.bytes,
+      null,
+      2,
+    )}`;
+  };
+}

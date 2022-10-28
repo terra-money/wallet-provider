@@ -14,6 +14,7 @@ import {
   WalletConnectTxFailed,
   WalletConnectTxUnspecifiedError,
   WalletConnectUserDenied,
+  WalletConnectSignBytesUnspecifiedError
 } from './errors';
 import SocketTransport from './impl/socket-transport';
 import { TerraWalletconnectQrcodeModal } from './modal';
@@ -22,6 +23,9 @@ import {
   WalletConnectSessionStatus,
   WalletConnectTxResult,
 } from './types';
+import {
+  WebExtensionSignBytesPayload,
+} from '@terra-money/web-extension-interface';
 
 export interface WalletConnectControllerOptions {
   /**
@@ -49,6 +53,7 @@ export interface WalletConnectController {
   session: () => Observable<WalletConnectSession>;
   getLatestSession: () => WalletConnectSession;
   post: (tx: ExtensionOptions) => Promise<WalletConnectTxResult>;
+  signBytes: (bytes: Buffer) => Promise<WebExtensionSignBytesPayload>;
   disconnect: () => void;
 }
 
@@ -310,6 +315,66 @@ export function connect(
       });
   }
 
+  /**
+   * signBytes transaction
+   *
+   * @param bytes: Buffer
+   * @throws { WalletConnectUserDenied }
+   * @throws { WalletConnectTimeout }
+   * @throws { WalletConnectSignBytesUnspecifiedError }
+   */
+  function signBytes(bytes: Buffer): Promise<WebExtensionSignBytesPayload> {
+    if (!connector || !connector.connected) {
+      throw new Error(`WalletConnect is not connected!`);
+    }
+
+    const id = Date.now();
+
+    if (isMobile()) {
+      const payload = btoa(
+        JSON.stringify({
+          id,
+          handshakeTopic: connector.handshakeTopic,
+          params: bytes,
+        }),
+      );
+
+      window.location.href = `terrastation://walletconnect_confirm/?payload=${payload}`;
+    }
+
+    return connector
+      .sendCustomRequest({
+        id,
+        method: 'signBytes',
+        params: [bytes],
+      })
+      .catch((error) => {
+        let throwError = error;
+
+        try {
+          const { code, message } = JSON.parse(
+            error.message,
+          );
+          
+          switch (code) {
+            case 1:
+              throwError = new WalletConnectUserDenied();
+              break;
+            case 4:
+              throwError = new WalletConnectTimeout(message);
+              break;
+            case 99:
+              throwError = new WalletConnectSignBytesUnspecifiedError(message);
+              break;
+          }
+        } catch {
+          throwError = new WalletConnectSignBytesUnspecifiedError(error.message);
+        }
+
+        throw throwError;
+      });
+  }
+
   // ---------------------------------------------
   // return
   // ---------------------------------------------
@@ -317,6 +382,7 @@ export function connect(
     session,
     getLatestSession,
     post,
+    signBytes,
     disconnect,
   };
 }
