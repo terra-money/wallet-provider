@@ -262,12 +262,13 @@ export function connect(
         JSON.stringify({
           id,
           handshakeTopic: connector.handshakeTopic,
+          method: 'post',
           params: serializedTxOptions,
         }),
       );
 
       // FIXME changed walletconnect confirm schema
-      window.location.href = `terrastation://walletconnect_confirm/?payload=${payload}`;
+      window.location.href = `terrastation://walletconnect_confirm/?action=walletconnect_confirm&payload=${payload}`;
       //window.location.href = `terrastation://wallet_connect_confirm?id=${id}&handshakeTopic=${
       //  connector.handshakeTopic
       //}&params=${JSON.stringify([serializedTxOptions])}`;
@@ -335,11 +336,12 @@ export function connect(
         JSON.stringify({
           id,
           handshakeTopic: connector.handshakeTopic,
+          method: 'signBytes',
           params: bytes,
         }),
       );
 
-      window.location.href = `terrastation://walletconnect_confirm/?payload=${payload}`;
+      window.location.href = `terrastation://walletconnect_confirm/?action=walletconnect_confirm&payload=${payload}`;
     }
 
     return connector
@@ -355,7 +357,7 @@ export function connect(
           const { code, message } = JSON.parse(
             error.message,
           );
-          
+
           switch (code) {
             case 1:
               throwError = new WalletConnectUserDenied();
