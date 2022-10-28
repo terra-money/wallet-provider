@@ -3,6 +3,7 @@ import {
   ExtensionOptions,
   LCDClient,
   PublicKey,
+  SimplePublicKey,
   Tx,
 } from '@terra-money/terra.js';
 import {
@@ -39,7 +40,10 @@ import {
   mapExtensionSignBytesError,
   mapExtensionTxError,
 } from './exception/mapExtensionTxError';
-import { mapWalletConnectError } from './exception/mapWalletConnectError';
+import {
+  mapWalletConnectError,
+  mapWalletConnectSignBytesError
+} from './exception/mapWalletConnectError';
 import { selectConnection } from './modules/connect-modal';
 import {
   ExtensionRouter,
@@ -178,7 +182,7 @@ const CONNECTIONS = {
 const DEFAULT_WAITING_CHROME_EXTENSION_INSTALL_CHECK = 1000 * 3;
 
 const WALLETCONNECT_SUPPORT_FEATURES = new Set<TerraWebExtensionFeatures>([
-  'post',
+  'post', 'sign-bytes'
 ]);
 
 const EMPTY_SUPPORT_FEATURES = new Set<TerraWebExtensionFeatures>();
@@ -733,9 +737,36 @@ export class WalletController {
           });
       });
     }
+    // ---------------------------------------------
+    // wallet connect
+    // ---------------------------------------------
+    else if (this.walletConnect) {
+      return this.walletConnect
+        .signBytes(bytes)
+        .then(
+          (result) => {
+            const key = new SimplePublicKey(String(result.public_key)).toData()
+            return {
+              result: {
+                recid: result.recid,
+                signature: Uint8Array.from(
+                  Buffer.from(result.signature, 'base64'),
+                ),
+                public_key: key
+                  ? PublicKey.fromData(key)
+                  : undefined,
+              },
+              success: true,
+            }
+          }
+        )
+        .catch((error) => {
+          throw mapWalletConnectSignBytesError(bytes, error);
+        });
+    } else {
+      throw new Error(`There are no connections that can be signing bytes!`);
+    }
 
-    throw new Error(`signBytes() method only available on extension`);
-    // TODO implements signBytes() to other connect types
   };
 
   /**
