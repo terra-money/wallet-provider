@@ -10,6 +10,7 @@ Use templates to get your projects started quickly
 
 If you want to test features quickly, you can simply run them on CodeSandbox without having to download Templates.
 
+- [Wallet Provider + Create-React-App-18](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/create-react-app-18)
 - [Wallet Provider + Create-React-App](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/create-react-app)
 - [Wallet Provider + Next.js](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/next)
 - [Wallet Provider + Vite.js](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/vite)
@@ -18,6 +19,17 @@ If you want to test features quickly, you can simply run them on CodeSandbox wit
 - [Wallet Controller + Svelte](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/svelte)
 
 And if you need to start your project from local computer, use the templates below. 👇
+
+### Create React App (React 18)
+
+```sh
+npx terra-templates get wallet-provider:create-react-app-18 your-app-name
+cd your-app-name
+yarn install
+yarn start
+```
+
+<https://github.com/terra-money/wallet-provider/tree/main/templates/create-react-app-18>
 
 ### Create React App
 
