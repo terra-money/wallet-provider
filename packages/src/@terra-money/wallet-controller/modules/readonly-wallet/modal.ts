@@ -1,5 +1,5 @@
 import { NetworkInfo } from '@terra-money/wallet-types';
-import { AccAddress } from '@terra-money/terra.js';
+import { AccAddress } from '@terra-money/feather.js';
 import { modalStyle } from './modal.style';
 import { ReadonlyWalletSession } from './types';
 
@@ -39,7 +39,8 @@ function createModalElement({
 }: Options & {
   onComplete: (session: ReadonlyWalletSession | null) => void;
 }): HTMLElement {
-  let chainID: string = networks[0].chainID;
+  // support only pico and phoenix
+  let chainID: string = Object.keys(networks[0]).find(chainID => chainID.startsWith('pisco-') || chainID.startsWith('phoenix-')) ?? '';
   let address: string = '';
 
   // ---------------------------------------------
@@ -88,15 +89,13 @@ function createModalElement({
 
   for (const itemNetwork of networks) {
     const option = document.createElement('option');
-    option.setAttribute('value', itemNetwork.chainID);
+    option.setAttribute('value', chainID);
 
-    if (chainID === itemNetwork.chainID) {
+    if (itemNetwork[chainID]) {
       option.setAttribute('selected', '');
     }
 
-    option.textContent = `${itemNetwork.name[0].toUpperCase()}${itemNetwork.name.slice(
-      1,
-    )} - ${itemNetwork.chainID}`;
+    option.textContent = `${itemNetwork.chainID}`;
 
     select.appendChild(option);
   }
@@ -143,9 +142,9 @@ function createModalElement({
     onComplete(null);
   });
 
-  select.addEventListener('change', (event) => {
-    chainID = (event.target as HTMLSelectElement).value;
-  });
+  /*select.addEventListener('change', (event) => {
+    network = (event.target as HTMLSelectElement).value;
+  });*/
 
   input.addEventListener('input', (event) => {
     address = (event.target as HTMLInputElement).value;
@@ -157,7 +156,7 @@ function createModalElement({
 
   button.addEventListener('click', () => {
     const network = networks.find(
-      (itemNetwork) => itemNetwork.chainID === chainID,
+      (itemNetwork) => !!itemNetwork[chainID],
     );
 
     if (!network) {

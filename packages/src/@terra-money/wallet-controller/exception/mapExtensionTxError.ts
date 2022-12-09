@@ -12,7 +12,7 @@ import {
   WebExtensionTxUnspecifiedError,
   WebExtensionUserDenied,
 } from '@terra-money/web-extension-interface';
-import { CreateTxOptions } from '@terra-money/terra.js';
+import { CreateTxOptions } from '@terra-money/feather.js';
 import { isError } from './isError';
 
 export function mapExtensionTxError(

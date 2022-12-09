@@ -5,9 +5,9 @@ import {
   WebExtensionTxUnspecifiedError,
   WebExtensionUserDenied,
 } from '@terra-money/web-extension-interface';
-import { ExtensionOptions, Extension, Tx } from '@terra-money/terra.js';
+import { ExtensionOptions, Extension, Tx, AccAddress } from '@terra-money/feather.js';
 
-type ConnectResponse = { address?: string };
+type ConnectResponse = { addresses?: Record<string, AccAddress> };
 type PostResponse = {
   payload: {
     result: {
@@ -192,7 +192,7 @@ export function createFixedExtension(identifier: string): FixedExtension {
     }
   });
 
-  extension.on('onInfo', (result) => {
+  extension.on('onInterchainInfo', (result) => {
     if (!result) return;
     const { error, ...payload } = result;
 

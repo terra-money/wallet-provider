@@ -1,4 +1,4 @@
-import { AccAddress, CreateTxOptions } from '@terra-money/terra.js';
+import { AccAddress, CreateTxOptions } from '@terra-money/feather.js';
 import {
   Connection,
   ConnectType,
@@ -11,13 +11,12 @@ import {
   WalletStatus,
 } from './types';
 
-type HumanAddr = string & { __type: 'HumanAddr' };
-
 export interface ConnectedWallet {
   network: NetworkInfo;
-  walletAddress: HumanAddr;
+  addresses: Record<string, AccAddress>;
+  //walletAddress: AccAddress;
   /** terraAddress is same as walletAddress */
-  terraAddress: HumanAddr;
+  //terraAddress: AccAddress;
   design?: string;
   post: (tx: CreateTxOptions) => Promise<TxResult>;
   sign: (tx: CreateTxOptions) => Promise<SignResult>;
@@ -56,24 +55,24 @@ export function createConnectedWallet({
     if (
       status === WalletStatus.WALLET_CONNECTED &&
       wallets.length > 0 &&
-      AccAddress.validate(wallets[0].terraAddress) &&
+      // TODO: validate addresses
+      //AccAddress.validate(wallets[0].terraAddress) &&
       !!connection
     ) {
-      const { terraAddress, connectType, design } = wallets[0];
+      const { addresses, connectType, design } = wallets[0];
 
       return {
         network,
-        terraAddress: terraAddress as HumanAddr,
-        walletAddress: terraAddress as HumanAddr,
+        addresses,
         design,
         post: (tx: CreateTxOptions) => {
-          return post(tx, terraAddress);
+          return post(tx, addresses[tx.chainID]);
         },
         sign: (tx: CreateTxOptions) => {
-          return sign(tx, terraAddress);
+          return sign(tx, addresses[tx.chainID]);
         },
         signBytes: (bytes: Buffer) => {
-          return signBytes(bytes, terraAddress);
+          return signBytes(bytes);
         },
         availablePost: supportFeatures.has('post'),
         availableSign: supportFeatures.has('sign'),

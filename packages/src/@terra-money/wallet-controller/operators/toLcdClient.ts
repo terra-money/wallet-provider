@@ -1,19 +1,15 @@
 import {
   createLCDClient,
-  WalletLCDClientConfig,
   WalletStates,
 } from '@terra-money/wallet-types';
-import { LCDClient } from '@terra-money/terra.js';
+import { LCDClient, LCDClientConfig } from '@terra-money/feather.js';
 import { OperatorFunction } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 export function toLcdClient(
-  lcdClientConfig?: WalletLCDClientConfig,
+  lcdClientConfig: Record<string, LCDClientConfig>,
 ): OperatorFunction<WalletStates, LCDClient> {
   return map<WalletStates, LCDClient>((states) => {
-    return createLCDClient({
-      lcdClientConfig,
-      network: states.network,
-    });
+    return createLCDClient(lcdClientConfig);
   });
 }

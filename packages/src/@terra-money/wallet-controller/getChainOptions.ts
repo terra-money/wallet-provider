@@ -1,14 +1,7 @@
 import { NetworkInfo } from '@terra-money/wallet-types';
 import { WalletControllerOptions } from './controller';
 
-interface ChainInfo {
-  name: string;
-  chainID: string;
-  lcd: string;
-  walletconnectID?: number;
-  api?: string;
-  mantle?: string;
-}
+type ChainInfo = NetworkInfo
 
 export type WalletControllerChainOptions = Pick<
   WalletControllerOptions,
@@ -16,50 +9,30 @@ export type WalletControllerChainOptions = Pick<
 >;
 
 const FALLBACK_MAINNET = {
-  name: 'mainnet',
-  chainID: 'phoenix-1',
-  lcd: 'https://phoenix-lcd.terra.dev',
+  'phoenix-1': {
+    chainID: 'phoenix-1',
+    lcd: 'https://phoenix-lcd.terra.dev',
+    gasAdjustment: 1.75,
+    gasPrices: { uluna: 0.015 },
+    prefix: 'terra',
+  },
 };
 
 const FALLBACK: WalletControllerChainOptions = {
   defaultNetwork: FALLBACK_MAINNET,
-  walletConnectChainIds: {
-    1: FALLBACK_MAINNET,
-    0: {
-      name: 'testnet',
-      chainID: 'pisco-1',
-      lcd: 'https://pisco-lcd.terra.dev',
-    },
-    2: {
-      name: 'classic',
-      chainID: 'columbus-5',
-      lcd: 'https://columbus-lcd.terra.dev',
-    },
-  },
+  // TODO: when wallet connect is ready
+  walletConnectChainIds: {},
 };
 
 let cache: WalletControllerChainOptions;
 
 export async function getChainOptions(): Promise<WalletControllerChainOptions> {
-  return fetch('https://assets.terra.money/chains.json')
+  return fetch('https://assets.terra.money/station/chains.json')
     .then((res) => res.json())
     .then((data: Record<string, ChainInfo>) => {
-      const chains = Object.values(data);
-      const walletConnectChainIds = chains.reduce((result, network) => {
-        if (typeof network.walletconnectID === 'number') {
-          result[network.walletconnectID] = network;
-        } else if (!result[1] && network.name === 'mainnet') {
-          result[1] = network;
-        } else if (!result[0] && network.name === 'testnet') {
-          result[0] = network;
-        } else if (!result[2] && network.name === 'classic') {
-          result[2] = network;
-        }
-        return result;
-      }, {} as Record<number, NetworkInfo>);
       const chainOptions: WalletControllerChainOptions = {
-        defaultNetwork: walletConnectChainIds[1],
-        walletConnectChainIds,
+        defaultNetwork: data.mainnet,
+        walletConnectChainIds: {},
       };
       cache = chainOptions;
       return chainOptions;

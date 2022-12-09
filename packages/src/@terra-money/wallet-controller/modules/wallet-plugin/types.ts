@@ -1,4 +1,4 @@
-import { CreateTxOptions } from '@terra-money/terra.js';
+import { CreateTxOptions } from '@terra-money/feather.js';
 import { NetworkInfo, TxResult } from '@terra-money/wallet-types';
 
 export interface WalletPlugin {
@@ -13,7 +13,7 @@ export interface WalletPlugin {
 
 export interface WalletPluginSession {
   network: NetworkInfo | null;
-  terraAddress: string | null;
+  addresses: Record<string, string> | null;
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
   getMetadata?: () => { [key: string]: any };

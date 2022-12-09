@@ -4,7 +4,7 @@ import {
   Msg,
   PublicKey,
   Tx,
-} from '@terra-money/terra.js';
+} from '@terra-money/feather.js';
 import {
   WebExtensionCreateTxFailed,
   WebExtensionTxFailed,
@@ -97,6 +97,7 @@ export function serializeTx(tx: ExtensionOptions): SerializedCreateTxOptions {
     gasPrices: tx.gasPrices?.toString(),
     gasAdjustment: tx.gasAdjustment?.toString(),
     feeDenoms: tx.feeDenoms,
+    chainID: tx.chainID,
   };
 }
 

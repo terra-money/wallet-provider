@@ -1,25 +1,6 @@
-import { CreateTxOptions, PublicKey, Tx } from '@terra-money/terra.js';
+import { AccAddress, CreateTxOptions, LCDClientConfig, PublicKey, Tx } from '@terra-money/feather.js';
 
-export interface NetworkInfo {
-  /** Network name (e.g. mainnet) */
-  name: string;
-
-  /** chainID (e.g. columbus-5) */
-  chainID: string;
-
-  /** lcd endpoint (e.g. https://lcd.terra.dev) */
-  lcd: string;
-
-  /** api endpoint (e.g. https://columbus-api.terra.dev) */
-  api?: string;
-
-  /** mantle endpoint (e.g. https://columbus-mantle.terra.dev) */
-  mantle?: string;
-
-  /** wallet connect ID (e.g. 2) */
-  walletconnectID: number;
-}
-
+export type NetworkInfo = Record<string, LCDClientConfig>
 export interface TxResult extends CreateTxOptions {
   result: {
     height: number;
@@ -83,27 +64,28 @@ export interface Installation {
 
 export interface WalletInfo {
   connectType: ConnectType;
-  terraAddress: string;
+  // terraAddress: AccAddress;
+  addresses: Record<string, AccAddress>;
   design?: string;
   metadata?: { [key: string]: any };
 }
 
 export type WalletStates =
   | {
-      status: WalletStatus.INITIALIZING;
-      network: NetworkInfo;
-    }
+    status: WalletStatus.INITIALIZING;
+    network: NetworkInfo;
+  }
   | {
-      status: WalletStatus.WALLET_NOT_CONNECTED;
-      network: NetworkInfo;
-    }
+    status: WalletStatus.WALLET_NOT_CONNECTED;
+    network: NetworkInfo;
+  }
   | {
-      status: WalletStatus.WALLET_CONNECTED;
-      connection: Connection;
-      network: NetworkInfo;
-      wallets: WalletInfo[];
-      /** This type is same as `import type { TerraWebExtensionFeatures } from '@terra-money/web-extension-interface'` */
-      supportFeatures: Set<
-        'post' | 'sign' | 'sign-bytes' | 'cw20-token' | 'network'
-      >;
-    };
+    status: WalletStatus.WALLET_CONNECTED;
+    connection: Connection;
+    network: NetworkInfo;
+    wallets: WalletInfo[];
+    /** This type is same as `import type { TerraWebExtensionFeatures } from '@terra-money/web-extension-interface'` */
+    supportFeatures: Set<
+      'post' | 'sign' | 'sign-bytes' | 'cw20-token' | 'network'
+    >;
+  };

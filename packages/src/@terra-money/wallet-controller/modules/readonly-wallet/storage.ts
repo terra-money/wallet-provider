@@ -1,4 +1,4 @@
-import { AccAddress } from '@terra-money/terra.js';
+import { AccAddress } from '@terra-money/feather.js';
 import { ReadonlyWalletSession } from './types';
 
 const STORAGE_KEY = '__terra-readonly-wallet-storage-key__';

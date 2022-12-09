@@ -1,17 +1,14 @@
 import {
   createLCDClient,
-  WalletLCDClientConfig,
 } from '@terra-money/wallet-types';
-import { LCDClient } from '@terra-money/terra.js';
+import { LCDClient } from '@terra-money/feather.js';
 import { useMemo } from 'react';
 import { useWallet } from './useWallet';
 
-export function useLCDClient(
-  lcdClientConfig?: WalletLCDClientConfig,
-): LCDClient {
+export function useLCDClient(): LCDClient {
   const { network } = useWallet();
 
   return useMemo<LCDClient>(() => {
-    return createLCDClient({ lcdClientConfig, network });
-  }, [lcdClientConfig, network]);
+    return createLCDClient(network);
+  }, [network]);
 }

@@ -9,7 +9,7 @@ import {
   WebExtensionStatus,
   WebExtensionTxResult,
 } from '@terra-money/web-extension-interface';
-import { CreateTxOptions } from '@terra-money/terra.js';
+import { CreateTxOptions } from '@terra-money/feather.js';
 import { BehaviorSubject, Subscribable } from 'rxjs';
 import { LegacyExtensionConnector } from '../legacy-extension';
 import { selectModal } from './modal';
@@ -166,7 +166,7 @@ export class ExtensionRouter {
 
   post = (
     tx: CreateTxOptions,
-    terraAddress?: string,
+    address?: string,
   ): Subscribable<WebExtensionTxResult<WebExtensionPostPayload>> => {
     if (!this._connector) {
       throw new Error('[ExtensionRouter] No connector');
@@ -179,14 +179,14 @@ export class ExtensionRouter {
     }
 
     return this._connector.post(
-      terraAddress ?? latestStates.wallet.terraAddress,
+      address ?? latestStates.wallet.addresses[tx.chainID],
       tx,
     );
   };
 
   sign = (
     tx: CreateTxOptions,
-    terraAddress?: string,
+    address?: string,
   ): Subscribable<WebExtensionTxResult<WebExtensionSignPayload>> => {
     if (!this._connector) {
       throw new Error('[ExtensionRouter] No connector');
@@ -199,7 +199,7 @@ export class ExtensionRouter {
     }
 
     return this._connector.sign(
-      terraAddress ?? latestStates.wallet.terraAddress,
+      address ?? latestStates.wallet.addresses[tx.chainID],
       tx,
     );
   };
@@ -219,7 +219,6 @@ export class ExtensionRouter {
     }
 
     return this._connector.signBytes(
-      terraAddress ?? latestStates.wallet.terraAddress,
       bytes,
     );
   };
@@ -290,8 +289,8 @@ export class ExtensionRouter {
       extensionInfo.connector
         ? Promise.resolve(extensionInfo.connector())
         : Promise.resolve(
-            new LegacyExtensionConnector(extensionInfo.identifier),
-          );
+          new LegacyExtensionConnector(extensionInfo.identifier),
+        );
 
     connectorPromise.then((connector) => {
       connector.open(this.options.hostWindow ?? window, {
@@ -319,10 +318,9 @@ export class ExtensionRouter {
               network: nextStates.network,
               wallet: nextStates.focusedWalletAddress
                 ? nextStates.wallets.find(
-                    (itemWallet) =>
-                      itemWallet.terraAddress ===
-                      nextStates.focusedWalletAddress,
-                  ) ?? nextStates.wallets[0]
+                  (itemWallet) =>
+                    Object.values(itemWallet.addresses).includes(nextStates.focusedWalletAddress ?? "")
+                ) ?? nextStates.wallets[0]
                 : nextStates.wallets[0],
               connectorType:
                 connector instanceof LegacyExtensionConnector
@@ -336,7 +334,7 @@ export class ExtensionRouter {
         error: (error) => {
           console.error(error);
         },
-        complete: () => {},
+        complete: () => { },
       });
 
       this._connector = connector;

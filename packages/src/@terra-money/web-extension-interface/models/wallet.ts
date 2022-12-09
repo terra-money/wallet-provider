@@ -12,7 +12,7 @@ export interface WebExtensionWalletInfo {
   /**
    * Wallet address
    */
-  terraAddress: string;
+  addresses: Record<string, string>;
 
   /**
    * Wallet design

@@ -10,7 +10,7 @@ import {
   WebExtensionTxResult,
   WebExtensionTxStatus,
 } from '@terra-money/web-extension-interface';
-import { AccAddress, CreateTxOptions } from '@terra-money/terra.js';
+import { AccAddress, CreateTxOptions } from '@terra-money/feather.js';
 import { BehaviorSubject, Observer, Subscribable, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { createFixedExtension, FixedExtension } from './createFixedExtension';
@@ -66,7 +66,7 @@ export class LegacyExtensionConnector implements TerraWebExtensionConnector {
   };
 
   post = (
-    terraAddress: string,
+    address: AccAddress,
     tx: CreateTxOptions,
   ): Subscribable<WebExtensionTxResult<WebExtensionPostPayload>> => {
     const subject = new BehaviorSubject<
@@ -90,7 +90,7 @@ export class LegacyExtensionConnector implements TerraWebExtensionConnector {
   };
 
   sign = (
-    terraAddress: string,
+    address: AccAddress,
     tx: CreateTxOptions,
   ): Subscribable<WebExtensionTxResult<WebExtensionSignPayload>> => {
     const subject = new BehaviorSubject<
@@ -114,7 +114,6 @@ export class LegacyExtensionConnector implements TerraWebExtensionConnector {
   };
 
   signBytes = (
-    terraAddress: string,
     bytes: Buffer,
   ): Subscribable<WebExtensionTxResult<WebExtensionSignBytesPayload>> => {
     const subject = new BehaviorSubject<
@@ -172,17 +171,17 @@ export class LegacyExtensionConnector implements TerraWebExtensionConnector {
     }
 
     const infoResult: NetworkInfo = await this._extension.info();
-    const connectResult: { address?: string } = await this._extension.connect();
+    const connectResult: { addresses?: Record<string, AccAddress> } = await this._extension.connect();
 
-    if (connectResult.address && AccAddress.validate(connectResult.address)) {
+    if (connectResult.addresses && !Object.values(connectResult.addresses).map(address => AccAddress.validate(address)).some(isValid => !isValid)) {
       this._states.next({
         type: WebExtensionStatus.READY,
         network: infoResult,
-        focusedWalletAddress: connectResult.address,
+        focusedWalletAddress: connectResult.addresses[Object.values(infoResult)[0].chainID],
         wallets: [
           {
             name: '',
-            terraAddress: connectResult.address,
+            addresses: connectResult.addresses,
             design: 'terra',
           },
         ],

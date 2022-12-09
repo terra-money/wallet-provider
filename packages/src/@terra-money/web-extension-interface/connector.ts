@@ -1,4 +1,4 @@
-import type { CreateTxOptions } from '@terra-money/terra.js';
+import type { CreateTxOptions } from '@terra-money/feather.js';
 import type { Observer, Subscribable } from 'rxjs';
 import type { WebExtensionNetworkInfo } from './models/network';
 import type { WebExtensionStates } from './models/states';
@@ -37,17 +37,16 @@ export interface TerraWebExtensionConnector {
   refetchStates: () => void;
 
   post: (
-    terraAddress: string,
+    address: string,
     tx: CreateTxOptions,
   ) => Subscribable<WebExtensionTxResult<WebExtensionPostPayload>>;
 
   sign: (
-    terraAddress: string,
+    address: string,
     tx: CreateTxOptions,
   ) => Subscribable<WebExtensionTxResult<WebExtensionSignPayload>>;
 
   signBytes: (
-    terraAddress: string,
     bytes: Buffer,
   ) => Subscribable<WebExtensionTxResult<WebExtensionSignBytesPayload>>;
 

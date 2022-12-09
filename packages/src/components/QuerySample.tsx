@@ -11,9 +11,14 @@ export function QuerySample() {
     if (connectedWallet) {
       // FIXME (terra.js 2.x → terra.js 3.x) the return data of LCDClient.bank.balance() is changed
       //lcd.bank.balance(connectedWallet.walletAddress).then((coins) => {
-      lcd.bank.balance(connectedWallet.walletAddress).then(([coins]) => {
-        setBank(coins.toString());
-      });
+      lcd.bank
+        .balance(
+          connectedWallet.addresses['pisco-1'] ??
+            connectedWallet.addresses['phoenix-1'],
+        )
+        .then(([coins]) => {
+          setBank(coins.toString());
+        });
     } else {
       setBank(null);
     }

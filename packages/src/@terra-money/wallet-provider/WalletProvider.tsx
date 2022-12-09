@@ -65,10 +65,10 @@ export function WalletProvider({
     Installation[]
   >(() => []);
 
-  const [states, setStates] = useState<WalletStates>(() => ({
+  const [states, setStates] = useState<WalletStates>({
     status: WalletStatus.INITIALIZING,
     network: defaultNetwork,
-  }));
+  });
 
   useEffect(() => {
     const availableConnectTypesSubscription = controller

@@ -63,7 +63,9 @@ export function SignBytesSample() {
         !txError &&
         !verifyResult && (
           <button onClick={() => send()}>
-            Sign bytes with {connectedWallet.walletAddress}
+            Sign bytes with{' '}
+            {connectedWallet.addresses['pisco-1'] ??
+              connectedWallet.addresses['phoenix-1']}
           </button>
         )}
 

@@ -1,4 +1,4 @@
-import { Fee, MsgInstantiateContract } from '@terra-money/terra.js';
+import { Fee, MsgInstantiateContract } from '@terra-money/feather.js';
 import {
   CreateTxFailed,
   Timeout,
@@ -22,10 +22,14 @@ export function PostSample() {
       return;
     }
 
-    if (connectedWallet.network.chainID.startsWith('phoenix')) {
+    /*if (connectedWallet.network.chainID.startsWith('phoenix')) {
       alert(`Please only execute this example on Testnet`);
       return;
-    }
+    }*/
+
+    const address =
+    connectedWallet.addresses['pisco-1'] ??
+    connectedWallet.addresses['phoenix-1'];
 
     setTxResult(null);
     setTxError(null);
@@ -35,13 +39,13 @@ export function PostSample() {
         msgs: [
           // Below sample data is just to test on classic network.
           new MsgInstantiateContract(
-            connectedWallet.walletAddress,
+            address,
             undefined,
             5923,
             {cw721_code_id: 435},
           ),
         ],
-        isClassic: connectedWallet.network.name === 'classic'
+        chainID: 'pisco-1',
       })
       .then((nextTxResult: TxResult) => {
         console.log(nextTxResult);

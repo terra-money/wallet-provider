@@ -1,4 +1,4 @@
-import { ExtensionOptions } from '@terra-money/terra.js';
+import { ExtensionOptions } from '@terra-money/feather.js';
 import Connector from '@walletconnect/core';
 import * as cryptoLib from '@walletconnect/iso-crypto';
 import {
@@ -245,8 +245,8 @@ export function connect(
     const id = Date.now();
 
     const serializedTxOptions = {
-      msgs: tx.msgs.map((msg) => msg.toJSON(tx.isClassic)),
-      fee: tx.fee?.toJSON(tx.isClassic),
+      msgs: tx.msgs.map((msg) => msg.toJSON()),
+      fee: tx.fee?.toJSON(),
       memo: tx.memo,
       gas: tx.gas,
       gasPrices: tx.gasPrices?.toString(),

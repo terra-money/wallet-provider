@@ -1,4 +1,4 @@
-import { Fee, MsgSend } from '@terra-money/terra.js';
+import { Fee, MsgSend } from '@terra-money/feather.js';
 import {
   CreateTxFailed,
   Timeout,
@@ -23,22 +23,27 @@ export function TxSample() {
       return;
     }
 
-    if (connectedWallet.network.chainID.startsWith('columbus')) {
+    /*if (connectedWallet.network.chainID.startsWith('columbus')) {
       alert(`Please only execute this example on Testnet`);
       return;
-    }
+    }*/
 
     setTxResult(null);
     setTxError(null);
+
+    const address =
+      connectedWallet.addresses['pisco-1'] ??
+      connectedWallet.addresses['phoenix-1'];
 
     connectedWallet
       .post({
         fee: new Fee(1000000, '200000uusd'),
         msgs: [
-          new MsgSend(connectedWallet.walletAddress, TEST_TO_ADDRESS, {
+          new MsgSend(address, TEST_TO_ADDRESS, {
             uusd: 1000000,
           }),
         ],
+        chainID: 'pisco-1',
       })
       .then((nextTxResult: TxResult) => {
         console.log(nextTxResult);

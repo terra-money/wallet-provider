@@ -1,4 +1,4 @@
-import { Fee, MsgSend, SyncTxBroadcastResult } from '@terra-money/terra.js';
+import { Fee, MsgSend, SyncTxBroadcastResult } from '@terra-money/feather.js';
 import {
   createLCDClient,
   CreateTxFailed,
@@ -25,14 +25,18 @@ export function SignSample() {
       return;
     }
 
-    if (connectedWallet.network.chainID.startsWith('columbus')) {
+    /*if (connectedWallet.network.chainID.startsWith('columbus')) {
       alert(`Please only execute this example on Testnet`);
       return;
-    }
+    }*/
 
     setSignResult(null);
     setTxResult(null);
     setTxError(null);
+
+    const address =
+      connectedWallet.addresses['pisco-1'] ??
+      connectedWallet.addresses['phoenix-1'];
 
     connectedWallet
       .sign({
@@ -40,10 +44,11 @@ export function SignSample() {
         // FIXME (terra.js 2.x → terra.js 3.x)
         //fee: new StdFee(1000000, '200000uusd'),
         msgs: [
-          new MsgSend(connectedWallet.walletAddress, TEST_TO_ADDRESS, {
+          new MsgSend(address, TEST_TO_ADDRESS, {
             uusd: 1000000,
           }),
         ],
+        chainID: 'pisco-1',
       })
       .then((nextSignResult: SignResult) => {
         setSignResult(nextSignResult);
@@ -62,14 +67,14 @@ export function SignSample() {
         // broadcast
         const tx = nextSignResult.result;
 
-        const lcd = createLCDClient({ network: connectedWallet.network });
+        const lcd = createLCDClient(connectedWallet.network);
 
         // FIXME (terra.js 2.x → terra.js 3.x)
         // TODO remove after a month
         //return lcd.tx.broadcastSync(
         //  new StdTx(stdSignMsg.msgs, stdSignMsg.fee, [sig], stdSignMsg.memo),
         //);
-        return lcd.tx.broadcastSync(tx);
+        return lcd.tx.broadcastSync(tx, 'pisco-1');
       })
       .then((nextTxResult: SyncTxBroadcastResult) => {
         setTxResult(nextTxResult);

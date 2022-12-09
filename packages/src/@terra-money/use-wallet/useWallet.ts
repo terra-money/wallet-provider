@@ -9,7 +9,7 @@ import {
   WalletInfo,
   WalletStatus,
 } from '@terra-money/wallet-types';
-import { ExtensionOptions } from '@terra-money/terra.js';
+import { ExtensionOptions } from '@terra-money/feather.js';
 import { Context, createContext, useContext } from 'react';
 
 export interface Wallet {

@@ -1,3 +1,4 @@
+import { LCDClientConfig } from '@terra-money/feather.js';
 import {
   AccAddress,
   ExtensionOptions,
@@ -5,7 +6,7 @@ import {
   PublicKey,
   SimplePublicKey,
   Tx,
-} from '@terra-money/terra.js';
+} from '@terra-money/feather.js';
 import {
   ConnectedWallet,
   Connection,
@@ -15,7 +16,6 @@ import {
   SignBytesResult,
   SignResult,
   TxResult,
-  WalletLCDClientConfig,
   WalletStates,
   WalletStatus,
 } from '@terra-money/wallet-types';
@@ -240,7 +240,7 @@ export class WalletController {
     // 0. check if extension wallet session is exists
     checkExtensionReady(
       options.waitingChromeExtensionInstallCheck ??
-        DEFAULT_WAITING_CHROME_EXTENSION_INSTALL_CHECK,
+      DEFAULT_WAITING_CHROME_EXTENSION_INSTALL_CHECK,
       this.isChromeExtensionCompatibleBrowser(),
     ).then((ready: boolean) => {
       if (ready) {
@@ -266,7 +266,7 @@ export class WalletController {
           .subscribe((extensionStates) => {
             try {
               subscription.unsubscribe();
-            } catch {}
+            } catch { }
 
             if (
               extensionStates.type === ExtensionRouterStatus.WALLET_CONNECTED &&
@@ -307,7 +307,7 @@ export class WalletController {
     if (
       draftWalletConnect &&
       draftWalletConnect.getLatestSession().status ===
-        WalletConnectSessionStatus.CONNECTED
+      WalletConnectSessionStatus.CONNECTED
     ) {
       this.enableWalletConnect(draftWalletConnect);
     } else if (numSessionCheck === 0) {
@@ -447,7 +447,7 @@ export class WalletController {
 
   /** get lcdClient */
   lcdClient = (
-    lcdClientConfig?: WalletLCDClientConfig,
+    lcdClientConfig: Record<string, LCDClientConfig>,
   ): Observable<LCDClient> => {
     return this._states.pipe(toLcdClient(lcdClientConfig));
   };
@@ -600,7 +600,7 @@ export class WalletController {
    */
   post = async (
     tx: ExtensionOptions,
-    terraAddress?: string,
+    terraAddress?: string | undefined,
   ): Promise<TxResult> => {
     // ---------------------------------------------
     // extension
@@ -638,11 +638,11 @@ export class WalletController {
         .post(tx)
         .then(
           (result) =>
-            ({
-              ...tx,
-              result,
-              success: true,
-            } as TxResult),
+          ({
+            ...tx,
+            result,
+            success: true,
+          } as TxResult),
         )
         .catch((error) => {
           throw mapWalletConnectError(tx, error);
@@ -882,7 +882,7 @@ export class WalletController {
       wallets: [
         {
           connectType: ConnectType.READONLY,
-          terraAddress: readonlyWallet.terraAddress,
+          addresses: { [Object.values(readonlyWallet.network).find(({ prefix }) => AccAddress.getPrefix(readonlyWallet.terraAddress) === prefix)?.chainID ?? ""]: readonlyWallet.terraAddress },
           design: 'readonly',
         },
       ],
@@ -908,16 +908,17 @@ export class WalletController {
     const extensionSubscription = this.extension.states().subscribe({
       next: (extensionStates) => {
         if (
-          extensionStates.type === ExtensionRouterStatus.WALLET_CONNECTED &&
-          AccAddress.validate(extensionStates.wallet.terraAddress)
+          extensionStates.type === ExtensionRouterStatus.WALLET_CONNECTED
+          // && AccAddress.validate(extensionStates.wallet.terraAddress)
         ) {
+          
           this.updateStates({
             status: WalletStatus.WALLET_CONNECTED,
             network: extensionStates.network,
             wallets: [
               {
                 connectType: ConnectType.EXTENSION,
-                terraAddress: extensionStates.wallet.terraAddress,
+                addresses: extensionStates.wallet.addresses,
                 design: extensionStates.wallet.design,
               },
             ],
@@ -971,7 +972,11 @@ export class WalletController {
                 wallets: [
                   {
                     connectType: ConnectType.WALLETCONNECT,
-                    terraAddress: status.terraAddress,
+                    // FIXME: Interchain WalletConnect
+                    addresses: {
+                      [Object.values(this.options.walletConnectChainIds[status.chainId] ??
+                        this.options.defaultNetwork).find(({ prefix }) => AccAddress.getPrefix(status.terraAddress) === prefix)?.chainID ?? ""]: status.terraAddress
+                    },
                     design: 'walletconnect',
                   },
                 ],
@@ -1013,7 +1018,7 @@ export class WalletController {
       wallets: [
         {
           connectType: ConnectType.PLUGINS,
-          terraAddress: session.terraAddress || 'not created',
+          addresses: session.addresses ?? {},
           metadata: session.getMetadata && session.getMetadata(),
         },
       ],
