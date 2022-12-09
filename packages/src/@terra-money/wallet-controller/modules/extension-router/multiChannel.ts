@@ -11,14 +11,14 @@ export interface ExtensionInfo {
 
 declare global {
   interface Window {
-    terraWallets: ExtensionInfo[] | undefined;
+    interchainWallets: ExtensionInfo[] | undefined;
   }
 }
 
 export function getTerraExtensions(): ExtensionInfo[] {
-  return Array.isArray(window.terraWallets)
-    ? window.terraWallets
-    : window.isTerraExtensionAvailable
+  return Array.isArray(window.interchainWallets)
+    ? window.interchainWallets
+    : window.isStationExtensionAvailable
     ? [
         {
           name: 'Terra Station',

@@ -2,7 +2,7 @@ const interval = 500;
 
 declare global {
   interface Window {
-    isTerraExtensionAvailable: boolean;
+    isStationExtensionAvailable: boolean;
   }
 }
 
@@ -20,8 +20,8 @@ export async function checkExtensionReady(
 
     function check() {
       if (
-        window.isTerraExtensionAvailable === true ||
-        Array.isArray(window.terraWallets)
+        window.isStationExtensionAvailable === true ||
+        Array.isArray(window.interchainWallets)
       ) {
         resolve(true);
       } else if (Date.now() > start + timeout) {
