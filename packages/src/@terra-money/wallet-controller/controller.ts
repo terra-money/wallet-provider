@@ -696,17 +696,13 @@ export class WalletController {
 
   getPublicKeys = async (chainIds: string[]) => {
     if (!this.disableExtension) throw new Error('getPublicKeys() method only available on extension');
-    return new Promise<ChainIdWithPubkey[]>((resolve, reject) => {
-      if (!this.extension) {
-        reject(new Error(`extension instance is not created!`));
-        return;
-      }
-      if (!this.availableExtensionFeature('getPublicKeys')) {
-        throw new Error('getPublicKeys() method is not available on extension');
-      }
-
-      return this.extension.getPublicKey(chainIds)
-    });
+    if (!this.extension) {
+      return Promise.reject(Error(`extension instance is not created!`));
+    }
+    if (!this.availableExtensionFeature('getPublicKeys')) {
+      throw new Error('getPublicKeys() method is not available on extension');
+    }
+    return this.extension.getPublicKeys(chainIds)
   }
 
 

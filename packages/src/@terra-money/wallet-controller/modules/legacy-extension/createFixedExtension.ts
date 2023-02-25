@@ -293,18 +293,15 @@ export function createFixedExtension(identifier: string): FixedExtension {
   }
 
   function getPublicKeys(chainIds: string[]) {
+    // @TODO remove test code
+    return Promise.resolve(chainIds.map(chainId => ({
+      chainId,
+      pubkey: new Uint8Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
+    })))
+
     // @TODO implement after retrieving from extension, leaving like this for testing purposes
     // @TODO using the `send` functionality to avoiding editing terra.js. Ideally would add another method to the extension
     return new Promise<ChainIdWithPubkey[]>((resolve, reject) => {
-
-      // @TODO remove test code
-      resolve(chainIds.map(chainId => ({
-        chainId,
-        pubkey: new Uint8Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
-      })));
-      return;
-
-
       // @TODO ideally make this type safe
       const id = extension.send('info', {
         type: 'getPublicKeys',

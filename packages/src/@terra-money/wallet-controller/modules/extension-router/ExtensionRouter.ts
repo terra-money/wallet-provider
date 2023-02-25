@@ -227,14 +227,14 @@ export class ExtensionRouter {
     );
   };
 
-  getPublicKey = async (
+  getPublicKeys = async (
     chainIds: string[]
   ): Promise<ChainIdWithPubkey[]> => {
     if (!this._connector) {
       throw new Error('[ExtensionRouter] No connector');
     }
 
-    return await this._connector.getPublicKeys(chainIds);
+    return this._connector.getPublicKeys(chainIds);
   }
 
   hasCW20Tokens = (

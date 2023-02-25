@@ -145,7 +145,7 @@ export class LegacyExtensionConnector implements TerraWebExtensionConnector {
   };
 
   getPublicKeys = async (chainIds: string[]) => {
-    return await this._extension.getPublicKeys(chainIds);
+    return this._extension.getPublicKeys(chainIds);
   }
 
   hasCW20Tokens = () => {

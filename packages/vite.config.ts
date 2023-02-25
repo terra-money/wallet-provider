@@ -25,6 +25,14 @@ export default defineConfig({
       peerMaxConcurrentStreams: 300,
     },
   },
+  // @TODO remove after testing
+  build: {
+    terserOptions: {
+      compress: {
+        drop_console: false,
+      }
+    }
+  },
   plugins: [reactRefresh(), tsconfigPaths(), svgr()],
   //build: {
   //  sourcemap: true,
