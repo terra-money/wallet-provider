@@ -20,9 +20,10 @@ import {
   WalletStatus,
 } from '@terra-money/wallet-types';
 import {
+  ChainIdWithPubkey,
   TerraWebExtensionFeatures,
   WebExtensionTxStatus,
-} from '@terra-money/web-extension-interface';
+} from '@terra-money/web-extension-interface'
 import deepEqual from 'fast-deep-equal';
 import {
   BehaviorSubject,
@@ -316,6 +317,8 @@ export class WalletController {
       this.updateStates(this._notConnected);
     }
   }
+
+
 
   /**
    * Some mobile wallet emulates the behavior of chrome extension.
@@ -665,34 +668,47 @@ export class WalletController {
     tx: ExtensionOptions,
     terraAddress?: string,
   ): Promise<SignResult> => {
-    if (this.disableExtension) {
-      return new Promise<SignResult>((resolve, reject) => {
-        if (!this.extension) {
-          reject(new Error(`extension instance is not created!`));
-          return;
-        }
+    if (!this.disableExtension) throw new Error(`sign() method only available on extension`);
+    return new Promise<SignResult>((resolve, reject) => {
+      if (!this.extension) {
+        reject(new Error(`extension instance is not created!`));
+        return;
+      }
 
-        const subscription = this.extension.sign(tx, terraAddress).subscribe({
-          next: (txResult) => {
-            if (txResult.status === WebExtensionTxStatus.SUCCEED) {
-              resolve({
-                ...tx,
-                result: Tx.fromData(txResult.payload),
-                success: true,
-              });
-              subscription.unsubscribe();
-            }
-          },
-          error: (error) => {
-            reject(mapExtensionTxError(tx, error));
+      const subscription = this.extension.sign(tx, terraAddress).subscribe({
+        next: (txResult) => {
+          if (txResult.status === WebExtensionTxStatus.SUCCEED) {
+            resolve({
+              ...tx,
+              result: Tx.fromData(txResult.payload),
+              success: true,
+            });
             subscription.unsubscribe();
-          },
-        });
+          }
+        },
+        error: (error) => {
+          reject(mapExtensionTxError(tx, error));
+          subscription.unsubscribe();
+        },
       });
-    }
-
-    throw new Error(`sign() method only available on extension`);
+    });
   };
+
+  getPublicKeys = async (chainIds: string[]) => {
+    if (!this.disableExtension) throw new Error('getPublicKeys() method only available on extension');
+    return new Promise<ChainIdWithPubkey[]>((resolve, reject) => {
+      if (!this.extension) {
+        reject(new Error(`extension instance is not created!`));
+        return;
+      }
+      if (!this.availableExtensionFeature('getPublicKeys')) {
+        throw new Error('getPublicKeys() method is not available on extension');
+      }
+
+      return this.extension.getPublicKey(chainIds)
+    });
+  }
+
 
   /**
    * @see Wallet#signBytes
@@ -766,7 +782,6 @@ export class WalletController {
     } else {
       throw new Error(`There are no connections that can be signing bytes!`);
     }
-
   };
 
   /**

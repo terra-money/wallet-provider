@@ -1,10 +1,11 @@
 import { NetworkInfo } from '@terra-money/wallet-types';
 import {
+  ChainIdWithPubkey,
   WebExtensionCreateTxFailed,
   WebExtensionTxFailed,
   WebExtensionTxUnspecifiedError,
   WebExtensionUserDenied,
-} from '@terra-money/web-extension-interface';
+} from '@terra-money/web-extension-interface'
 import { ExtensionOptions, Extension, Tx } from '@terra-money/terra.js';
 
 type ConnectResponse = { address?: string };
@@ -41,6 +42,7 @@ export interface FixedExtension {
   connect: () => Promise<ConnectResponse>;
   inTransactionProgress: () => boolean;
   disconnect: () => void;
+  getPublicKeys: (chainIds: string[]) => Promise<ChainIdWithPubkey[]>;
 }
 
 function getErrorMessage(error: any): string {
@@ -99,6 +101,7 @@ function isValidResult({ error, ...payload }: any): boolean {
 const pool = new Map<string, FixedExtension>();
 
 export function createFixedExtension(identifier: string): FixedExtension {
+
   if (pool.has(identifier)) {
     return pool.get(identifier)!;
   }
@@ -122,37 +125,45 @@ export function createFixedExtension(identifier: string): FixedExtension {
     [(data: any) => void, (error: any) => void]
   >();
 
-  const infoResolvers = new Set<[(data: any) => void, (error: any) => void]>();
+  const pubkeyResolvers = new Map<
+    number,
+    [(data: any) => void, (error: any) => void]
+    >();
 
+  const infoResolvers = new Set<[(data: any) => void, (error: any) => void]>();
   const connectResolvers = new Set<
     [(data: any) => void, (error: any) => void]
   >();
+  function extensionHandlerMap(name: string, resolvers: Map<number, [(data: any) => void, ((error: any) => void)]>) {
+    extension.on('onPost', (result) => {
+      if (!result || !isValidResult(result)) {
+        return;
+      }
 
-  extension.on('onPost', (result) => {
-    if (!result || !isValidResult(result)) {
-      return;
-    }
+      const { error, ...payload } = result;
 
-    const { error, ...payload } = result;
+      if (!resolvers.has(payload.id)) {
+        return;
+      }
 
-    if (!postResolvers.has(payload.id)) {
-      return;
-    }
+      const [resolve, reject] = resolvers.get(payload.id)!;
 
-    const [resolve, reject] = postResolvers.get(payload.id)!;
+      if (!payload.success) {
+        reject(toExplicitError(error));
+      } else if (resolve) {
+        resolve({ name: name, payload });
+      }
 
-    if (!payload.success) {
-      reject(toExplicitError(error));
-    } else if (resolve) {
-      resolve({ name: 'onPost', payload });
-    }
+      resolvers.delete(payload.id);
 
-    postResolvers.delete(payload.id);
+      if (resolvers.size === 0) {
+        _inTransactionProgress = false;
+      }
+    });
+  }
 
-    if (postResolvers.size === 0) {
-      _inTransactionProgress = false;
-    }
-  });
+  extensionHandlerMap('onPost', signResolvers);
+  extensionHandlerMap('onPubkey', pubkeyResolvers);)
 
   extension.on('onSign', (result) => {
     if (!result || !isValidResult(result)) {
@@ -192,35 +203,25 @@ export function createFixedExtension(identifier: string): FixedExtension {
     }
   });
 
-  extension.on('onInfo', (result) => {
-    if (!result) return;
-    const { error, ...payload } = result;
+  function extensionHandlerSet(name: string, resolvers: Set<[(data: any) => void, (error: any) => void]>) {
+    extension.on(name, (result) => {
+      if (!result) return;
+      const { error, ...payload } = result;
 
-    for (const [resolve, reject] of infoResolvers) {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(payload);
+      for (const [resolve, reject] of resolvers) {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(payload);
+        }
       }
-    }
 
-    infoResolvers.clear();
-  });
+      resolvers.clear();
+    });
+  }
 
-  extension.on('onConnect', (result) => {
-    if (!result) return;
-    const { error, ...payload } = result;
-
-    for (const [resolve, reject] of connectResolvers) {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(payload);
-      }
-    }
-
-    connectResolvers.clear();
-  });
+  extensionHandlerSet('onInfo', infoResolvers);
+  extensionHandlerSet('onConnect', connectResolvers);
 
   function post(data: object) {
     return new Promise<PostResponse>((...resolver) => {
@@ -291,6 +292,38 @@ export function createFixedExtension(identifier: string): FixedExtension {
     });
   }
 
+  function getPublicKeys(chainIds: string[]) {
+    // @TODO implement after retrieving from extension, leaving like this for testing purposes
+    // @TODO using the `send` functionality to avoiding editing terra.js. Ideally would add another method to the extension
+    return new Promise<ChainIdWithPubkey[]>((resolve, reject) => {
+
+      // @TODO remove test code
+      resolve(chainIds.map(chainId => ({
+        chainId,
+        pubkey: new Uint8Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
+      })));
+      return;
+
+
+      // @TODO ideally make this type safe
+      const id = extension.send('info', {
+        type: 'getPublicKeys',
+        payload: {
+          chainIds
+        }
+      });
+
+      pubkeyResolvers.set(id, [resolve, reject]);
+
+      //  should be almost instant, but just in case
+      setTimeout(() => {
+        if (pubkeyResolvers.has(id)) {
+          pubkeyResolvers.delete(id);
+        }
+      }, 1000 * 30);
+    });
+  }
+
   function connect() {
     return new Promise<ConnectResponse>((...resolver) => {
       connectResolvers.add(resolver);
@@ -325,6 +358,7 @@ export function createFixedExtension(identifier: string): FixedExtension {
     info,
     disconnect,
     inTransactionProgress,
+    getPublicKeys
   };
 
   pool.set(identifier, result);

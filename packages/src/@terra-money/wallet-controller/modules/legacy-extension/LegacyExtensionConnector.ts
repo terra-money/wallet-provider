@@ -143,6 +143,10 @@ export class LegacyExtensionConnector implements TerraWebExtensionConnector {
     return subject.asObservable();
   };
 
+  getPublicKeys = async (chainIds: string[]) => {
+    return await this._extension.getPublicKeys(chainIds);
+  }
+
   hasCW20Tokens = () => {
     throw new Error(
       '[LegacyExtensionConnector] does not support hasCW20Tokens()',

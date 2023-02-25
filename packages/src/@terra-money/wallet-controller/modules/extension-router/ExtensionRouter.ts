@@ -1,5 +1,6 @@
 import { NetworkInfo } from '@terra-money/wallet-types';
 import {
+  ChainIdWithPubkey,
   TerraWebExtensionConnector,
   WebExtensionNetworkInfo,
   WebExtensionPostPayload,
@@ -8,7 +9,7 @@ import {
   WebExtensionStates,
   WebExtensionStatus,
   WebExtensionTxResult,
-} from '@terra-money/web-extension-interface';
+} from '@terra-money/web-extension-interface'
 import { CreateTxOptions } from '@terra-money/terra.js';
 import { BehaviorSubject, Subscribable } from 'rxjs';
 import { LegacyExtensionConnector } from '../legacy-extension';
@@ -37,10 +38,12 @@ export interface ExtensionRouterOptions {
   ) => boolean;
 }
 
+//  all network related errors is due to different network interfaces, (for some reason) both are structured the same
 export class ExtensionRouter {
   private readonly _states: BehaviorSubject<ExtensionRouterStates>;
   private readonly _extensionInfos: ExtensionInfo[];
 
+  //  currently is connects to LegacyExtensionConnector unless the extension updates
   private _connector: TerraWebExtensionConnector | null = null;
 
   constructor(private readonly options: ExtensionRouterOptions) {
@@ -224,6 +227,16 @@ export class ExtensionRouter {
     );
   };
 
+  getPublicKey = async (
+    chainIds: string[]
+  ): Promise<ChainIdWithPubkey[]> => {
+    if (!this._connector) {
+      throw new Error('[ExtensionRouter] No connector');
+    }
+
+    return await this._connector.getPublicKeys(chainIds);
+  }
+
   hasCW20Tokens = (
     chainID: string,
     ...tokenAddrs: string[]
@@ -288,7 +301,7 @@ export class ExtensionRouter {
 
     const connectorPromise: Promise<TerraWebExtensionConnector> =
       extensionInfo.connector
-        ? Promise.resolve(extensionInfo.connector())
+        ? Promise.resolve(extensionInfo.connector())  //  this is not supplied from the extension atm
         : Promise.resolve(
             new LegacyExtensionConnector(extensionInfo.identifier),
           );

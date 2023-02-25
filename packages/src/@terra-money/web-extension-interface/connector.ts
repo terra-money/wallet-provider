@@ -1,4 +1,4 @@
-import type { CreateTxOptions } from '@terra-money/terra.js';
+import type {CreateTxOptions, PublicKey} from '@terra-money/terra.js'
 import type { Observer, Subscribable } from 'rxjs';
 import type { WebExtensionNetworkInfo } from './models/network';
 import type { WebExtensionStates } from './models/states';
@@ -8,13 +8,20 @@ import type {
   WebExtensionSignPayload,
   WebExtensionTxResult,
 } from './models/tx';
+import {SimplePublicKey} from "@terra-money/terra.js"
 
 export type TerraWebExtensionFeatures =
   | 'post'
   | 'sign'
   | 'sign-bytes'
   | 'cw20-token'
-  | 'network';
+  | 'network'
+  | 'getPublicKeys';
+
+export interface ChainIdWithPubkey {
+  chainId: string;
+  pubkey: Uint8Array;
+}
 
 export interface TerraWebExtensionConnector {
   supportFeatures: () => TerraWebExtensionFeatures[];
@@ -66,4 +73,6 @@ export interface TerraWebExtensionConnector {
   ) => Promise<boolean>;
 
   addNetwork: (network: WebExtensionNetworkInfo) => Promise<boolean>;
+
+  getPublicKeys: (chainIds: string[]) => Promise<ChainIdWithPubkey[]>;
 }
