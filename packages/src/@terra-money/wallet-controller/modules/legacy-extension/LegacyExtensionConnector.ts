@@ -19,6 +19,7 @@ const supportFeatures: TerraWebExtensionFeatures[] = [
   'post',
   'sign',
   'sign-bytes',
+  'getPublicKeys'
 ];
 
 export class LegacyExtensionConnector implements TerraWebExtensionConnector {
