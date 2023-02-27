@@ -173,7 +173,7 @@ export function createFixedExtension(identifier: string): FixedExtension {
     if (!pubkeyResolvers.has(payload.id)) return;
     const [resolve, reject] = pubkeyResolvers.get(payload.id)!;
     if (!payload?.data) {
-      reject(toExplicitError(error));
+      reject(toExplicitError(error)); //  since error is not defined, this will be an UnspecifiedError
     } else if (resolve) {
       resolve(
         payload.data.map((item: any) => ({
@@ -314,8 +314,7 @@ export function createFixedExtension(identifier: string): FixedExtension {
   }
 
   function getPublicKeys(chainIds: string[]) {
-    // @TODO implement after retrieving from extension, leaving like this for testing purposes
-    // @TODO using the `send` functionality to avoiding editing terra.js. Ideally would add another method to the extension
+    // @TODO Ideally would add another method to the extension instead of using 'send' which was avoided to avoid editing terra.js
     return new Promise<ChainIdWithPubkey[]>((resolve, reject) => {
       // @TODO ideally make this type safe
       const id = extension.send('info', {
