@@ -5,7 +5,7 @@ import {
   WebExtensionTxFailed,
   WebExtensionTxUnspecifiedError,
   WebExtensionUserDenied,
-} from '@terra-money/web-extension-interface'
+} from '@terra-money/web-extension-interface';
 import { ExtensionOptions, Extension, Tx } from '@terra-money/terra.js';
 
 type ConnectResponse = { address?: string };
@@ -101,7 +101,6 @@ function isValidResult({ error, ...payload }: any): boolean {
 const pool = new Map<string, FixedExtension>();
 
 export function createFixedExtension(identifier: string): FixedExtension {
-
   if (pool.has(identifier)) {
     return pool.get(identifier)!;
   }
@@ -128,7 +127,7 @@ export function createFixedExtension(identifier: string): FixedExtension {
   const pubkeyResolvers = new Map<
     number,
     [(data: any) => void, (error: any) => void]
-    >();
+  >();
 
   const infoResolvers = new Set<[(data: any) => void, (error: any) => void]>();
   const connectResolvers = new Set<
@@ -167,16 +166,21 @@ export function createFixedExtension(identifier: string): FixedExtension {
   // })
 
   extension.on('onGetPubkeys', (result) => {
-    if(!result) return;
+    if (!result) return;
 
-    const {error, ...payload} = result;
+    const { error, ...payload } = result;
 
-    if(!pubkeyResolvers.has(payload.id)) return;
+    if (!pubkeyResolvers.has(payload.id)) return;
     const [resolve, reject] = pubkeyResolvers.get(payload.id)!;
-    if(!payload?.data) {
-      reject(toExplicitError(error))
-    } else if(resolve) {
-      resolve(payload.data.map((item: any) => ({chainId: item.chainId, pubkey: Buffer.from(item.pubkey)})))
+    if (!payload?.data) {
+      reject(toExplicitError(error));
+    } else if (resolve) {
+      resolve(
+        payload.data.map((item: any) => ({
+          chainId: item.chainId,
+          pubkey: Buffer.from(item.pubkey),
+        })),
+      );
     }
   });
 
@@ -221,9 +225,8 @@ export function createFixedExtension(identifier: string): FixedExtension {
   extension.on('onInfo', (result) => {
     const { error, ...payload } = result;
     for (const [resolve, reject] of infoResolvers) {
-      if(error) return reject(error);
-      if (!result)
-        return reject(new Error('onInfo result is empty'));
+      if (error) return reject(error);
+      if (!result) return reject(new Error('onInfo result is empty'));
       resolve(payload);
     }
 
@@ -364,7 +367,7 @@ export function createFixedExtension(identifier: string): FixedExtension {
     info,
     disconnect,
     inTransactionProgress,
-    getPublicKeys
+    getPublicKeys,
   };
 
   pool.set(identifier, result);

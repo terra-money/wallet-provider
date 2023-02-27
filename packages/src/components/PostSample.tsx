@@ -2,11 +2,12 @@ import { Fee, MsgInstantiateContract } from '@terra-money/terra.js';
 import {
   CreateTxFailed,
   Timeout,
-  TxFailed, TxResult,
+  TxFailed,
+  TxResult,
   TxUnspecifiedError,
   useConnectedWallet,
   UserDenied,
-  useWallet
+  useWallet,
 } from '@terra-money/wallet-provider';
 import React, { useCallback, useState } from 'react';
 
@@ -31,18 +32,18 @@ export function PostSample() {
     setTxError(null);
 
     post({
-        fee: new Fee(1000000, '200000uusd'),
-        msgs: [
-          // Below sample data is just to test on classic network.
-          new MsgInstantiateContract(
-            connectedWallet.walletAddress,
-            undefined,
-            5923,
-            {cw721_code_id: 435},
-          ),
-        ],
-        isClassic: connectedWallet.network.name === 'classic'
-      })
+      fee: new Fee(1000000, '200000uusd'),
+      msgs: [
+        // Below sample data is just to test on classic network.
+        new MsgInstantiateContract(
+          connectedWallet.walletAddress,
+          undefined,
+          5923,
+          { cw721_code_id: 435 },
+        ),
+      ],
+      isClassic: connectedWallet.network.name === 'classic',
+    })
       .then((nextTxResult: TxResult) => {
         console.log(nextTxResult);
         setTxResult(nextTxResult);
@@ -65,17 +66,17 @@ export function PostSample() {
           );
         }
       });
-  }, [connectedWallet]);
+  }, [connectedWallet, post]);
 
   return (
     <div>
       <h1>Post Sample</h1>
 
-      {connectedWallet?.availableSign &&
-        !txResult &&
-        !txError && (
-          <button onClick={() => submitPost()}>Post MsgInstantiateContract</button>
-        )}
+      {connectedWallet?.availableSign && !txResult && !txError && (
+        <button onClick={() => submitPost()}>
+          Post MsgInstantiateContract
+        </button>
+      )}
 
       {txResult && <pre>{JSON.stringify(txResult, null, 2)}</pre>}
 

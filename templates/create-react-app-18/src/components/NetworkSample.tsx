@@ -20,9 +20,9 @@ export function NetworkSample() {
 }
 
 const TEST_NETWORK = {
-  name: "test-network",
-  chainID: "bombay-12",
-  lcd: "https://lcd.terra.dev",
+  name: 'test-network',
+  chainID: 'bombay-12',
+  lcd: 'https://lcd.terra.dev',
   walletconnectID: 0,
 };
 

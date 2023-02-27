@@ -4,7 +4,7 @@ module.exports = {
     require.resolve('eslint-config-react-app/jest'),
     require.resolve('eslint-config-prettier'),
   ],
-  
+
   overrides: [
     {
       files: ['**/*.ts?(x)'],
@@ -21,7 +21,7 @@ module.exports = {
       },
     },
   ],
-  
+
   //rules: {
   //  'react-hooks/exhaustive-deps': [
   //    'warn',

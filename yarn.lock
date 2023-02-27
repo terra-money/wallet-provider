@@ -12581,6 +12581,61 @@ __metadata:
   languageName: node
   linkType: hard
 
+"packages@workspace:packages":
+  version: 0.0.0-use.local
+  resolution: "packages@workspace:packages"
+  dependencies:
+    "@sentry/browser": ^6.14.1
+    "@sentry/tracing": ^6.14.1
+    "@terra-money/terra.js": ^3.1.6
+    "@types/puppeteer": ^5.4.4
+    "@types/qrcode": ^1.4.1
+    "@types/qrcode.react": ^1.0.2
+    "@types/react": ^17.0.34
+    "@types/react-dom": ^17.0.11
+    "@types/react-router-dom": ^5.3.2
+    "@types/secp256k1": ^4.0.3
+    "@types/styled-components": ^5.1.15
+    "@types/webpack-env": ^1.16.3
+    "@types/ws": ^8.2.0
+    "@vitejs/plugin-react-refresh": ^1.3.6
+    "@walletconnect/core": ^1.6.6
+    "@walletconnect/iso-crypto": ^1.6.6
+    "@walletconnect/types": ^1.6.6
+    "@walletconnect/utils": ^1.6.6
+    bowser: ^2.11.0
+    buffer: ^6.0.3
+    c8: ^7.11.0
+    cross-env: ^7.0.3
+    fast-deep-equal: ^3.1.3
+    fix-hmr: ^1.0.2
+    jscrypto: ^1.0.0
+    lint-staged: ^11.2.6
+    mobile-detect: ^1.4.5
+    puppeteer: ^11.0.0
+    qrcode: ^1.5.0
+    qrcode.react: ^1.0.1
+    react: ^17.0.2
+    react-dom: ^17.0.2
+    react-router-dom: ^5.3.0
+    rocket-punch: ^3.0.2
+    rxjs: ^7.4.0
+    secp256k1: ^4.0.0
+    styled-components: ^5.3.3
+    terra-web-extension: ^0.11.4
+    ts-node: ^10.4.0
+    tsconfig-paths: ^3.11.0
+    typescript: ^4.4.4
+    vite: ^2.6.14
+    vite-compatible-readable-stream: ^3.6.0
+    vite-plugin-svgr: ^0.5.1
+    vite-tsconfig-paths: ^3.3.17
+    vitest: ^0.0.134
+    web-vitals: ^2.1.2
+    ws: ^7.5.5
+  languageName: unknown
+  linkType: soft
+
 "param-case@npm:^3.0.4":
   version: 3.0.4
   resolution: "param-case@npm:3.0.4"
@@ -17448,61 +17503,6 @@ resolve@^2.0.0-next.3:
   checksum: 4038fcf92f6ab0288267ad05008aec9e089a759f1bd32e1ea45cc2eb498eb12095ec43cf8ca2bf23a465f4580a0d33b25b89f450ba521dd27083cbc695ee6bf5
   languageName: node
   linkType: hard
-
-"wallet-provider@workspace:packages":
-  version: 0.0.0-use.local
-  resolution: "wallet-provider@workspace:packages"
-  dependencies:
-    "@sentry/browser": ^6.14.1
-    "@sentry/tracing": ^6.14.1
-    "@terra-money/terra.js": ^3.1.6
-    "@types/puppeteer": ^5.4.4
-    "@types/qrcode": ^1.4.1
-    "@types/qrcode.react": ^1.0.2
-    "@types/react": ^17.0.34
-    "@types/react-dom": ^17.0.11
-    "@types/react-router-dom": ^5.3.2
-    "@types/secp256k1": ^4.0.3
-    "@types/styled-components": ^5.1.15
-    "@types/webpack-env": ^1.16.3
-    "@types/ws": ^8.2.0
-    "@vitejs/plugin-react-refresh": ^1.3.6
-    "@walletconnect/core": ^1.6.6
-    "@walletconnect/iso-crypto": ^1.6.6
-    "@walletconnect/types": ^1.6.6
-    "@walletconnect/utils": ^1.6.6
-    bowser: ^2.11.0
-    buffer: ^6.0.3
-    c8: ^7.11.0
-    cross-env: ^7.0.3
-    fast-deep-equal: ^3.1.3
-    fix-hmr: ^1.0.2
-    jscrypto: ^1.0.0
-    lint-staged: ^11.2.6
-    mobile-detect: ^1.4.5
-    puppeteer: ^11.0.0
-    qrcode: ^1.5.0
-    qrcode.react: ^1.0.1
-    react: ^17.0.2
-    react-dom: ^17.0.2
-    react-router-dom: ^5.3.0
-    rocket-punch: ^3.0.2
-    rxjs: ^7.4.0
-    secp256k1: ^4.0.0
-    styled-components: ^5.3.3
-    terra-web-extension: ^0.11.4
-    ts-node: ^10.4.0
-    tsconfig-paths: ^3.11.0
-    typescript: ^4.4.4
-    vite: ^2.6.14
-    vite-compatible-readable-stream: ^3.6.0
-    vite-plugin-svgr: ^0.5.1
-    vite-tsconfig-paths: ^3.3.17
-    vitest: ^0.0.134
-    web-vitals: ^2.1.2
-    ws: ^7.5.5
-  languageName: unknown
-  linkType: soft
 
 "watchpack@npm:^2.3.1":
   version: 2.3.1

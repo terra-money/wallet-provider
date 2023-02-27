@@ -1,6 +1,6 @@
-import { useWallet, WalletStatus } from "@terra-money/use-wallet";
-import React from "react";
-import styled from "styled-components";
+import { useWallet, WalletStatus } from '@terra-money/use-wallet';
+import React from 'react';
+import styled from 'styled-components';
 
 const ButtonsHelperText = styled.h2`
   font-size: 22px;
@@ -71,7 +71,7 @@ export function ConnectSample() {
               availableInstallTypes,
             },
             null,
-            2
+            2,
           )}
         </pre>
       </section>
@@ -83,14 +83,14 @@ export function ConnectSample() {
             {availableInstallations.map(
               ({ icon, type, url, identifier, name }) => (
                 <Button key={`${type}:${identifier}`} href={url}>
-                  <img src={icon} /> {name}
+                  <img alt={type} src={icon} /> {name}
                 </Button>
-              )
+              ),
             )}
             <ButtonsHelperText>Available Connect types</ButtonsHelperText>
             {availableConnectTypes.map((connectType) => (
               <Button
-                key={"connect-" + connectType}
+                key={'connect-' + connectType}
                 onClick={() => connect(connectType)}
               >
                 Connect {connectType}
@@ -98,20 +98,20 @@ export function ConnectSample() {
             ))}
             <ButtonsHelperText>Available Connections</ButtonsHelperText>
             {availableConnections.map(
-              ({ type, name, icon, identifier = "" }) => (
+              ({ type, name, icon, identifier = '' }) => (
                 <Button
-                  key={"connection-" + type + identifier}
+                  key={'connection-' + type + identifier}
                   onClick={() => connect(type, identifier)}
                 >
                   <img
                     src={icon}
                     alt={name}
-                    style={{ width: "1em", height: "1em" }}
+                    style={{ width: '1em', height: '1em' }}
                   />
                   {name}
                   {identifier && <div>[{identifier}]</div>}
                 </Button>
-              )
+              ),
             )}
           </>
         )}

@@ -19,7 +19,7 @@ const supportFeatures: TerraWebExtensionFeatures[] = [
   'post',
   'sign',
   'sign-bytes',
-  'getPublicKeys'
+  'getPublicKeys',
 ];
 
 export class LegacyExtensionConnector implements TerraWebExtensionConnector {
@@ -146,7 +146,7 @@ export class LegacyExtensionConnector implements TerraWebExtensionConnector {
 
   getPublicKeys = async (chainIds: string[]) => {
     return this._extension.getPublicKeys(chainIds);
-  }
+  };
 
   hasCW20Tokens = () => {
     throw new Error(

@@ -9,7 +9,7 @@ import {
   WebExtensionStates,
   WebExtensionStatus,
   WebExtensionTxResult,
-} from '@terra-money/web-extension-interface'
+} from '@terra-money/web-extension-interface';
 import { CreateTxOptions } from '@terra-money/terra.js';
 import { BehaviorSubject, Subscribable } from 'rxjs';
 import { LegacyExtensionConnector } from '../legacy-extension';
@@ -227,15 +227,13 @@ export class ExtensionRouter {
     );
   };
 
-  getPublicKeys = async (
-    chainIds: string[]
-  ): Promise<ChainIdWithPubkey[]> => {
+  getPublicKeys = async (chainIds: string[]): Promise<ChainIdWithPubkey[]> => {
     if (!this._connector) {
       throw new Error('[ExtensionRouter] No connector');
     }
 
     return this._connector.getPublicKeys(chainIds);
-  }
+  };
 
   hasCW20Tokens = (
     chainID: string,
@@ -301,7 +299,7 @@ export class ExtensionRouter {
 
     const connectorPromise: Promise<TerraWebExtensionConnector> =
       extensionInfo.connector
-        ? Promise.resolve(extensionInfo.connector())  //  this is not supplied from the extension atm
+        ? Promise.resolve(extensionInfo.connector()) //  this is not supplied from the extension atm
         : Promise.resolve(
             new LegacyExtensionConnector(extensionInfo.identifier),
           );

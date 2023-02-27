@@ -14,7 +14,7 @@ import {
   WalletConnectTxFailed,
   WalletConnectTxUnspecifiedError,
   WalletConnectUserDenied,
-  WalletConnectSignBytesUnspecifiedError
+  WalletConnectSignBytesUnspecifiedError,
 } from './errors';
 import SocketTransport from './impl/socket-transport';
 import { TerraWalletconnectQrcodeModal } from './modal';
@@ -23,9 +23,7 @@ import {
   WalletConnectSessionStatus,
   WalletConnectTxResult,
 } from './types';
-import {
-  WebExtensionSignBytesPayload,
-} from '@terra-money/web-extension-interface';
+import { WebExtensionSignBytesPayload } from '@terra-money/web-extension-interface';
 
 export interface WalletConnectControllerOptions {
   /**
@@ -354,9 +352,7 @@ export function connect(
         let throwError = error;
 
         try {
-          const { code, message } = JSON.parse(
-            error.message,
-          );
+          const { code, message } = JSON.parse(error.message);
 
           switch (code) {
             case 1:
@@ -370,7 +366,9 @@ export function connect(
               break;
           }
         } catch {
-          throwError = new WalletConnectSignBytesUnspecifiedError(error.message);
+          throwError = new WalletConnectSignBytesUnspecifiedError(
+            error.message,
+          );
         }
 
         throw throwError;

@@ -7,7 +7,7 @@ export function CW20TokensSample() {
   return (
     <div>
       <h1>CW20 Tokens Sample</h1>
-      {supportFeatures.has("cw20-token") ? (
+      {supportFeatures.has('cw20-token') ? (
         <Component />
       ) : status === WalletStatus.WALLET_CONNECTED ? (
         <p>This connection does not support CW20 commands</p>
@@ -17,7 +17,6 @@ export function CW20TokensSample() {
     </div>
   );
 }
-
 
 const ANC = {
   'columnbus-5': 'terra14z56l0fp2lsf86zy3hty2z47ezkhnthtr9yq76',

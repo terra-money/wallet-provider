@@ -106,7 +106,11 @@ export function deserializeTx(tx: SerializedCreateTxOptions): ExtensionOptions {
 
   return {
     ...tx,
-    msgs: msgs.map((msg) => (isProto ? Msg.fromData(msg, tx.isClassic) : Msg.fromAmino(msg, tx.isClassic))),
+    msgs: msgs.map((msg) =>
+      isProto
+        ? Msg.fromData(msg, tx.isClassic)
+        : Msg.fromAmino(msg, tx.isClassic),
+    ),
     fee: tx.fee
       ? isProto
         ? Fee.fromData(JSON.parse(tx.fee))

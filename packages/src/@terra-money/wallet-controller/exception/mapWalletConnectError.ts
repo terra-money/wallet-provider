@@ -5,7 +5,7 @@ import {
   TxFailed,
   TxUnspecifiedError,
   UserDenied,
-  SignBytesUnspecifiedError
+  SignBytesUnspecifiedError,
 } from '@terra-money/wallet-types';
 import {
   WalletConnectCreateTxFailed,

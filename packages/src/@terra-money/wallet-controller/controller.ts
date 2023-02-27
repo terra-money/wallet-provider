@@ -20,10 +20,9 @@ import {
   WalletStatus,
 } from '@terra-money/wallet-types';
 import {
-  ChainIdWithPubkey,
   TerraWebExtensionFeatures,
   WebExtensionTxStatus,
-} from '@terra-money/web-extension-interface'
+} from '@terra-money/web-extension-interface';
 import deepEqual from 'fast-deep-equal';
 import {
   BehaviorSubject,
@@ -43,7 +42,7 @@ import {
 } from './exception/mapExtensionTxError';
 import {
   mapWalletConnectError,
-  mapWalletConnectSignBytesError
+  mapWalletConnectSignBytesError,
 } from './exception/mapWalletConnectError';
 import { selectConnection } from './modules/connect-modal';
 import {
@@ -183,7 +182,8 @@ const CONNECTIONS = {
 const DEFAULT_WAITING_CHROME_EXTENSION_INSTALL_CHECK = 1000 * 3;
 
 const WALLETCONNECT_SUPPORT_FEATURES = new Set<TerraWebExtensionFeatures>([
-  'post', 'sign-bytes'
+  'post',
+  'sign-bytes',
 ]);
 
 const EMPTY_SUPPORT_FEATURES = new Set<TerraWebExtensionFeatures>();
@@ -317,8 +317,6 @@ export class WalletController {
       this.updateStates(this._notConnected);
     }
   }
-
-
 
   /**
    * Some mobile wallet emulates the behavior of chrome extension.
@@ -668,7 +666,8 @@ export class WalletController {
     tx: ExtensionOptions,
     terraAddress?: string,
   ): Promise<SignResult> => {
-    if (!this.disableExtension) throw new Error(`sign() method only available on extension`);
+    if (!this.disableExtension)
+      throw new Error(`sign() method only available on extension`);
     return new Promise<SignResult>((resolve, reject) => {
       if (!this.extension) {
         reject(new Error(`extension instance is not created!`));
@@ -695,16 +694,16 @@ export class WalletController {
   };
 
   getPublicKeys = async (chainIds: string[]) => {
-    if (!this.disableExtension) throw new Error('getPublicKeys() method only available on extension');
+    if (!this.disableExtension)
+      throw new Error('getPublicKeys() method only available on extension');
     if (!this.extension) {
       return Promise.reject(Error(`extension instance is not created!`));
     }
     if (!this.availableExtensionFeature('getPublicKeys')) {
       throw new Error('getPublicKeys() method is not available on extension');
     }
-    return this.extension.getPublicKeys(chainIds)
-  }
-
+    return this.extension.getPublicKeys(chainIds);
+  };
 
   /**
    * @see Wallet#signBytes
@@ -755,23 +754,19 @@ export class WalletController {
     else if (this.walletConnect) {
       return this.walletConnect
         .signBytes(bytes)
-        .then(
-          (result) => {
-            const key = new SimplePublicKey(String(result.public_key)).toData()
-            return {
-              result: {
-                recid: result.recid,
-                signature: Uint8Array.from(
-                  Buffer.from(result.signature, 'base64'),
-                ),
-                public_key: key
-                  ? PublicKey.fromData(key)
-                  : undefined,
-              },
-              success: true,
-            }
-          }
-        )
+        .then((result) => {
+          const key = new SimplePublicKey(String(result.public_key)).toData();
+          return {
+            result: {
+              recid: result.recid,
+              signature: Uint8Array.from(
+                Buffer.from(result.signature, 'base64'),
+              ),
+              public_key: key ? PublicKey.fromData(key) : undefined,
+            },
+            success: true,
+          };
+        })
         .catch((error) => {
           throw mapWalletConnectSignBytesError(bytes, error);
         });

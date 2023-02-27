@@ -30,8 +30,8 @@ export default defineConfig({
     terserOptions: {
       compress: {
         drop_console: false,
-      }
-    }
+      },
+    },
   },
   plugins: [reactRefresh(), tsconfigPaths(), svgr()],
   //build: {

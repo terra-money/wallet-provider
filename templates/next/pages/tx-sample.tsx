@@ -75,13 +75,13 @@ export default function TxSample() {
           <pre>{JSON.stringify(txResult, null, 2)}</pre>
           {connectedWallet && txResult && (
             <div>
-            <a
-              href={`https://finder.terra.money/${connectedWallet.network.chainID}/tx/${txResult.result.txhash}`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Open Tx Result in Terra Finder
-            </a>
+              <a
+                href={`https://finder.terra.money/${connectedWallet.network.chainID}/tx/${txResult.result.txhash}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Open Tx Result in Terra Finder
+              </a>
             </div>
           )}
         </>

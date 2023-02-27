@@ -413,9 +413,7 @@ export interface Wallet {
    *
    * This type is same as `import type { TerraWebExtensionFeatures } from '@terra-money/web-extension-interface'`
    */
-  supportFeatures: Set<
-    'post' | 'sign' | 'sign-bytes' | 'cw20-token' | 'network'
-  >;
+  supportFeatures: Set<TerraWebExtensionFeatures>;
   /**
    * post transaction
    *
@@ -425,7 +423,7 @@ export interface Wallet {
    *
    * const callback = useCallback(async () => {
    *   try {
-   *    const result: TxResult = await post({...CreateTxOptions})
+   *    const result: TxResult = await post({...ExtensionOptions})
    *    // DO SOMETHING...
    *   } catch (error) {
    *     if (error instanceof UserDenied) {
@@ -437,7 +435,7 @@ export interface Wallet {
    * }, [])
    * ```
    *
-   * @param { CreateTxOptions } tx transaction data
+   * @param { ExtensionOptions } tx transaction data
    * @param terraAddress - does not work at this time. for the future extension
    *
    * @return { Promise<TxResult> }
@@ -450,7 +448,7 @@ export interface Wallet {
    *
    * @see WalletController#post
    */
-  post: (tx: CreateTxOptions, terraAddress?: string) => Promise<TxResult>;
+  post: (tx: ExtensionOptions, terraAddress?: string) => Promise<TxResult>;
   /**
    * sign transaction
    *
@@ -460,7 +458,7 @@ export interface Wallet {
    *
    * const callback = useCallback(async () => {
    *   try {
-   *    const result: SignResult = await sign({...CreateTxOptions})
+   *    const result: SignResult = await sign({...ExtensionOptions})
    *
    *    // Broadcast SignResult
    *    const tx = result.result
@@ -483,7 +481,7 @@ export interface Wallet {
    * }, [])
    * ```
    *
-   * @param { CreateTxOptions } tx transaction data
+   * @param { ExtensionOptions } tx transaction data
    * @param terraAddress - does not work at this time. for the future extension
    *
    * @return { Promise<SignResult> }
@@ -496,7 +494,7 @@ export interface Wallet {
    *
    * @see WalletController#sign
    */
-  sign: (tx: CreateTxOptions, terraAddress?: string) => Promise<SignResult>;
+  sign: (tx: ExtensionOptions, terraAddress?: string) => Promise<SignResult>;
   /**
    * sign any bytes
    *

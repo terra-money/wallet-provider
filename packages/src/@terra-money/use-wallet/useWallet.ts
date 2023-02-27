@@ -11,7 +11,7 @@ import {
 } from '@terra-money/wallet-types';
 import { ExtensionOptions } from '@terra-money/terra.js';
 import { Context, createContext, useContext } from 'react';
-import {TerraWebExtensionFeatures} from "../web-extension-interface"
+import { TerraWebExtensionFeatures } from '../web-extension-interface';
 
 export interface Wallet {
   /**
