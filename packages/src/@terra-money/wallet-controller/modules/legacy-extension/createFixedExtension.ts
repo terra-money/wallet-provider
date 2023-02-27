@@ -142,11 +142,11 @@ export function createFixedExtension(identifier: string): FixedExtension {
 
     const { error, ...payload } = result;
 
-    if (!signResolvers.has(payload.id)) {
+    if (!postResolvers.has(payload.id)) {
       return;
     }
 
-    const [resolve, reject] = signResolvers.get(payload.id)!;
+    const [resolve, reject] = postResolvers.get(payload.id)!;
 
     if (!payload.success) {
       reject(toExplicitError(error));
@@ -154,9 +154,9 @@ export function createFixedExtension(identifier: string): FixedExtension {
       resolve({ name: 'onPost', payload });
     }
 
-    signResolvers.delete(payload.id);
+    postResolvers.delete(payload.id);
 
-    if (signResolvers.size === 0) {
+    if (postResolvers.size === 0) {
       _inTransactionProgress = false;
     }
   });
