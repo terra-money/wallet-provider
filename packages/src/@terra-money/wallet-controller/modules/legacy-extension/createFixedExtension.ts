@@ -134,36 +134,51 @@ export function createFixedExtension(identifier: string): FixedExtension {
   const connectResolvers = new Set<
     [(data: any) => void, (error: any) => void]
   >();
-  function extensionHandlerMap(name: string, resolvers: Map<number, [(data: any) => void, ((error: any) => void)]>) {
-    extension.on('onPost', (result) => {
-      if (!result || !isValidResult(result)) {
-        return;
-      }
 
-      const { error, ...payload } = result;
+  extension.on('onPost', (result) => {
+    if (!result || !isValidResult(result)) {
+      return;
+    }
 
-      if (!resolvers.has(payload.id)) {
-        return;
-      }
+    const { error, ...payload } = result;
 
-      const [resolve, reject] = resolvers.get(payload.id)!;
+    if (!signResolvers.has(payload.id)) {
+      return;
+    }
 
-      if (!payload.success) {
-        reject(toExplicitError(error));
-      } else if (resolve) {
-        resolve({ name: name, payload });
-      }
+    const [resolve, reject] = signResolvers.get(payload.id)!;
 
-      resolvers.delete(payload.id);
+    if (!payload.success) {
+      reject(toExplicitError(error));
+    } else if (resolve) {
+      resolve({ name: 'onPost', payload });
+    }
 
-      if (resolvers.size === 0) {
-        _inTransactionProgress = false;
-      }
-    });
-  }
+    signResolvers.delete(payload.id);
 
-  extensionHandlerMap('onPost', signResolvers);
-  extensionHandlerMap('onPubkey', pubkeyResolvers);)
+    if (signResolvers.size === 0) {
+      _inTransactionProgress = false;
+    }
+  });
+
+  // //  for debugging
+  // extension.on((payload) => {
+  //   console.log('extension on any message', payload);
+  // })
+
+  extension.on('onGetPubkeys', (result) => {
+    if(!result) return;
+
+    const {error, ...payload} = result;
+
+    if(!pubkeyResolvers.has(payload.id)) return;
+    const [resolve, reject] = pubkeyResolvers.get(payload.id)!;
+    if(!payload?.data) {
+      reject(toExplicitError(error))
+    } else if(resolve) {
+      resolve(payload.data.map((item: any) => ({chainId: item.chainId, pubkey: Buffer.from(item.pubkey)})))
+    }
+  });
 
   extension.on('onSign', (result) => {
     if (!result || !isValidResult(result)) {
@@ -203,25 +218,28 @@ export function createFixedExtension(identifier: string): FixedExtension {
     }
   });
 
-  function extensionHandlerSet(name: string, resolvers: Set<[(data: any) => void, (error: any) => void]>) {
-    extension.on(name, (result) => {
-      if (!result) return;
-      const { error, ...payload } = result;
+  extension.on('onInfo', (result) => {
+    const { error, ...payload } = result;
+    for (const [resolve, reject] of infoResolvers) {
+      if(error) return reject(error);
+      if (!result)
+        return reject(new Error('onInfo result is empty'));
+      resolve(payload);
+    }
 
-      for (const [resolve, reject] of resolvers) {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(payload);
-        }
-      }
+    infoResolvers.clear();
+  });
 
-      resolvers.clear();
-    });
-  }
+  extension.on('onConnect', (result) => {
+    const { error, ...payload } = result;
+    for (const [resolve, reject] of connectResolvers) {
+      if (error) return reject(error);
+      if (!result) return reject(new Error('onConnect result is empty'));
+      resolve(payload);
+    }
 
-  extensionHandlerSet('onInfo', infoResolvers);
-  extensionHandlerSet('onConnect', connectResolvers);
+    connectResolvers.clear();
+  });
 
   function post(data: object) {
     return new Promise<PostResponse>((...resolver) => {
@@ -293,31 +311,22 @@ export function createFixedExtension(identifier: string): FixedExtension {
   }
 
   function getPublicKeys(chainIds: string[]) {
-    // @TODO remove test code
-    return Promise.resolve(chainIds.map(chainId => ({
-      chainId,
-      pubkey: new Uint8Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
-    })))
-
     // @TODO implement after retrieving from extension, leaving like this for testing purposes
     // @TODO using the `send` functionality to avoiding editing terra.js. Ideally would add another method to the extension
     return new Promise<ChainIdWithPubkey[]>((resolve, reject) => {
       // @TODO ideally make this type safe
       const id = extension.send('info', {
-        type: 'getPublicKeys',
-        payload: {
-          chainIds
-        }
+        infoType: 'getPubkeys',
+        chainIds,
       });
 
       pubkeyResolvers.set(id, [resolve, reject]);
 
-      //  should be almost instant, but just in case
       setTimeout(() => {
         if (pubkeyResolvers.has(id)) {
           pubkeyResolvers.delete(id);
         }
-      }, 1000 * 30);
+      }, 1000 * 120);
     });
   }
 
