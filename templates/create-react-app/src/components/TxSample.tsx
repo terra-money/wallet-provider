@@ -9,23 +9,24 @@ import {
   UserDenied,
 } from '@terra-money/wallet-provider';
 import { useCallback, useState, useMemo } from 'react';
-import { useChainFilter } from './ChainFilter';
-import { getBaseAsset, getRandomAddress } from 'utils';
+import { useSelectedChain } from './ChainSelector';
+import { getRandomAddress } from 'utils';
 
 export function TxSample() {
   const [txResult, setTxResult] = useState<TxResult | null>(null);
   const [txError, setTxError] = useState<string | null>(null);
-  const { chainID } = useChainFilter();
+  const chainID = useSelectedChain();
   const connectedWallet = useConnectedWallet();
 
   const toAddress = useMemo(() => {
-    if (!connectedWallet) return '';
-    return getRandomAddress(connectedWallet.network[chainID].prefix);
+    if (!connectedWallet?.network) return '';
+    return getRandomAddress(connectedWallet.network[chainID]?.prefix);
   }, [connectedWallet, chainID]);
   
   const baseAsset = useMemo(() => {
-    if (!connectedWallet) return '';
-    return getBaseAsset(connectedWallet.network, chainID);
+    if (!connectedWallet?.network) return '';
+    // @ts-ignore
+    return connectedWallet.network[chainID].baseAsset;
   }, [connectedWallet, chainID]);
 
   const explorerHref = useMemo(() => {
@@ -38,7 +39,7 @@ export function TxSample() {
   const proceed = useCallback(() => {
     if (!connectedWallet) return
       
-    const isMainnet = Object.keys(connectedWallet.network).some((key) => key.startsWith('phoenix'));
+    const isMainnet = Object.keys(connectedWallet.network).some((key) => key.startsWith('phoenix-'));
 
     if (isMainnet) {
       alert(`Please only execute this example on Testnet`);

@@ -1,11 +1,11 @@
 import { useConnectedWallet, useLCDClient } from '@terra-money/wallet-provider';
 import React, { useEffect, useState } from 'react';
-import { useChainFilter } from './ChainFilter';
+import { useSelectedChain } from './ChainSelector';
 
 export function QuerySample() {
   const lcd = useLCDClient();
   const connectedWallet = useConnectedWallet();
-  const { chainID } = useChainFilter();
+  const chainID = useSelectedChain();
 
   const [bank, setBank] = useState<null | string>();
 

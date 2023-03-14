@@ -7,7 +7,7 @@ import {
   verifyBytes,
 } from '@terra-money/wallet-provider';
 import React, { useCallback, useState } from 'react';
-import { useChainFilter } from './ChainFilter';
+import { useSelectedChain } from './ChainSelector';
 
 const TEST_BYTES = Buffer.from('hello world');
 
@@ -15,7 +15,7 @@ export function SignBytesSample() {
   const [txResult, setTxResult] = useState<SignBytesResult | null>(null);
   const [txError, setTxError] = useState<string | null>(null);
   const [verifyResult, setVerifyResult] = useState<string | null>(null);
-  const { chainID } = useChainFilter();
+  const chainID = useSelectedChain();
 
   const connectedWallet = useConnectedWallet();
 

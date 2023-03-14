@@ -1,12 +1,5 @@
-import { NetworkInfo } from '@terra-money/wallet-types';
 import { bech32 } from 'bech32';
 
-export const getBaseAsset = (network: NetworkInfo, chainID: string) => {
-  if (network[chainID]?.gasPrices) {
-    const baseAsset = Object.keys(network[chainID]?.gasPrices)[0];
-    return baseAsset;
-  }
-};
 export function getRandomAddress(prefix = "terra") {
     const RANDOM_WORDS = [...Array(64)]
       .map(() => Math.random().toString(16).slice(-1))

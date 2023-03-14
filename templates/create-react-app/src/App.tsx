@@ -7,6 +7,7 @@ import { QuerySample } from "./components/QuerySample";
 import { SignBytesSample } from "./components/SignBytesSample";
 import { SignSample } from "./components/SignSample";
 import { TxSample } from "./components/TxSample";
+import { ChainSelector } from "./components/ChainSelector";
 
 const Main = styled.main`
   margin: 20;
@@ -18,13 +19,15 @@ const Main = styled.main`
 function App() {
   return (
     <Main>
-      <ConnectSample />
-      <QuerySample />
-      <TxSample />
-      <SignSample />
-      <SignBytesSample />
-      <CW20TokensSample />
-      <NetworkSample />
+      <ChainSelector>
+        <ConnectSample />
+        <QuerySample />
+        <TxSample />
+        <SignSample />
+        <SignBytesSample />
+        <CW20TokensSample />
+        <NetworkSample />
+      </ChainSelector>
     </Main>
   );
 }
