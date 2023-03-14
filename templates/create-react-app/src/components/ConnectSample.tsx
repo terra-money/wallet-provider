@@ -1,5 +1,6 @@
 import { useWallet, WalletStatus } from '@terra-money/wallet-provider';
 import React from 'react';
+import { useChainFilter } from './ChainFilter';
 
 export function ConnectSample() {
   const {
@@ -14,6 +15,7 @@ export function ConnectSample() {
     install,
     disconnect,
   } = useWallet();
+  const { chainID } = useChainFilter()
 
   return (
     <div>
@@ -23,7 +25,7 @@ export function ConnectSample() {
           {JSON.stringify(
             {
               status,
-              network,
+              network: network[chainID],
               wallets,
               supportFeatures: Array.from(supportFeatures),
               availableConnectTypes,

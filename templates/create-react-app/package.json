@@ -34,7 +34,7 @@
     ]
   },
   "dependencies": {
-    "@terra-money/terra.js": "^3.1.6",
+    "@terra-money/feather.js": "^1.0.0-beta.12",
     "@terra-money/wallet-provider": "^4.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

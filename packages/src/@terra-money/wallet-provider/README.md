@@ -1,6 +1,6 @@
 # Terra Wallet Provider
 
-Library to make React dApps easier using Terra Station Extension or Terra Station Mobile.
+Library to make React dApps easier using Station Extension or Station Mobile.
 
 # Quick Start
 
@@ -10,6 +10,7 @@ Use templates to get your projects started quickly
 
 If you want to test features quickly, you can simply run them on CodeSandbox without having to download Templates.
 
+- [Wallet Provider + Create-React-App-18](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/create-react-app-18)
 - [Wallet Provider + Create-React-App](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/create-react-app)
 - [Wallet Provider + Next.js](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/next)
 - [Wallet Provider + Vite.js](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/vite)
@@ -18,6 +19,17 @@ If you want to test features quickly, you can simply run them on CodeSandbox wit
 - [Wallet Controller + Svelte](https://githubbox.com/terra-money/wallet-provider/tree/main/templates/svelte)
 
 And if you need to start your project from local computer, use the templates below. 👇
+
+### Create React App (React 18)
+
+```sh
+npx terra-templates get wallet-provider:create-react-app-18 your-app-name
+cd your-app-name
+yarn install
+yarn start
+```
+
+<https://github.com/terra-money/wallet-provider/tree/main/templates/create-react-app-18>
 
 ### Create React App
 
@@ -58,7 +70,7 @@ If you make a different type of template, you can register [here](https://github
 
 First, please add `<meta name="terra-wallet" />` on your html page.
 
-Since then, browser extensions (e.g. Terra Station chrome extension) will not attempt to connect in a Web app where this `<meta name="terra-wallet">` tag is not found.
+Since then, browser extensions (e.g. Station chrome extension) will not attempt to connect in a Web app where this `<meta name="terra-wallet">` tag is not found.
 
 ```html
 <html lang="en">
@@ -137,22 +149,47 @@ import {
 
 // network information
 const mainnet: NetworkInfo = {
-  name: 'mainnet',
-  chainID: 'columbus-5',
-  lcd: 'https://lcd.terra.dev',
+  'phoenix-1': {
+    baseAsset: 'uluna',
+    chainID: 'phoenix-1',
+    coinType: '330',
+    explorer: {
+      address: 'https://terrasco.pe/mainnet/address/{}',
+      block: 'https://terrasco.pe/mainnet/block/{}',
+      tx: 'https://terrasco.pe/mainnet/tx/{}',
+      validator: 'https://terrasco.pe/mainnet/validator/{}',
+    },
+    gasAdjustment: 1.75,
+    gasPrices: {
+      uluna: 0.015,
+    },
+    icon: 'https://station-assets.terra.money/img/chains/Terra.svg',
+    lcd: 'https://phoenix-lcd.terra.dev',
+    name: 'Terra',
+    prefix: 'terra',
+  },
 };
 
 const testnet: NetworkInfo = {
-  name: 'testnet',
-  chainID: 'bombay-12',
-  lcd: 'https://bombay-lcd.terra.dev',
-};
-
-// WalletConnect separates chainId by number.
-// Currently TerraStation Mobile uses 0 as Testnet, 1 as Mainnet.
-const walletConnectChainIds: Record<number, NetworkInfo> = {
-  0: testnet,
-  1: mainnet,
+  'pisco-1': {
+    baseAsset: 'uluna',
+    chainID: 'pisco-1',
+    coinType: '330',
+    explorer: {
+      address: 'https://terrasco.pe/testnet/address/{}',
+      block: 'https://terrasco.pe/testnet/block/{}',
+      tx: 'https://terrasco.pe/testnet/tx/{}',
+      validator: 'https://terrasco.pe/testnet/validator/{}',
+    },
+    gasAdjustment: 3.5,
+    gasPrices: {
+      uluna: 0.015,
+    },
+    icon: 'https://station-assets.terra.money/img/chains/Terra.svg',
+    lcd: 'https://pisco-lcd.terra.dev',
+    name: 'Terra',
+    prefix: 'terra',
+  },
 };
 
 // ⚠️ If there is no special reason, use `getChainOptions()` instead of `walletConnectChainIds` above.
@@ -413,7 +450,7 @@ export interface Wallet {
    *
    * const callback = useCallback(async () => {
    *   try {
-   *    const result: TxResult = await post({...CreateTxOptions})
+   *    const result: TxResult = await post({...ExtensionOptions})
    *    // DO SOMETHING...
    *   } catch (error) {
    *     if (error instanceof UserDenied) {
@@ -425,7 +462,7 @@ export interface Wallet {
    * }, [])
    * ```
    *
-   * @param { CreateTxOptions } tx transaction data
+   * @param { ExtensionOptions } tx transaction data
    * @param terraAddress - does not work at this time. for the future extension
    *
    * @return { Promise<TxResult> }
@@ -438,7 +475,7 @@ export interface Wallet {
    *
    * @see WalletController#post
    */
-  post: (tx: CreateTxOptions, terraAddress?: string) => Promise<TxResult>;
+  post: (tx: ExtensionOptions, terraAddress?: string) => Promise<TxResult>;
   /**
    * sign transaction
    *
@@ -448,7 +485,7 @@ export interface Wallet {
    *
    * const callback = useCallback(async () => {
    *   try {
-   *    const result: SignResult = await sign({...CreateTxOptions})
+   *    const result: SignResult = await sign({...ExtensionOptions})
    *
    *    // Broadcast SignResult
    *    const tx = result.result
@@ -471,7 +508,7 @@ export interface Wallet {
    * }, [])
    * ```
    *
-   * @param { CreateTxOptions } tx transaction data
+   * @param { ExtensionOptions } tx transaction data
    * @param terraAddress - does not work at this time. for the future extension
    *
    * @return { Promise<SignResult> }
@@ -484,7 +521,7 @@ export interface Wallet {
    *
    * @see WalletController#sign
    */
-  sign: (tx: CreateTxOptions, terraAddress?: string) => Promise<SignResult>;
+  sign: (tx: ExtensionOptions, terraAddress?: string) => Promise<SignResult>;
   /**
    * sign any bytes
    *
@@ -596,7 +633,7 @@ function Component() {
   const postTx = useCallback(async () => {
     if (!connectedWallet) return
 
-    console.log('walletAddress is', connectedWallet.walletAddress)
+    console.log('wallet addresses are', Object.values(connectedWallet.addresses))
     console.log('network is', connectedWallet.network)
     console.log('connectType is', connectedWallet.connectType)
 
@@ -636,11 +673,6 @@ function Component() {
 ```
 
 </details>
-
-# Projects for reference
-
-- [Anchor Web App](https://github.com/Anchor-Protocol/anchor-web-app/blob/master/base/src/base/AppProviders.tsx#L154)
-- [Mirror Web App](https://github.com/Mirror-Protocol/terra-web-app/blob/master/src/layouts/WalletConnectProvider.tsx#L12)
 
 # Links
 

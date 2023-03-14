@@ -6,6 +6,7 @@ import { QuerySample } from 'components/QuerySample';
 import { SignBytesSample } from 'components/SignBytesSample';
 import { SignSample } from 'components/SignSample';
 import { TxSample } from 'components/TxSample';
+import { ChainFilter } from 'components/ChainFilter';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './style.css';
@@ -15,13 +16,15 @@ function App() {
     <main
       style={{ margin: 20, display: 'flex', flexDirection: 'column', gap: 40 }}
     >
-      <ConnectSample />
-      <QuerySample />
-      <TxSample />
-      <SignSample />
-      <SignBytesSample />
-      <CW20TokensSample />
-      <NetworkSample />
+      <ChainFilter>
+        <ConnectSample />
+        <QuerySample />
+        <TxSample />
+        <SignSample />
+        <SignBytesSample />
+        {/* <CW20TokensSample />
+        <NetworkSample /> */}
+      </ChainFilter>
     </main>
   );
 }

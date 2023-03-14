@@ -1,4 +1,4 @@
-import { Fee, MsgSend } from '@terra-money/terra.js';
+import {  MsgSend } from '@terra-money/feather.js';
 import {
   CreateTxFailed,
   Timeout,
@@ -8,22 +8,34 @@ import {
   useConnectedWallet,
   UserDenied,
 } from '@terra-money/wallet-provider';
-import React, { useCallback, useState } from 'react';
-
-const TEST_TO_ADDRESS = 'terra12hnhh5vtyg5juqnzm43970nh4fw42pt27nw9g9';
+import { useCallback, useState, useMemo } from 'react';
+import { useChainFilter } from './ChainFilter';
+import { getBaseAsset, getRandomAddress } from 'utils';
 
 export function TxSample() {
   const [txResult, setTxResult] = useState<TxResult | null>(null);
   const [txError, setTxError] = useState<string | null>(null);
-
+  const { chainID } = useChainFilter();
   const connectedWallet = useConnectedWallet();
 
-  const proceed = useCallback(() => {
-    if (!connectedWallet) {
-      return;
-    }
+  const toAddress = useMemo(() => {
+    if (!connectedWallet) return '';
+    return getRandomAddress(connectedWallet.network[chainID].prefix);
+  }, [connectedWallet, chainID]);
+  
+  const baseAsset = useMemo(() => {
+    if (!connectedWallet) return '';
+    return getBaseAsset(connectedWallet.network, chainID);
+  }, [connectedWallet, chainID]);
 
-    if (connectedWallet.network.chainID.startsWith('columbus')) {
+  console.log('connectedWallet.network[chainID]', connectedWallet?.network[chainID])
+
+  const proceed = useCallback(() => {
+    if (!connectedWallet) return
+      
+    const isMainnet = Object.keys(connectedWallet.network).some((key) => key.startsWith('phoenix'));
+
+    if (isMainnet) {
       alert(`Please only execute this example on Testnet`);
       return;
     }
@@ -33,10 +45,10 @@ export function TxSample() {
 
     connectedWallet
       .post({
-        fee: new Fee(1000000, '200000uusd'),
+        chainID,
         msgs: [
-          new MsgSend(connectedWallet.walletAddress, TEST_TO_ADDRESS, {
-            uusd: 1000000,
+          new MsgSend(connectedWallet.addresses[chainID], toAddress, {
+            [baseAsset]: 1000000,
           }),
         ],
       })
@@ -62,14 +74,14 @@ export function TxSample() {
           );
         }
       });
-  }, [connectedWallet]);
+  }, [baseAsset, chainID, connectedWallet, toAddress]);
 
   return (
     <div>
       <h1>Tx Sample</h1>
 
       {connectedWallet?.availablePost && !txResult && !txError && (
-        <button onClick={proceed}>Send 1USD to {TEST_TO_ADDRESS}</button>
+        <button onClick={proceed}>Send 1{baseAsset} to {toAddress}</button>
       )}
 
       {txResult && (

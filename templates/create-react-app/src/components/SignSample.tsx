@@ -1,4 +1,4 @@
-import { Fee, MsgSend, SyncTxBroadcastResult } from '@terra-money/terra.js';
+import { Fee, MsgSend, SyncTxBroadcastResult } from '@terra-money/feather.js';
 import {
   createLCDClient,
   CreateTxFailed,
@@ -8,8 +8,10 @@ import {
   TxUnspecifiedError,
   useConnectedWallet,
   UserDenied,
+  useLCDClient
 } from '@terra-money/wallet-provider';
 import React, { useCallback, useState } from 'react';
+import { useChainFilter } from './ChainFilter';
 
 const TEST_TO_ADDRESS = 'terra12hnhh5vtyg5juqnzm43970nh4fw42pt27nw9g9';
 
@@ -17,6 +19,8 @@ export function SignSample() {
   const [signResult, setSignResult] = useState<SignResult | null>(null);
   const [txResult, setTxResult] = useState<SyncTxBroadcastResult | null>(null);
   const [txError, setTxError] = useState<string | null>(null);
+  const { chainID } = useChainFilter();
+  const lcd = useLCDClient()
 
   const connectedWallet = useConnectedWallet();
 
@@ -25,7 +29,7 @@ export function SignSample() {
       return;
     }
 
-    if (connectedWallet.network.chainID.startsWith('columbus')) {
+    if (connectedWallet.network[chainID].chainID.startsWith('columbus')) {
       alert(`Please only execute this example on Testnet`);
       return;
     }
@@ -36,9 +40,9 @@ export function SignSample() {
 
     connectedWallet
       .sign({
-        fee: new Fee(1000000, '200000uusd'),
+        chainID,
         msgs: [
-          new MsgSend(connectedWallet.walletAddress, TEST_TO_ADDRESS, {
+          new MsgSend(connectedWallet.addresses[chainID], TEST_TO_ADDRESS, {
             uusd: 1000000,
           }),
         ],
@@ -48,10 +52,7 @@ export function SignSample() {
 
         // broadcast
         const tx = nextSignResult.result;
-
-        const lcd = createLCDClient({ network: connectedWallet.network });
-
-        return lcd.tx.broadcastSync(tx);
+        return lcd.tx.broadcastSync(tx, chainID);
       })
       .then((nextTxResult: SyncTxBroadcastResult) => {
         setTxResult(nextTxResult);
@@ -74,7 +75,7 @@ export function SignSample() {
           );
         }
       });
-  }, [connectedWallet]);
+  }, [connectedWallet, chainID, lcd.tx]);
 
   return (
     <div>
