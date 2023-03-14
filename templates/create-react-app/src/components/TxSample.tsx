@@ -28,7 +28,12 @@ export function TxSample() {
     return getBaseAsset(connectedWallet.network, chainID);
   }, [connectedWallet, chainID]);
 
-  console.log('connectedWallet.network[chainID]', connectedWallet?.network[chainID])
+  const explorerHref = useMemo(() => {
+    if (!connectedWallet || !txResult) return '';
+    // @ts-ignore-line
+    const { explorer } = connectedWallet.network[chainID];   
+    if (explorer.tx) return explorer.tx.replace("{}", txResult.result.txhash);
+  }, [connectedWallet, chainID, txResult]);
 
   const proceed = useCallback(() => {
     if (!connectedWallet) return
@@ -88,14 +93,14 @@ export function TxSample() {
         <>
           <pre>{JSON.stringify(txResult, null, 2)}</pre>
 
-          {connectedWallet && txResult && (
+          {explorerHref && (
             <div>
               <a
-                href={`https://finder.terra.money/${connectedWallet.network.chainID}/tx/${txResult.result.txhash}`}
+                href={explorerHref}
                 target="_blank"
                 rel="noreferrer"
               >
-                Open Tx Result in Terra Finder
+                Open Tx Result in explorer
               </a>
             </div>
           )}
