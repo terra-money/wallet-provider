@@ -1,5 +1,5 @@
 {
-  "name": "cra-template",
+  "name": "cra-template-17",
   "version": "1.0.0",
   "scripts": {
     "build": "react-app-rewired build",
