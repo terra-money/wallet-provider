@@ -74,7 +74,7 @@ function clearResult() {
         href="https://finder.terra.money/{{connectedWallet.network.chainID}}/tx/{{txResult.result.txhash}}"
         target="_blank"
         rel="noreferrer"
-        >Open Tx Result in Terra Finder</a
+        >Open tx result in explorer</a
       >
     </div>
     <button v-on:click="clearResult">Clear result</button>

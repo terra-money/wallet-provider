@@ -11,8 +11,7 @@ import {
 } from '@terra-money/wallet-provider';
 import React, { useCallback, useState, useMemo } from 'react';
 import { useSelectedChain } from './ChainSelector';
-
-const TEST_TO_ADDRESS = 'terra12hnhh5vtyg5juqnzm43970nh4fw42pt27nw9g9';
+import { ConnectedWalletNetworkInfo, getRandomAddress } from 'utils';
 
 export function SignSample() {
   const [signResult, setSignResult] = useState<SignResult | null>(null);
@@ -20,21 +19,24 @@ export function SignSample() {
   const [txError, setTxError] = useState<string | null>(null);
   const chainID = useSelectedChain();
   const lcd = useLCDClient()
-
   const connectedWallet = useConnectedWallet();
 
+  const network = connectedWallet?.network[chainID] as ConnectedWalletNetworkInfo
+  
   const baseAsset = useMemo(() => {
-    if (!connectedWallet?.network) return '';
-    // @ts-ignore
-    return connectedWallet.network[chainID].baseAsset;
-  }, [connectedWallet, chainID]);
+    if (!network) return ''
+    return network.baseAsset;
+  }, [network]);
 
   const explorerHref = useMemo(() => {
-    if (!connectedWallet || !txResult) return '';
-    // @ts-ignore
-    const { explorer } = connectedWallet.network[chainID];   
-    if (explorer.tx) return explorer.tx.replace("{}", txResult.txhash);
-  }, [connectedWallet, chainID, txResult]);
+    if (!txResult) return '';
+    if (network.explorer.tx) return network.explorer.tx.replace("{}", txResult.txhash);
+  }, [network, txResult]);
+
+  const toAddress = useMemo(() => {
+    if (!network) return ''
+    return getRandomAddress(network.prefix);
+  }, [network]);
 
 
   const send = useCallback(() => {
@@ -56,7 +58,7 @@ export function SignSample() {
       .sign({
         chainID,
         msgs: [
-          new MsgSend(connectedWallet.addresses[chainID], TEST_TO_ADDRESS, {
+          new MsgSend(connectedWallet.addresses[chainID], toAddress, {
             [baseAsset]: 1000000,
           }),
         ],
@@ -89,7 +91,7 @@ export function SignSample() {
           );
         }
       });
-  }, [connectedWallet, chainID, lcd.tx, baseAsset]);
+  }, [connectedWallet, chainID, lcd.tx, baseAsset, toAddress]);
 
   return (
     <div>
@@ -99,7 +101,7 @@ export function SignSample() {
         !signResult &&
         !txResult &&
         !txError && (
-          <button onClick={() => send()}>Send 1{baseAsset}to {TEST_TO_ADDRESS}</button>
+          <button onClick={() => send()}>Send 1{baseAsset} to {toAddress}</button>
         )}
 
       {signResult && <pre>{JSON.stringify(signResult, null, 2)}</pre>}
@@ -113,7 +115,7 @@ export function SignSample() {
               target="_blank"
               rel="noreferrer"
             >
-              Open Tx Result in Terra Finder
+              Open tx result in explorer
             </a>
           )}
         </>

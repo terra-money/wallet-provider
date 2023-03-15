@@ -10,31 +10,29 @@ import {
 } from '@terra-money/wallet-provider';
 import { useCallback, useState, useMemo } from 'react';
 import { useSelectedChain } from './ChainSelector';
-import { getRandomAddress } from 'utils';
+import { getRandomAddress, ConnectedWalletNetworkInfo } from 'utils';
 
 export function TxSample() {
   const [txResult, setTxResult] = useState<TxResult | null>(null);
   const [txError, setTxError] = useState<string | null>(null);
   const chainID = useSelectedChain();
   const connectedWallet = useConnectedWallet();
+  const network = connectedWallet?.network[chainID] as ConnectedWalletNetworkInfo
 
   const toAddress = useMemo(() => {
-    if (!connectedWallet?.network) return '';
-    return getRandomAddress(connectedWallet.network[chainID]?.prefix);
-  }, [connectedWallet, chainID]);
+    if (!network) return ''
+    return getRandomAddress(network.prefix);
+  }, [network]);
   
   const baseAsset = useMemo(() => {
-    if (!connectedWallet?.network) return '';
-    // @ts-ignore
-    return connectedWallet.network[chainID].baseAsset;
-  }, [connectedWallet, chainID]);
+    if (!network) return ''
+    return network.baseAsset;
+  }, [network]);
 
   const explorerHref = useMemo(() => {
-    if (!connectedWallet || !txResult) return '';
-    // @ts-ignore-line
-    const { explorer } = connectedWallet.network[chainID];   
-    if (explorer.tx) return explorer.tx.replace("{}", txResult.result.txhash);
-  }, [connectedWallet, chainID, txResult]);
+    if (!txResult) return '';
+    if (network.explorer.tx) return network.explorer.tx.replace("{}", txResult.result.txhash);
+  }, [network, txResult]);
 
   const proceed = useCallback(() => {
     if (!connectedWallet) return

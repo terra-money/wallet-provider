@@ -12,6 +12,7 @@ const ASTRO: AstroToken = {
   'phoenix-1': 'terra1nsuqsk6kh58ulczatwev87ttq2z6r3pusulg9r24mfj2fvtzd4uq3exn26',
   'pisco-1': 'terra167dsqkh2alurx997wmycw9ydkyu54gyswe3ygmrs4lwume3vmwks8ruqnv',
 };
+
 export function CW20TokensSample() {
   const { status, supportFeatures } = useWallet();
 
