@@ -88,7 +88,7 @@ export function PostSample() {
               target="_blank"
               rel="noreferrer"
             >
-              Open Tx Result in Terra Finder
+              Open tx result in explorer
             </a>
           )}
         </>

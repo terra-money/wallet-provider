@@ -18,12 +18,23 @@ export function NetworkSample() {
   );
 }
 
-const TEST_NETWORK = {
-  name: 'test-network',
-  chainID: 'bombay-12',
-  lcd: 'https://lcd.terra.dev',
-};
-
+const TEST_NETWORK = { 
+  "ares-1": {
+    "chainID": "ares-1",
+    "lcd": "https://testnet-rest.marsprotocol.io",
+    "gasAdjustment": 2,
+    "gasPrices": { "umars": 0 },
+    "prefix": "mars",
+    "coinType": "330",
+    "baseAsset": "umars",
+    "name": "Mars",
+    "icon": "https://station-assets.terra.money/img/chains/Mars.svg",
+    "ibc": {
+      "toTerra": "channel-0",
+      "fromTerra": "channel-189"
+    },
+  }
+}
 function Component() {
   const { hasNetwork, addNetwork } = useWallet();
 

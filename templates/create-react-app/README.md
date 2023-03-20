@@ -4,12 +4,12 @@ This is an example of performing basic connect, tx, and query actions in a react
 
 # Preview this template on CodeSandbox
 
-<https://githubbox.com/terra-money/wallet-provider/tree/main/templates/create-react-app>
+<https://githubbox.com/terra-money/wallet-provider/tree/main/templates/create-react-app-18>
 
 # How to use this template
 
 ```sh
-npx terra-templates get wallet-provider:create-react-app your-app-name
+npx terra-templates get wallet-provider:create-react-app-18 your-app-name
 cd your-app-name
 npm install
 npm start

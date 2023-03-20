@@ -36,7 +36,7 @@ export class FormRenderer extends LitElement {
               .chainID}/tx/${this.txResult.result.txhash}"
             target="_blank"
             rel="noreferrer"
-            >Open Tx Result in Terra Finder</a
+            >Open tx result in explorer</a
           >
         </div>
         <button @click="${this.clearResult}">Clear result</button>
