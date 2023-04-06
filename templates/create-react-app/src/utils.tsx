@@ -14,4 +14,6 @@ export interface ConnectedWalletNetworkInfo extends LCDClientConfig {
     address: string;
   };
   baseAsset: string;
+  icon: string;
+  name: string;
 }

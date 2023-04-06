@@ -84,7 +84,9 @@ export function TxSample() {
     <div>
       <h1>Tx Sample</h1>
 
-      {connectedWallet?.availablePost && !txResult && !txError && (
+      {!toAddress && <p>Select a network</p>}
+
+      {connectedWallet?.availablePost && toAddress && !txResult && !txError && (
         <button onClick={proceed}>Send 1{baseAsset} to {toAddress}</button>
       )}
 
