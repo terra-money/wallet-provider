@@ -2,8 +2,16 @@ import styled from "styled-components";
 import { useState, createContext, useContext, useEffect } from "react";
 import { useWallet } from "@terra-money/wallet-provider";
 
-const ButtonContainer = styled.div`
+const PillsContainer = styled.div`
   display: flex;
+`;
+
+interface ChainPillProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  active: boolean;
+}
+
+const ChainPill = styled.button<ChainPillProps>`
+  opacity: ${(p) => (p.active ? 1 : 0.5)};
 `;
 
 const SelectedChainContext = createContext('');
@@ -21,15 +29,16 @@ export const ChainSelector = ({ children }: {children: React.ReactNode;}) => {
 
   return (
     <SelectedChainContext.Provider value={chainID}>
-    <ButtonContainer>
-      {Object.values(network).map((c) => (
-        <div key={c.chainID} style={{ opacity: c.chainID === chainID ? '1': '0.5'}}>
-        <button onClick={() => setChainID(c.chainID)}>
-          {c.prefix}
-        </button>
-        </div>
-      ))}
-      </ButtonContainer>
+      <PillsContainer>
+        {Object.values(network).map((c) => (
+          <ChainPill active={c.chainID === chainID}
+            onClick={() => setChainID(c.chainID)}>
+            {/* <img src={c.icon} alt={c.name} /> */}
+
+            {c.prefix}
+          </ChainPill>
+        ))}
+        </PillsContainer>
       <>{children}</>
     </SelectedChainContext.Provider>
   );
