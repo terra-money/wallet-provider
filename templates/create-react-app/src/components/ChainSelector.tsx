@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState, createContext, useContext, useEffect } from "react";
+import { useState, createContext, useContext, useEffect, useMemo } from "react";
 import { useWallet } from "@terra-money/wallet-provider";
 import { ConnectedWalletNetworkInfo} from 'utils'
  
@@ -34,13 +34,14 @@ export const useSelectedChain = () => useContext(SelectedChainContext);
 
 export const ChainSelector = ({ children }: {children: React.ReactNode;}) => {
   const { network } = useWallet();
-  const networks = Object.values(network) as ConnectedWalletNetworkInfo[];
   const [chainID, setChainID] = useState('');
 
-  // useEffect(() => {
-  //   const terraNetwork = networks.find((c) => c.prefix === 'terra')?.chainID 
-  //   setChainID(terraNetwork || 'pisco-1');
-  // });
+  const networks = useMemo(() => Object.values(network) as ConnectedWalletNetworkInfo[], [network])
+
+  useEffect(() => {
+    const terraNetwork = networks.find((c) => c.prefix === 'terra')?.chainID 
+    if (terraNetwork) setChainID(terraNetwork);
+  }, [networks]);
 
 
   return (
