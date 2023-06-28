@@ -3,6 +3,9 @@ import { fromFetch } from 'rxjs/fetch';
 import { catchError, map } from 'rxjs/operators';
 import { getDesktopBrowserType } from '../utils/browser-check';
 
+const ASSETS =
+  process.env.REACT_APP_ASSETS ?? "https://assets.terra.money"
+
 interface Extensions {
   whitelist: Array<{
     name: string;
@@ -20,7 +23,7 @@ const FALLBACK: Extensions = {
     {
       name: 'Terra Station',
       identifier: 'station',
-      icon: 'https://assets.terra.money/icon/station-extension/icon.png',
+      icon: `${ASSETS}/icon/station-extension/icon.png`,
       urls: [
         {
           browser: 'chrome',
@@ -60,7 +63,7 @@ export function getExtensions(): Observable<InstallableExtension[]> {
     return of([]);
   }
 
-  return fromFetch('https://assets.terra.money/extensions.json').pipe<
+  return fromFetch(`${ASSETS}/extensions.json`).pipe<
     Extensions,
     Extensions,
     InstallableExtension[]
