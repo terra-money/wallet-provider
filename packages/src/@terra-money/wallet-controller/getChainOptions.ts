@@ -41,7 +41,7 @@ const FALLBACK: WalletControllerChainOptions = {
 let cache: WalletControllerChainOptions;
 
 export async function getChainOptions(): Promise<WalletControllerChainOptions> {
-  return fetch('https://assets.terra.money/chains.json')
+  return fetch('https://assets.station.money/chains.json')
     .then((res) => res.json())
     .then((data: Record<string, ChainInfo>) => {
       const chains = Object.values(data);

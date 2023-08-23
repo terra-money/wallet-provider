@@ -71,7 +71,7 @@ function clearResult() {
     <pre>{{ JSON.stringify(txResult, null, 2) }}</pre>
     <div>
       <a
-        href="https://finder.terra.money/{{connectedWallet.network.chainID}}/tx/{{txResult.result.txhash}}"
+        href="https://finder.station.money/{{connectedWallet.network.chainID}}/tx/{{txResult.result.txhash}}"
         target="_blank"
         rel="noreferrer"
         >Open tx result in explorer</a

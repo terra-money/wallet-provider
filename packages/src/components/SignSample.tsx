@@ -112,7 +112,7 @@ export function SignSample() {
           <pre>{JSON.stringify(txResult, null, 2)}</pre>
           {connectedWallet && txResult && (
             <a
-              href={`https://finder.terra.money/${connectedWallet.network.chainID}/tx/${txResult.txhash}`}
+              href={`https://finder.station.money/${connectedWallet.network.chainID}/tx/${txResult.txhash}`}
               target="_blank"
               rel="noreferrer"
             >

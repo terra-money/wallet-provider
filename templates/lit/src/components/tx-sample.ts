@@ -32,7 +32,7 @@ export class FormRenderer extends LitElement {
         <pre>${JSON.stringify(this.txResult, null, 2)}</pre>
         <div>
           <a
-            href="https://finder.terra.money/${this.connectedWallet.network
+            href="https://finder.station.money/${this.connectedWallet.network
               .chainID}/tx/${this.txResult.result.txhash}"
             target="_blank"
             rel="noreferrer"

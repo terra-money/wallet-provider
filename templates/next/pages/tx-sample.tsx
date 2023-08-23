@@ -76,7 +76,7 @@ export default function TxSample() {
           {connectedWallet && txResult && (
             <div>
             <a
-              href={`https://finder.terra.money/${connectedWallet.network.chainID}/tx/${txResult.result.txhash}`}
+              href={`https://finder.station.money/${connectedWallet.network.chainID}/tx/${txResult.result.txhash}`}
               target="_blank"
               rel="noreferrer"
             >
