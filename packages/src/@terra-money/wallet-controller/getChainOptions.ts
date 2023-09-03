@@ -1,6 +1,9 @@
 import { NetworkInfo } from '@terra-money/wallet-types';
 import { WalletControllerOptions } from './controller';
 
+const ASSETS =
+  process.env.REACT_APP_ASSETS ?? "https://assets.terra.money"
+
 interface ChainInfo {
   name: string;
   chainID: string;
@@ -41,7 +44,7 @@ const FALLBACK: WalletControllerChainOptions = {
 let cache: WalletControllerChainOptions;
 
 export async function getChainOptions(): Promise<WalletControllerChainOptions> {
-  return fetch('https://assets.terra.money/chains.json')
+  return fetch(`${ASSETS}/chains.json`)
     .then((res) => res.json())
     .then((data: Record<string, ChainInfo>) => {
       const chains = Object.values(data);
