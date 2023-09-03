@@ -6937,9 +6937,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cra-template@workspace:templates/create-react-app-17":
+"cra-template-17@workspace:templates/create-react-app-17":
   version: 0.0.0-use.local
-  resolution: "cra-template@workspace:templates/create-react-app-17"
+  resolution: "cra-template-17@workspace:templates/create-react-app-17"
   dependencies:
     "@terra-money/feather.js": ^1.0.0-beta.12
     "@terra-money/wallet-provider": ^4.0.0
@@ -7000,9 +7000,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"create-react-app-18@workspace:templates/create-react-app":
+"create-react-app@workspace:templates/create-react-app":
   version: 0.0.0-use.local
-  resolution: "create-react-app-18@workspace:templates/create-react-app"
+  resolution: "create-react-app@workspace:templates/create-react-app"
   dependencies:
     "@terra-money/feather.js": ^1.0.0-beta.12
     "@terra-money/wallet-provider": ^4.0.0
@@ -11939,7 +11939,7 @@ __metadata:
     lit: ^2.0.2
     multiplerun: ^2.0.1
     typescript: ^4.4.4
-    vite: ^2.6.14
+    vite: ^2.9.16
     vite-compatible-readable-stream: ^3.6.0
     vite-tsconfig-paths: ^3.3.17
     vitest: ^0.0.134
@@ -13308,7 +13308,7 @@ __metadata:
     ts-node: ^10.4.0
     tsconfig-paths: ^3.11.0
     typescript: ^4.4.4
-    vite: ^2.6.14
+    vite: ^2.9.16
     vite-compatible-readable-stream: ^3.6.0
     vite-plugin-svgr: ^0.5.1
     vite-tsconfig-paths: ^3.3.17
@@ -17023,7 +17023,7 @@ __metadata:
     svelte-check: ^2.2.7
     svelte-preprocess: ^4.9.8
     typescript: ^4.4.4
-    vite: ^2.6.14
+    vite: ^2.9.16
     vite-compatible-readable-stream: ^3.6.0
     vite-tsconfig-paths: ^3.3.17
     vitest: ^0.0.134
@@ -17677,7 +17677,7 @@ __metadata:
 
 "typescript@patch:typescript@*#~builtin<compat/typescript>, typescript@patch:typescript@^4.1.3#~builtin<compat/typescript>, typescript@patch:typescript@^4.4.4#~builtin<compat/typescript>":
   version: 4.9.5
-  resolution: "typescript@patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=a1c5e5"
+  resolution: "typescript@patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=7ad353"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
@@ -18031,7 +18031,7 @@ __metadata:
     react-router-dom: ^5.3.0
     styled-components: ^5.3.3
     typescript: ^4.4.4
-    vite: ^2.6.14
+    vite: ^2.9.16
     vite-compatible-readable-stream: ^3.6.0
     vite-plugin-svgr: ^0.5.1
     vite-tsconfig-paths: ^3.3.17
@@ -18091,9 +18091,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^2.6.14":
-  version: 2.9.15
-  resolution: "vite@npm:2.9.15"
+"vite@npm:^2.9.16":
+  version: 2.9.16
+  resolution: "vite@npm:2.9.16"
   dependencies:
     esbuild: ^0.14.27
     fsevents: ~2.3.2
@@ -18116,7 +18116,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 5edf8afc132a598f82a1339aa503514a0e86f6264babe94531b9000d801f157c9a32ae022542404678acca43ee260ade04c4763c4b7b8d381a6b50511b4a1447
+  checksum: b09d899861d9266ce67bf123f4b3c9adf46bd6f9dad186237e69e08b5862d7fb38984e8503abe622f6396b1b5b6f182617292ce71e9237e1ac3c0a771d611b5a
   languageName: node
   linkType: hard
 
@@ -18337,7 +18337,7 @@ __metadata:
     multiplerun: ^2.0.1
     rxjs: ^7.4.0
     typescript: ^4.4.4
-    vite: ^2.6.14
+    vite: ^2.9.16
     vite-compatible-readable-stream: ^3.6.0
     vite-tsconfig-paths: ^3.3.17
     vitest: ^0.0.134
