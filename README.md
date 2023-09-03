@@ -1,3 +1,5 @@
+> **Warning**
+> This package is deprecated, please use [Wallet-Kit](https://github.com/terra-money/wallet-kit) instead. 
 # Terra Wallet Provider
 
 Library to make React dApps easier using Station Extension or Station Mobile.
